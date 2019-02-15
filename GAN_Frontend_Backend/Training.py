@@ -9,9 +9,8 @@ import torchvision.transforms as transforms
 import torchvision.utils as vutils
 from torch.autograd import Variable
 
-
-import Generator as Generator
-import Discriminator as Discriminator
+import Generator
+import Discriminator
 
 def Train():
     # Setting some hyperparameters
