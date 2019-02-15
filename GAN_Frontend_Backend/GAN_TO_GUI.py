@@ -10,7 +10,7 @@ import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon, QColor, QPalette
 from PyQt5.QtCore import *
-import GUI_Init as init
+import TrainHelloWorld as hi
 import Training as Trainer
 
 
@@ -32,7 +32,7 @@ class AthenaLaunchpad(QMainWindow):
                                                 QColor(28, 28, 28))  # set background color to black.
         self.setPalette(athenaMainMenu_BackgroundColor)
 
-        self.testWindowButton = init.Greeting()
+        self.testWindowButton = hi.Greeting()
         #TODO on startup throw gui at 0,0 on screen.
         #TODO add the panel behind the spinboxes.
 
