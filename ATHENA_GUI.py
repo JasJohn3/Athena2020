@@ -9,8 +9,16 @@
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon, QColor, QPalette
-from PyQt5.QtCore import *
-import TrainHelloWorld as hi
+import PyQt5.QtCore as QtCore
+import Dialogues as DialoguesRail
+import PyQt5
+
+
+if hasattr(QtCore.Qt, 'AA_EnableHighDpiScaling'):
+    PyQt5.QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
+
+if hasattr(QtCore.Qt, 'AA_UseHighDpiPixmaps'):
+    PyQt5.QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
 
 
 class AthenaLaunchpad(QMainWindow):
@@ -21,6 +29,9 @@ class AthenaLaunchpad(QMainWindow):
         self.top = 10
         self.width = 640
         self.height = 400
+
+
+
         # self.initUI()
 
         # def initUI() <--DANGER THIS WILL BREAK THE ENTIRE GUI
@@ -31,7 +42,8 @@ class AthenaLaunchpad(QMainWindow):
                                                 QColor(28, 28, 28))  # set background color to black.
         self.setPalette(athenaMainMenu_BackgroundColor)
 
-        self.testWindowButton = hi.Greeting()
+        self.TrainWindow = DialoguesRail.TrainingDialogue()
+        self.AboutDevsWindow = DialoguesRail.AboutDevs()
         #TODO on startup throw gui at 0,0 on screen.
         #TODO add the panel behind the spinboxes.
 
@@ -97,7 +109,7 @@ class AthenaLaunchpad(QMainWindow):
         train_dropButton = QAction('Train', self)
         train_dropButton.setShortcut('Ctrl+T')
         train_dropButton.setStatusTip('Train a model')
-        train_dropButton.triggered.connect(self.testWindowButton.show)
+        train_dropButton.triggered.connect(self.TrainWindow.show)
         trainMenu.addAction(train_dropButton)  # add test button to dropdown menu
 
         #         ==Custom Dataset Button==
@@ -174,6 +186,7 @@ class AthenaLaunchpad(QMainWindow):
         aboutDevs_dropButton = QAction('Meet the Developers', self)
         aboutDevs_dropButton.setShortcut('Ctrl+M')
         aboutDevs_dropButton.setStatusTip('Learn about the developers! :)')
+        aboutDevs_dropButton.triggered.connect(self.AboutDevsWindow.show)
         # aboutDevs_dropButton.triggered.openDevsWindow() <-- TODO create window, create aboutDevs Center, enable portfolio linking.
         helpMenu.addAction(aboutDevs_dropButton)
 
