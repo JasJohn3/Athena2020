@@ -17,6 +17,7 @@ def Train():
     batchSize = 64  # We set the size of the batch.
     imageSize = 64  # We set the size of the generated images (64x64).
 
+
     # Creating the transformations
     transform = transforms.Compose([transforms.Resize(imageSize), transforms.ToTensor(),
                                     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5,
@@ -46,7 +47,11 @@ def Train():
     criterion = nn.BCELoss()
     optimizerD = optim.Adam(netD.parameters(), lr=0.0002, betas=(0.5, 0.999))
     optimizerG = optim.Adam(netG.parameters(), lr=0.0002, betas=(0.5, 0.999))
-    for epoch in range(2):
+
+    #epoch tracks the
+    Training_Values = []
+    Total_Training = 2
+    for epoch in range(Total_Training):
 
         for i, data in enumerate(dataloader, 0):
 
@@ -83,9 +88,29 @@ def Train():
             optimizerG.step()
 
             # 3rd Step: Printing the losses and saving the real images and the generated images of the minibatch every 100 steps
+                                                               #(Epoch, totalTraining, loopProgress, totalSteps, inputE, inputG)
 
-            print('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f' % (epoch, 25, i, len(dataloader), errD.item(), errG.item()))
+            #TODO - create input function that opens a new PYQT5 window that will output the printed values into a label.
+            #takes first four (epoch/totalTraining, i/totalSteps(how many steps to complete for one epoch.)
+
+            #TODO pause function?
+            #TODO - Updating loading bar for completion estimation.
+            current_epoch = epoch
+            current_step = i
+            Total_steps=len(dataloader)
+            Generator_Loss = errG.item()
+            Discriminator_Lost = errD.item()
+
+            Training_Values = [current_epoch, Total_Training, current_step, Total_steps, Generator_Loss, Discriminator_Lost]
+
+            print('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f' % (epoch, Total_Training, i, len(dataloader), errD.item(), errG.item()))
             if i % 100 == 0:
                 vutils.save_image(real, '%s/real_samples.png' % "./results", normalize=True)
                 fake = netG(noise)
                 vutils.save_image(fake.data, '%s/fake_samples_epoch_%03d.png' % ("./results", epoch), normalize=True)
+
+
+
+
+    #                   ========== OUTPUT FUNCTION ========
+            # Abstract:
