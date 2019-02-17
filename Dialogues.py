@@ -20,9 +20,48 @@ class TrainingDialogue(QMainWindow):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
 
-        greetingLabel = QLabel(self)
-        greetingLabel.setGeometry(170, 200, 300, 50)
-        greetingLabel.setText("Model training GUI and execution COMING SOON!")
+        epoch_PBLabel = QLabel(self)
+        epoch_PBLabel.setText("Epochs:")
+        epoch_PBLabel.move(20, 50)
+        epoch_ProgressBar = QProgressBar(self)
+        epoch_ProgressBar.setMaximum(100)
+        epoch_ProgressBar.setGeometry(0, 0, 300, 25)
+        epoch_ProgressBar.move(75, 50)
+
+        stepsPB_Label = QLabel(self)
+        stepsPB_Label.setText("Steps:")
+        stepsPB_Label.move(20, 100)
+        steps_ProgressBar = QProgressBar(self)
+        steps_ProgressBar.setMaximum(100)
+        steps_ProgressBar.setGeometry(0, 0, 300, 25)
+        steps_ProgressBar.move(75, 100)
+
+
+        output_Label = QLabel(self)
+        output_Label.setText("Loss output ")
+        output_Label.move(375, 20)
+        outputLog_TextBox = QTextEdit(self)
+        outputLog_TextBox.setReadOnly(True)
+        outputLog_TextBox.setLineWrapMode(QTextEdit.NoWrap)
+        outputLog_TextBox.verticalScrollBar()
+        outputLog_TextBox.resize(250,260)
+        outputLog_TextBox.move(375,50)
+
+
+        datasets_Label = QLabel(self)
+        datasets_Label.setText("Datasets: ")
+        datasets_Label.move(25, 150)
+        datasets_ComboBox = QComboBox(self)
+        datasets_ComboBox.addItem("<Your Datasets>")
+        datasets_ComboBox.move(110,150)
+
+        calculatedEstimation_Label = QLabel(self)
+        calculatedEstimation_Label.setText("Calculated ETA: ")
+        calculatedEstimation_Label.move(25, 250)
+        calculatedEstimation_TextBox = QTextEdit(self)
+        calculatedEstimation_TextBox.setReadOnly(True)
+        calculatedEstimation_TextBox.move(110, 250)
+
 
         train_Button = QPushButton('Train', self)
         train_Button.setToolTip('Athena Training')
