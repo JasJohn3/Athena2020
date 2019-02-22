@@ -1,5 +1,4 @@
 from __future__ import print_function
-import torch
 import torch.nn as nn
 
 class D(nn.Module):

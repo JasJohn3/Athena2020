@@ -5,7 +5,7 @@ import sys
 import Training
 
 
-# ==========================================TRAINING DIALOGUE WINDOW=========================================
+''' ==========================================TRAINING DIALOGUE WINDOW========================================= '''
 class TrainingDialogue(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -71,7 +71,7 @@ class TrainingDialogue(QMainWindow):
     def on_click(self):
         Training.Train()
 
-# ==========================================ABOUT DEVELOPERS DIALOGUE WINDOW=========================================
+''' ==========================================ABOUT DEVELOPERS DIALOGUE WINDOW========================================= '''
 class AboutDevs(QMainWindow):
     def __init__(self):
         super().__init__()
