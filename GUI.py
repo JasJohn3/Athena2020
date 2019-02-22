@@ -24,11 +24,12 @@ if hasattr(QtCore.Qt, 'AA_UseHighDpiPixmaps'):
 class AthenaLaunchpad(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.title = 'Athena Launchpad'
+        self.title = 'Athena'
         self.left = 10
         self.top = 10
         self.width = 640
         self.height = 400
+        self.setWindowIcon(QIcon('Athena_v1.ico'))
 
         # self.initUI()
         # def initUI() <--DANGER THIS WILL BREAK THE ENTIRE GUI
@@ -44,59 +45,15 @@ class AthenaLaunchpad(QMainWindow):
         #TODO on startup throw gui at 0,0 on screen.
         #TODO add the panel behind the spinboxes.
 
-        ''' ==========================================INITIALIZE UI========================================= '''
         self.setWindowTitle(self.title)
-        self.setGeometry(self.left, self.top, self.width, self.height)
 
-        #         ==GREETING LABEL==
-        greeting_Label = QLabel("<font color = white>Welcome to Athena!</font>", self)
-        greeting_Label.move(0, 20)
-
-        # =====MUTABLE CENTRAL OUTPUT PROMPT WIDGET=====
-        mutableCentral = QWidget()
-        self.setCentralWidget(mutableCentral)
-        mutableCentral.move(320, 200)
-        # =====INSTRUCTIONS POP UP WINDOW=====
-            #TODO make external help pop up script.
-
-        ''' ========================TEXTURE TYPE COMBO BOX============================================ '''
-        #         ==COMBO BOX LABEL==
-        textureType_Label = QLabel("<font color = white font size = 5>Texture Type</font>", self)
-        textureType_Label.move(0, 50)
-        #         ==DROP DOWN MENU==
-        texture_DropDownMenu = QComboBox(self)
-        texture_DropDownMenu.addItems(["<Select Texture>", "Stone", "Sand", "Grass", "Wooden", "Metallic"])
-        texture_DropDownMenu.setToolTip('Select a texture to generate.')
-        texture_DropDownMenu.resize(150, 32)
-        texture_DropDownMenu.move(0, 80)
-
-        ''' ========================IMAGE SIZE SPIN BOXES============================================= '''
-        #         ==IMAGE SIZE LABEL==
-        imageSize_Label = QLabel("<font color = white font size = 5>Image Size</font>", self)
-        imageSize_Label.move(0, 120)
-
-        #         ==WIDTH SPINBOX==
-        widthSB_Label = QLabel("<font color = white font size = 4>Width:</font", self)
-        widthSB_Label.move(0, 150)
-        width_SpinBox = QSpinBox(self)
-        width_SpinBox.setToolTip('WARNING: LARGER SIZES = LONGER GENERATION TIMES')
-        width_SpinBox.move(75, 150)
-
-        #         ==HEIGHT SPINBOX==
-        heightSB_Label = QLabel("<font color = white font size = 4>Height:</font", self)
-        heightSB_Label.move(0, 190)
-        height_SpinBox = QSpinBox(self)
-        height_SpinBox.setToolTip('WARNING: LARGER SIZES = LONGER GENERATION TIMES')
-        height_SpinBox.move(75, 190)
-
-
-        ''' ========================BUTTONS UNDER TRAIN MENU BAR============================================= '''
-        #         ==INITIALIZATIONS==
+        '''Menu Bar
+        ====================================================================================================='''
+        #Create menu bar
         mainMenu = self.menuBar()
-        mainMenu.setStyleSheet(
-            """QMenuBar { background-color: rgb(45, 45, 48); }""")  # set the background color of menu bar
+
+        #Create Menu Items
         trainMenu = mainMenu.addMenu("Train")
-        trainMenu.setStyleSheet("""QMenuBar::item { background: rgb(240, 240, 240); color: red; }""")
         graphsMenu = mainMenu.addMenu('Graphs')
         helpMenu = mainMenu.addMenu('Help')
 
@@ -192,5 +149,7 @@ class AthenaLaunchpad(QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    #Set the style of the entire GUI
+    app.setStyleSheet(open('CSS.cfg').read())
     ex = AthenaLaunchpad()
     sys.exit(app.exec_())
