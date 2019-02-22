@@ -46,6 +46,7 @@ class AthenaLaunchpad(QMainWindow):
         #TODO add the panel behind the spinboxes.
 
         self.setWindowTitle(self.title)
+        self.resize(self.width, self.height)
 
         '''
         Menu Bar

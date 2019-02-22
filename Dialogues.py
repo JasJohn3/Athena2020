@@ -20,23 +20,25 @@ class TrainingDialogue(QMainWindow):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
 
+        # ===EPOCHS PROGRESS BAR===
         epoch_PBLabel = QLabel(self)
         epoch_PBLabel.setText("Epochs:")
-        epoch_PBLabel.move(20, 50)
+        epoch_PBLabel.move(20, 245)
         epoch_ProgressBar = QProgressBar(self)
         epoch_ProgressBar.setMaximum(100)
         epoch_ProgressBar.setGeometry(0, 0, 300, 25)
-        epoch_ProgressBar.move(75, 50)
+        epoch_ProgressBar.move(75, 250)
 
+        # ===STEPS PROGRESS BAR===
         stepsPB_Label = QLabel(self)
         stepsPB_Label.setText("Steps:")
-        stepsPB_Label.move(20, 100)
+        stepsPB_Label.move(20, 295)
         steps_ProgressBar = QProgressBar(self)
         steps_ProgressBar.setMaximum(100)
         steps_ProgressBar.setGeometry(0, 0, 300, 25)
-        steps_ProgressBar.move(75, 100)
+        steps_ProgressBar.move(75, 300)
 
-
+        # ===OUTPUT LOG===
         output_Label = QLabel(self)
         output_Label.setText("Loss output ")
         output_Label.move(375, 20)
@@ -47,22 +49,38 @@ class TrainingDialogue(QMainWindow):
         outputLog_TextBox.resize(250,260)
         outputLog_TextBox.move(375,50)
 
-
+        # ===DATASETS COMBOBOX===
         datasets_Label = QLabel(self)
         datasets_Label.setText("Datasets: ")
-        datasets_Label.move(25, 150)
+        datasets_Label.move(25, 50)
         datasets_ComboBox = QComboBox(self)
         datasets_ComboBox.addItem("<Your Datasets>")
-        datasets_ComboBox.move(110,150)
+        datasets_ComboBox.move(75,50)
+        datasets_ComboBox.resize(110, 30)
 
+        # ===USER INPUT EPOCH===
+        inputEpochs_Label = QLabel(self)
+        inputEpochs_Label.setText("Desired Epochs: ")
+        inputEpochs_Label.move(25, 100)
+        inputEpochs_Textbox = QTextEdit(self)
+        inputEpochs_Textbox.move(110, 100)
+
+        # ===USER INPUT STEPS===
+        inputSteps_Label = QLabel(self)
+        inputSteps_Label.setText("Desired Steps: ")
+        inputSteps_Label.move(25, 150)
+        inputSteps_Textbox = QTextEdit(self)
+        inputSteps_Textbox.move(110, 150)
+
+        # ===CALCULATION ESTIMATION BOX===
         calculatedEstimation_Label = QLabel(self)
         calculatedEstimation_Label.setText("Calculated ETA: ")
-        calculatedEstimation_Label.move(25, 250)
+        calculatedEstimation_Label.move(160, 215)
         calculatedEstimation_TextBox = QTextEdit(self)
         calculatedEstimation_TextBox.setReadOnly(True)
-        calculatedEstimation_TextBox.move(110, 250)
+        calculatedEstimation_TextBox.move(240, 215)
 
-
+        # ===TRAIN BUTTON===
         train_Button = QPushButton('Train', self)
         train_Button.setToolTip('Athena Training')
         train_Button.move(500, 350)
@@ -119,6 +137,7 @@ class AboutDevs(QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    app.setStyleSheet(open('CSS.cfg').read())
     td = TrainingDialogue()
     td.show()
     ad = AboutDevs()
