@@ -47,8 +47,9 @@ class AthenaLaunchpad(QMainWindow):
 
         self.setWindowTitle(self.title)
 
-        '''Menu Bar
-        ====================================================================================================='''
+        '''
+        Menu Bar
+        '''
         #Create menu bar
         mainMenu = self.menuBar()
 
@@ -57,9 +58,9 @@ class AthenaLaunchpad(QMainWindow):
         graphsMenu = mainMenu.addMenu('Graphs')
         helpMenu = mainMenu.addMenu('Help')
 
-        ''' ===========================================TRAIN MENU=========================================== '''
-
-        #         ==Train Button==
+        '''
+        Train Control
+        '''
         train_dropButton = QAction('Train', self)
         train_dropButton.setShortcut('Ctrl+T')
         train_dropButton.setStatusTip('Train a model')
