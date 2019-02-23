@@ -23,20 +23,20 @@ class TrainingDialogue(QMainWindow):
         # ===EPOCHS PROGRESS BAR===
         epoch_PBLabel = QLabel(self)
         epoch_PBLabel.setText("Epochs:")
-        epoch_PBLabel.move(20, 245)
+        epoch_PBLabel.move(20, 295)
         epoch_ProgressBar = QProgressBar(self)
         epoch_ProgressBar.setMaximum(100)
         epoch_ProgressBar.setGeometry(0, 0, 300, 25)
-        epoch_ProgressBar.move(75, 250)
+        epoch_ProgressBar.move(75, 300)
 
         # ===STEPS PROGRESS BAR===
         stepsPB_Label = QLabel(self)
         stepsPB_Label.setText("Steps:")
-        stepsPB_Label.move(20, 295)
+        stepsPB_Label.move(20, 245)
         steps_ProgressBar = QProgressBar(self)
         steps_ProgressBar.setMaximum(100)
         steps_ProgressBar.setGeometry(0, 0, 300, 25)
-        steps_ProgressBar.move(75, 300)
+        steps_ProgressBar.move(75, 250)
 
         # ===OUTPUT LOG===
         output_Label = QLabel(self)
@@ -65,16 +65,17 @@ class TrainingDialogue(QMainWindow):
         inputEpochs_Textbox = QTextEdit(self)
         inputEpochs_Textbox.move(110, 100)
 
-        # ===USER INPUT STEPS===
-        inputSteps_Label = QLabel(self)
-        inputSteps_Label.setText("Desired Steps: ")
-        inputSteps_Label.move(25, 150)
-        inputSteps_Textbox = QTextEdit(self)
-        inputSteps_Textbox.move(110, 150)
+        # ===EPOCH ETA BOX===
+        calculatedEstimation_Label = QLabel(self)
+        calculatedEstimation_Label.setText("Epoch ETA: ")
+        calculatedEstimation_Label.move(160, 150)
+        calculatedEstimation_TextBox = QTextEdit(self)
+        calculatedEstimation_TextBox.setReadOnly(True)
+        calculatedEstimation_TextBox.move(240, 150)
 
         # ===CALCULATION ESTIMATION BOX===
         calculatedEstimation_Label = QLabel(self)
-        calculatedEstimation_Label.setText("Calculated ETA: ")
+        calculatedEstimation_Label.setText("Completion ETA: ")
         calculatedEstimation_Label.move(160, 215)
         calculatedEstimation_TextBox = QTextEdit(self)
         calculatedEstimation_TextBox.setReadOnly(True)
