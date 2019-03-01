@@ -1,8 +1,9 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon, QDesktopServices, QColor
-from PyQt5.QtCore import QUrl
+from PyQt5.QtCore import QUrl, QBasicTimer
 import sys
 import Training
+import threading
 
 
 ''' ==========================================TRAINING DIALOGUE WINDOW========================================= '''
@@ -39,15 +40,15 @@ class TrainingDialogue(QMainWindow):
         steps_ProgressBar.move(75, 250)
 
         # ===OUTPUT LOG===
-        output_Label = QLabel(self)
-        output_Label.setText("Loss output ")
-        output_Label.move(375, 20)
-        outputLog_TextBox = QTextEdit(self)
-        outputLog_TextBox.setReadOnly(True)
-        outputLog_TextBox.setLineWrapMode(QTextEdit.NoWrap)
-        outputLog_TextBox.verticalScrollBar()
-        outputLog_TextBox.resize(250,260)
-        outputLog_TextBox.move(375,50)
+        self.output_Label = QLabel(self)
+        self.output_Label.setText("Loss output ")
+        self.output_Label.move(375, 20)
+        self.outputLog_TextBox = QTextEdit(self)
+        self.outputLog_TextBox.setReadOnly(True)
+        self.outputLog_TextBox.setLineWrapMode(QTextEdit.NoWrap)
+        self.outputLog_TextBox.verticalScrollBar()
+        self.outputLog_TextBox.resize(250,260)
+        self.outputLog_TextBox.move(375,50)
 
         # ===DATASETS COMBOBOX===
         datasets_Label = QLabel(self)
@@ -82,13 +83,29 @@ class TrainingDialogue(QMainWindow):
         calculatedEstimation_TextBox.move(240, 215)
 
         # ===TRAIN BUTTON===
-        train_Button = QPushButton('Train', self)
-        train_Button.setToolTip('Athena Training')
-        train_Button.move(500, 350)
-        train_Button.clicked.connect(self.on_click)
+        self.train_Button = QPushButton('Train', self)
+        self.train_Button.setToolTip('Athena Training')
+        self.train_Button.move(500, 350)
+        self.train_Button.clicked.connect(self.on_click)
+        #Training Button rework MARCH 1ST 2019
+        #self.trainingTimer = QBasicTimer()  # Declare a timer for timing the training process
+        #self.timerStep = 0  # STEPS OF TIMER NOT GAN
 
     def on_click(self):
+        #====CHANGE BUTTON TEXT=====
+        #if self.trainingTimer.isActive():
+         #   self.trainingTimer.stop()
+          #  self.train_Button.setText('TRAIN')
+        #else:
+         #   self.trainingTimer.start(100, self)
+          #  self.train_Button.setText('TRAINING')
         Training.Train()
+
+
+
+
+
+
 
 ''' ==========================================ABOUT DEVELOPERS DIALOGUE WINDOW========================================= '''
 class AboutDevs(QMainWindow):
@@ -122,7 +139,7 @@ class AboutDevs(QMainWindow):
         # JasonLink = QLabel(self)
         # JasonLink.linkActivated.connect(self.link)
         # JasonLink.setText("<Insert link here>")
-        # JasonLink.move(100,50)
+        # JasonLink.move(50,50)
 
         TrevorLink = QLabel(self)
         TrevorLink.linkActivated.connect(self.link)
@@ -134,13 +151,19 @@ class AboutDevs(QMainWindow):
         ZackLink.setText('<a href="https://overclockedthompson.wixsite.com/mysite">Zack Thompson</a>')
         ZackLink.move(50, 150)
 
+        # WyattLink = QLabel(self)
+        # WyattLink.linkActivated.connect(self.link)
+        # WyattLink.setText("<Insert link here>")
+        # WyattLink.move(50,200)
+
+
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setStyleSheet(open('CSS.cfg').read())
-    td = TrainingDialogue()
-    td.show()
-    ad = AboutDevs()
-    ad.show()
+    trainingDialogue = TrainingDialogue()
+    trainingDialogue.show()
+    aboutDevelopers = AboutDevs()
+    aboutDevelopers.show()
     sys.exit(app.exec_())

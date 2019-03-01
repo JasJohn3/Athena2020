@@ -1,8 +1,8 @@
 # Abstract: Athena Launchpad GUI: generates UI for Athena texture generator
 # Author: Zack Thompson
-# last updates February 1, 2019
+# last updates March 1st, 2019
 
-# Version 0.01
+# Version 0.25
 
 # TODO Athena Neural network graph Owl Logo.
 
