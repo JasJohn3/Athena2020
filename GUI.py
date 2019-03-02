@@ -71,7 +71,7 @@ class GUI(QMainWindow):
         self.train_dropButton = QAction('Train', self)
         self.train_dropButton.setShortcut('Ctrl+T')
         self.train_dropButton.setStatusTip('Train a model')
-        #self.train_dropButton.triggered.connect(Dialogues.TrainingDialogue) <-- TODO create function in Dialogues.py to create and show training dialogue
+        self.train_dropButton.triggered.connect(self.training)
         self.trainMenu.addAction(self.train_dropButton)  # add test button to dropdown menu
         ###Import Dataset###
         self.customData_dropButton = QAction('Import Dataset', self)
@@ -123,7 +123,7 @@ class GUI(QMainWindow):
         self.helpCenter_dropButton = QAction(QIcon('Data/Help.png'), 'Help Center', self)
         self.helpCenter_dropButton.setShortcut('Ctrl+H')
         self.helpCenter_dropButton.setStatusTip('Generate loss graph')
-        #self.helpCenter_dropButton.triggered.connect(self.helpTab)
+        #self.helpCenter_dropButton.triggered.connect(Dialogues.helpcenter)
         self.helpMenu.addAction(self.helpCenter_dropButton)
         ###About Athena###
         self.aboutAthena_dropButton = QAction('About Athena', self)
@@ -135,20 +135,20 @@ class GUI(QMainWindow):
         self.aboutDevs_dropButton = QAction('Meet the Developers', self)
         self.aboutDevs_dropButton.setShortcut('Ctrl+M')
         self.aboutDevs_dropButton.setStatusTip('Learn about the developers! :)')
-        #self.aboutDevs_dropButton.triggered.connect(self.AboutDevsWindow.show) <-- TODO create function in Dialogues.py to create and show aboutDevs dialogue
+        self.aboutDevs_dropButton.triggered.connect(self.aboutDev)
         # aboutDevs_dropButton.triggered.openDevsWindow() <-- TODO create window, create aboutDevs Center, enable portfolio linking.
         self.helpMenu.addAction(self.aboutDevs_dropButton)
+
+    #TODO fix Only shows widgets on tabs after first one
+    def training(self):
+        Dialogues.train(self)
+    def aboutDev(self):
+        Dialogues.aboutDev(self)
 
     def resizeEvent(self, *args, **kwargs):
         self.panel_options.setGeometry(4, 20, self.width() * .2, self.height() - 24)
         self.panel_canvas.setGeometry(self.panel_options.width() + 8, 20, self.width() - (self.panel_options.width() + 12), self.panel_options.height())
         self.panel_tabs.setGeometry(0, 0, self.panel_canvas.width(), self.panel_canvas.height())
-
-    def createTab(self, name):
-        tab = QWidget(self.panel_tabs)
-        tab.setStyleSheet("background-color: #1C1C1C;")
-        self.panel_tabs.addTab(tab, name)
-        return tab
 
     def removeTab(self, index):
         widget = self.panel_tabs.widget(index)
