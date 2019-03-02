@@ -14,7 +14,7 @@ import Discriminator
 import Dialogues
 
 def Train():
-    # Dialogues.trainingDialogue.train_Button.setEnabled(False)
+    #Dialogues.td.train_Button.setEnabled(False)
     # Setting some hyperparameters
     batchSize = 64  # We set the size of the batch.
     imageSize = 64  # We set the size of the generated images (64x64).
@@ -91,8 +91,10 @@ def Train():
             file = open("Neural Network Loss.txt", "a+")
             file.write('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f\n' % (epoch, Total_Training, i, len(dataloader), errD.item(), errG.item()))
             file.close()
+            # =====Append Loss to Loss Dialogue Box=====
+            logTemp = '[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f\n' % (epoch, Total_Training, i, len(dataloader), errD.item(), errG.item())
+            Dialogues.TrainingDialogue.updateLog(Dialogues.td, logTemp)
 
-            #Dialogues.trainingDialogue.outputLog_TextBox.append(str('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f\n' % (epoch, Total_Training, i, len(dataloader), errD.item(), errG.item())))
             print('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f' % (epoch, Total_Training, i, len(dataloader), errD.item(), errG.item()))
             if i % 100 == 0:
 

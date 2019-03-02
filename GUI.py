@@ -13,7 +13,6 @@ import PyQt5.QtCore as QtCore
 import Dialogues as DialoguesRail
 import PyQt5
 
-
 if hasattr(QtCore.Qt, 'AA_EnableHighDpiScaling'):
     PyQt5.QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 
@@ -137,3 +136,4 @@ if __name__ == '__main__':
     app.setStyleSheet(open('CSS.cfg').read())
     ex = AthenaLaunchpad()
     sys.exit(app.exec_())
+

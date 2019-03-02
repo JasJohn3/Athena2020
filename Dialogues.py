@@ -5,8 +5,9 @@ import sys
 import Training
 import threading
 
-
 ''' ==========================================TRAINING DIALOGUE WINDOW========================================= '''
+
+
 class TrainingDialogue(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -47,8 +48,8 @@ class TrainingDialogue(QMainWindow):
         self.outputLog_TextBox.setReadOnly(True)
         self.outputLog_TextBox.setLineWrapMode(QTextEdit.NoWrap)
         self.outputLog_TextBox.verticalScrollBar()
-        self.outputLog_TextBox.resize(250,260)
-        self.outputLog_TextBox.move(375,50)
+        self.outputLog_TextBox.resize(250, 260)
+        self.outputLog_TextBox.move(375, 50)
 
         # ===DATASETS COMBOBOX===
         datasets_Label = QLabel(self)
@@ -56,7 +57,7 @@ class TrainingDialogue(QMainWindow):
         datasets_Label.move(25, 50)
         datasets_ComboBox = QComboBox(self)
         datasets_ComboBox.addItem("<Your Datasets>")
-        datasets_ComboBox.move(75,50)
+        datasets_ComboBox.move(75, 50)
         datasets_ComboBox.resize(110, 30)
 
         # ===USER INPUT EPOCH===
@@ -87,27 +88,27 @@ class TrainingDialogue(QMainWindow):
         self.train_Button.setToolTip('Athena Training')
         self.train_Button.move(500, 350)
         self.train_Button.clicked.connect(self.on_click)
-        #Training Button rework MARCH 1ST 2019
-        #self.trainingTimer = QBasicTimer()  # Declare a timer for timing the training process
-        #self.timerStep = 0  # STEPS OF TIMER NOT GAN
+        # Training Button rework MARCH 1ST 2019
+        # self.trainingTimer = QBasicTimer()  # Declare a timer for timing the training process
+        # self.timerStep = 0  # STEPS OF TIMER NOT GAN
+
+    def updateLog(self, stringToUpdate):
+        self.outputLog_TextBox.append(self, stringToUpdate)
 
     def on_click(self):
-        #====CHANGE BUTTON TEXT=====
-        #if self.trainingTimer.isActive():
-         #   self.trainingTimer.stop()
-          #  self.train_Button.setText('TRAIN')
-        #else:
-         #   self.trainingTimer.start(100, self)
-          #  self.train_Button.setText('TRAINING')
+        # ====CHANGE BUTTON TEXT=====
+        # if self.trainingTimer.isActive():
+        #   self.trainingTimer.stop()
+        #  self.train_Button.setText('TRAIN')
+        # else:
+        #   self.trainingTimer.start(100, self)
+        #  self.train_Button.setText('TRAINING')
         Training.Train()
 
 
-
-
-
-
-
 ''' ==========================================ABOUT DEVELOPERS DIALOGUE WINDOW========================================= '''
+
+
 class AboutDevs(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -118,7 +119,7 @@ class AboutDevs(QMainWindow):
         self.height = 400
         self.initUI()
 
-    #Allows for linking to personal websites of developers.
+    # Allows for linking to personal websites of developers.
     def link(self, linkstr):
         QDesktopServices.openUrl(QUrl(linkstr))
 
@@ -129,12 +130,13 @@ class AboutDevs(QMainWindow):
         self.setAutoFillBackground(True)
         colorPalette = self.palette()
         colorPalette.setColor(self.backgroundRole(),
-                                                QColor(28, 28, 28))  # set background color to black.
+                              QColor(28, 28, 28))  # set background color to black.
         self.setPalette(colorPalette)
 
         greetingLabel = QLabel(self)
         greetingLabel.setGeometry(170, 50, 300, 50)
-        greetingLabel.setText("<font color = white>About the developers: Click a link to visit their portfolio sites!</font>")
+        greetingLabel.setText(
+            "<font color = white>About the developers: Click a link to visit their portfolio sites!</font>")
 
         # JasonLink = QLabel(self)
         # JasonLink.linkActivated.connect(self.link)
@@ -144,7 +146,7 @@ class AboutDevs(QMainWindow):
         TrevorLink = QLabel(self)
         TrevorLink.linkActivated.connect(self.link)
         TrevorLink.setText('<a href="https://trekinar.wixsite.com/portfolio">Trevor Kinard</a>')
-        TrevorLink.move(50,100)
+        TrevorLink.move(50, 100)
 
         ZackLink = QLabel(self)
         ZackLink.linkActivated.connect(self.link)
@@ -157,13 +159,22 @@ class AboutDevs(QMainWindow):
         # WyattLink.move(50,200)
 
 
+# TODO add a function that creates training dialogue and shows it on screen
+def showTraining(self):
+    trainingWindow = TrainingDialogue()
+    trainingWindow.show()
+
+
+def showAboutDevs(self):
+    aboutDevelopers = AboutDevs()
+    aboutDevelopers.show()
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setStyleSheet(open('CSS.cfg').read())
-    trainingDialogue = TrainingDialogue()
-    trainingDialogue.show()
-    aboutDevelopers = AboutDevs()
-    aboutDevelopers.show()
+    td = TrainingDialogue()  # this does fuck all
+    td.show()  # this does fuck all
+    aboutDevelopers = AboutDevs()  # this does fuck all
+    aboutDevelopers.show()  # this does fuck all
     sys.exit(app.exec_())
