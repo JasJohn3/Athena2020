@@ -10,7 +10,7 @@ import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon, QColor, QPalette
 import PyQt5.QtCore as QtCore
-import Dialogues as DialoguesRail
+import Dialogues
 import PyQt5
 
 
@@ -21,119 +21,145 @@ if hasattr(QtCore.Qt, 'AA_UseHighDpiPixmaps'):
     PyQt5.QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
 
 
-class AthenaLaunchpad(QMainWindow):
+class GUI(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowIcon(QIcon('Athena_v1.ico'))
         self.setWindowTitle('Athena')
         self.resize(640, 400)
 
-        # self.initUI()
-        # def initUI() <--DANGER THIS WILL BREAK THE ENTIRE GUI
+        # Center window
+        window = self.frameGeometry()
+        window.moveCenter(QDesktopWidget().availableGeometry().center())
+        self.move(window.topLeft())
 
-        self.TrainWindow = DialoguesRail.TrainingDialogue()
-        self.AboutDevsWindow = DialoguesRail.AboutDevs()
-        #TODO on startup throw gui at 0,0 on screen.
-        #TODO add the panel behind the spinboxes.
+        self.initUI()
 
-        '''
-        Menu Bar
-        '''
-        #Create menu bar
-        mainMenu = self.menuBar()
-        #Create Menu Items
-        trainMenu = mainMenu.addMenu("Train")
-        graphsMenu = mainMenu.addMenu('Graphs')
-        helpMenu = mainMenu.addMenu('Help')
+    def initUI(self):
+        ###
+        # Panel options
+        ###
+        self.panel_options = QWidget(self)
+        self.panel_options.setGeometry(4, 20, self.width() * .2, self.height() - 24)
 
-        '''Menu Bar: Train'''
-        '''Train'''
-        train_dropButton = QAction('Train', self)
-        train_dropButton.setShortcut('Ctrl+T')
-        train_dropButton.setStatusTip('Train a model')
-        train_dropButton.triggered.connect(self.TrainWindow.show)
-        trainMenu.addAction(train_dropButton)  # add test button to dropdown menu
-        '''Import Dataset'''
-        customData_dropButton = QAction('Import Dataset', self)
-        customData_dropButton.setShortcut('Ctrl+C')
-        customData_dropButton.setStatusTip('Generate based on your own dataset')
+        ###
+        # Panel Canvas
+        ###
+        self.panel_canvas = QWidget(self)
+        self.panel_canvas.setStyleSheet("background-color: transparent; border: 0px;")
+        self.panel_canvas.setGeometry(self.panel_options.width() + 8, 20, self.width() - (self.panel_options.width() + 12), self.panel_options.height())
+        #Tab pane
+        self.panel_tabs = QTabWidget(self.panel_canvas)
+        self.panel_tabs.setStyleSheet("background-color: #1C1C1C;")
+        self.panel_tabs.setTabsClosable(True)
+        self.panel_tabs.tabCloseRequested.connect(self.removeTab)
+        self.panel_tabs.setMovable(True)
+        self.panel_tabs.setGeometry(0, 0, self.panel_canvas.width(), self.panel_canvas.height())
+
+        ###
+        # Menu Bar
+        ###
+        # Create menu bar
+        self.mainMenu = self.menuBar()
+        # Create Menu Items
+        self.trainMenu = self.mainMenu.addMenu('File')
+        self.graphsMenu = self.mainMenu.addMenu('Graphs')
+        self.helpMenu = self.mainMenu.addMenu('Help')
+
+        ###Menu Bar: File###
+        ###Train###
+        self.train_dropButton = QAction('Train', self)
+        self.train_dropButton.setShortcut('Ctrl+T')
+        self.train_dropButton.setStatusTip('Train a model')
+        #self.train_dropButton.triggered.connect(Dialogues.TrainingDialogue) <-- TODO create function in Dialogues.py to create and show training dialogue
+        self.trainMenu.addAction(self.train_dropButton)  # add test button to dropdown menu
+        ###Import Dataset###
+        self.customData_dropButton = QAction('Import Dataset', self)
+        self.customData_dropButton.setShortcut('Ctrl+C')
+        self.customData_dropButton.setStatusTip('Generate based on your own dataset')
         # custom_dropButton.triggered.openCustomizeDatasetWindow() <-- TODO create temporary window and enable dataset upload.
-        trainMenu.addAction(customData_dropButton)  # add button to dropdown menu
-        '''Exit'''
-        exit_dropButton = QAction(QIcon('exit24.png'), 'Exit', self)
-        exit_dropButton.setShortcut('Ctrl+Q')
-        exit_dropButton.setStatusTip('Exit Athena')
-        exit_dropButton.triggered.connect(self.close)
-        trainMenu.addAction(exit_dropButton)  # add button to dropdown menu
+        self.trainMenu.addAction(self.customData_dropButton)  # add button to dropdown menu
+        ###Exit###
+        self.exit_dropButton = QAction('Exit', self)
+        self.exit_dropButton.setShortcut('Alt+F4')
+        self.exit_dropButton.setStatusTip('Exit Athena')
+        self.exit_dropButton.triggered.connect(self.close)
+        self.trainMenu.addAction(self.exit_dropButton)  # add button to dropdown menu
 
-        '''Menu Bar: Graphs'''
-        '''Histogram'''
-        histogram_dropButton = QAction('Histogram', self)
-        histogram_dropButton.setShortcut('Shift+H')
-        histogram_dropButton.setStatusTip('Generate Histogram')
+        ###Menu Bar: Graphs###
+        ###Histogram###
+        self.histogram_dropButton = QAction('Histogram', self)
+        self.histogram_dropButton.setShortcut('Shift+H')
+        self.histogram_dropButton.setStatusTip('Generate Histogram')
         # histogram_dropButton.triggered.openHistogramWindow() <-- TODO create window, enable histogram generation
-        graphsMenu.addAction(histogram_dropButton)
-        '''Scatterplot'''
-        scatterplot_dropButton = QAction('Scatterplot', self)
-        scatterplot_dropButton.setShortcut('Shift+S')
-        scatterplot_dropButton.setStatusTip('Generate Scatterplot')
+        self.graphsMenu.addAction(self.histogram_dropButton)
+        ###Scatterplot###
+        self.scatterplot_dropButton = QAction('Scatterplot', self)
+        self.scatterplot_dropButton.setShortcut('Shift+S')
+        self.scatterplot_dropButton.setStatusTip('Generate Scatterplot')
         # scatterplot_dropButton.triggered.openScattplotWindow() <-- TODO create window, enable scatterplot generation
-        graphsMenu.addAction(scatterplot_dropButton)
-        '''Loss'''
-        lossGraph_dropButton = QAction('Loss', self)
-        lossGraph_dropButton.setShortcut('Shift+L')
-        lossGraph_dropButton.setStatusTip('Generate loss graph')
+        self.graphsMenu.addAction(self.scatterplot_dropButton)
+        ###Loss###
+        self.lossGraph_dropButton = QAction('Loss', self)
+        self.lossGraph_dropButton.setShortcut('Shift+L')
+        self.lossGraph_dropButton.setStatusTip('Generate loss graph')
         # lossGraph_dropButton.triggered.openLossWindow() <-- TODO create window, enable loss generation.
-        graphsMenu.addAction(lossGraph_dropButton)
-        '''Elapsed Time'''
-        timeGraph_dropButton = QAction('Elapsed Time', self)
-        timeGraph_dropButton.setShortcut('Shift+T')
-        timeGraph_dropButton.setStatusTip('Generate loss graph')
+        self.graphsMenu.addAction(self.lossGraph_dropButton)
+        ###Elapsed Time###
+        self.timeGraph_dropButton = QAction('Elapsed Time', self)
+        self.timeGraph_dropButton.setShortcut('Shift+T')
+        self.timeGraph_dropButton.setStatusTip('Generate loss graph')
         # timeGraph_dropButton.triggered.openLossWindow() <-- TODO create window, enable time elapsed graph.
-        graphsMenu.addAction(timeGraph_dropButton)
-        '''EEG'''
-        eegGraph_dropButton = QAction('Electroencephalography Graph (Yes, you can)', self)
-        eegGraph_dropButton.setShortcut('Shift+E')
-        eegGraph_dropButton.setStatusTip('Generate EEG graph')
+        self.graphsMenu.addAction(self.timeGraph_dropButton)
+        ###EEG###
+        self.eegGraph_dropButton = QAction('Electroencephalography Graph (Yes, you can)', self)
+        self.eegGraph_dropButton.setShortcut('Shift+E')
+        self.eegGraph_dropButton.setStatusTip('Generate EEG graph')
         # eegGraph_dropButton.triggered.openEEGWindow() <-- TODO create window, enable EEG graph
-        graphsMenu.addAction(eegGraph_dropButton)
+        self.graphsMenu.addAction(self.eegGraph_dropButton)
 
-        '''Menu Bar: Help'''
-        '''Help Center'''
-        helpCenter_dropButton = QAction('Help Center', self)
-        helpCenter_dropButton.setShortcut('Ctrl+H')
-        helpCenter_dropButton.setStatusTip('Generate loss graph')
-        # helpCenter_dropButton.triggered.openHelpCenterWindow() <-- TODO create window, Create help center.
-        helpMenu.addAction(helpCenter_dropButton)
-        '''About Athena'''
-        aboutAthena_dropButton = QAction('About Athena', self)
-        aboutAthena_dropButton.setShortcut('Ctrl+A')
-        aboutAthena_dropButton.setStatusTip('Learn about Athena')
+        ###Menu Bar: Help###
+        ###Help Center###
+        self.helpCenter_dropButton = QAction(QIcon('Data/Help.png'), 'Help Center', self)
+        self.helpCenter_dropButton.setShortcut('Ctrl+H')
+        self.helpCenter_dropButton.setStatusTip('Generate loss graph')
+        #self.helpCenter_dropButton.triggered.connect(self.helpTab)
+        self.helpMenu.addAction(self.helpCenter_dropButton)
+        ###About Athena###
+        self.aboutAthena_dropButton = QAction('About Athena', self)
+        self.aboutAthena_dropButton.setShortcut('Ctrl+A')
+        self.aboutAthena_dropButton.setStatusTip('Learn about Athena')
         # aboutAthena_dropButton.triggered.openHelpCenterWindow() <-- TODO create window, create about center.
-        helpMenu.addAction(aboutAthena_dropButton)
-        '''About Developers'''
-        aboutDevs_dropButton = QAction('Meet the Developers', self)
-        aboutDevs_dropButton.setShortcut('Ctrl+M')
-        aboutDevs_dropButton.setStatusTip('Learn about the developers! :)')
-        aboutDevs_dropButton.triggered.connect(self.AboutDevsWindow.show)
+        self.helpMenu.addAction(self.aboutAthena_dropButton)
+        ###About Developers###
+        self.aboutDevs_dropButton = QAction('Meet the Developers', self)
+        self.aboutDevs_dropButton.setShortcut('Ctrl+M')
+        self.aboutDevs_dropButton.setStatusTip('Learn about the developers! :)')
+        #self.aboutDevs_dropButton.triggered.connect(self.AboutDevsWindow.show) <-- TODO create function in Dialogues.py to create and show aboutDevs dialogue
         # aboutDevs_dropButton.triggered.openDevsWindow() <-- TODO create window, create aboutDevs Center, enable portfolio linking.
-        helpMenu.addAction(aboutDevs_dropButton)
+        self.helpMenu.addAction(self.aboutDevs_dropButton)
 
-        '''
-        Panel options
-        '''
-        #panel_options = self.dockWidgetArea()
+    def resizeEvent(self, *args, **kwargs):
+        self.panel_options.setGeometry(4, 20, self.width() * .2, self.height() - 24)
+        self.panel_canvas.setGeometry(self.panel_options.width() + 8, 20, self.width() - (self.panel_options.width() + 12), self.panel_options.height())
+        self.panel_tabs.setGeometry(0, 0, self.panel_canvas.width(), self.panel_canvas.height())
 
-        '''
-        Panel Canvas
-        '''
-        #panel_canvas = self.dockWidgetArea()
+    def createTab(self, name):
+        tab = QWidget(self.panel_tabs)
+        tab.setStyleSheet("background-color: #1C1C1C;")
+        self.panel_tabs.addTab(tab, name)
+        return tab
 
-        self.show()
+    def removeTab(self, index):
+        widget = self.panel_tabs.widget(index)
+        if widget is not None:
+            widget.deleteLater()
+        self.panel_tabs.removeTab(index)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     #Set the style of the entire GUI
     app.setStyleSheet(open('CSS.cfg').read())
-    ex = AthenaLaunchpad()
+    Athena = GUI()
+    Athena.show()
     sys.exit(app.exec_())
