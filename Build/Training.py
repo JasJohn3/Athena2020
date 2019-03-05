@@ -22,8 +22,8 @@ def Train():
                                     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5,
                                                                            0.5)), ])  # We create a list of transformations (scaling, tensor conversion, normalization) to apply to the input images.
 
-    dataset = dset.CIFAR10(root='./data', download=True,
-                           transform=transform)  # We download the training set in the ./data folder and we apply the previous transformations on each image.
+    dataset = dset.CIFAR10(root='./Data', download=True,
+                           transform=transform)  # We download the training set in the ./Data folder and we apply the previous transformations on each image.
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=batchSize, shuffle=True,
                                              num_workers=0)  # We use dataLoader to get the images of the training set batch by batch.
 

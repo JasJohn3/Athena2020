@@ -1,4 +1,3 @@
-from __future__ import print_function
 import torch
 import torch.nn as nn
 import torch.nn.parallel
@@ -11,10 +10,10 @@ from torch.autograd import Variable
 import os
 import Generator
 import Discriminator
-import Dialogues
+import time
+import datetime
 
 def Train():
-    #Dialogues.td.train_Button.setEnabled(False)
     # Setting some hyperparameters
     batchSize = 64  # We set the size of the batch.
     imageSize = 64  # We set the size of the generated images (64x64).
@@ -24,8 +23,8 @@ def Train():
                                     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5,
                                                                            0.5)), ])  # We create a list of transformations (scaling, tensor conversion, normalization) to apply to the input images.
 
-    dataset = dset.CIFAR10(root='./data', download=True,
-                           transform=transform)  # We download the training set in the ./data folder and we apply the previous transformations on each image.
+    dataset = dset.CIFAR10(root='./Data', download=True,
+                           transform=transform)  # We download the training set in the ./Data folder and we apply the previous transformations on each image.
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=batchSize, shuffle=True,
                                              num_workers=0)  # We use dataLoader to get the images of the training set batch by batch.
 
@@ -48,13 +47,16 @@ def Train():
     criterion = nn.BCELoss()
     optimizerD = optim.Adam(netD.parameters(), lr=0.0002, betas=(0.5, 0.999))
     optimizerG = optim.Adam(netG.parameters(), lr=0.0002, betas=(0.5, 0.999))
-    Total_Training = 2
+    #Total Training will take an input from the user and set the total number of epochs to complete.
+    Total_Training = 25
+    #opening or creating the Neural Network Loss log. If file exists, overwrites the file for a new session.
     file = open("Neural Network Loss.txt", "w")
 
     for epoch in range(Total_Training):
 
         for i, data in enumerate(dataloader, 0):
-
+            #initiating a timer to determine estimated completion time
+            start = time.time()
             # 1st Step: Updating the weights of the neural network of the discriminator
 
             netD.zero_grad()
@@ -88,13 +90,6 @@ def Train():
             optimizerG.step()
 
             # 3rd Step: Printing the losses and saving the real images and the generated images of the minibatch every 100 steps
-            file = open("Neural Network Loss.txt", "a+")
-            file.write('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f\n' % (epoch, Total_Training, i, len(dataloader), errD.item(), errG.item()))
-            file.close()
-            # =====Append Loss to Loss Dialogue Box=====
-            logTemp = '[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f\n' % (epoch, Total_Training, i, len(dataloader), errD.item(), errG.item())
-            Dialogues.TrainingDialogue.updateLog(Dialogues.td, logTemp)
-
             print('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f' % (epoch, Total_Training, i, len(dataloader), errD.item(), errG.item()))
             if i % 100 == 0:
 
@@ -103,3 +98,20 @@ def Train():
                 vutils.save_image(real, '%s/real_samples.png' % "./results", normalize=True)
                 fake = netG(noise)
                 vutils.save_image(fake.data, '%s/fake_samples_epoch_%03d.png' % ("./results", epoch), normalize=True)
+            #ending the timer to create our estimated completion times
+            end = time.time()
+            #calculating the epoch trainging time
+            epoch_time = len(dataloader) * (end-start)
+            #printing the estimated time of completion for one epoch
+            print("Estimated Time too Epoch Completion: {:0>8}".format(str(datetime.timedelta(seconds=epoch_time))))
+            #estimating the completion time for all epochs entered by the user
+            Total_Training_Time = epoch_time * Total_Training
+            #printing the estimation to the screen for total training
+            print("Estimated Time too Training Completion: {:0>8}".format(str(datetime.timedelta(seconds=Total_Training_Time))))
+            #Appending the Neural Network Loss Log
+            file = open("Neural Network Loss.txt", "a+")
+            file.write('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f' % (epoch, Total_Training, i, len(dataloader), errD.item(), errG.item()))
+            file.write("\nEstimated Time too Epoch Completion: {:0>8}".format(str(datetime.timedelta(seconds=epoch_time))))
+            file.write("\nEstimated Time too Training Completion: {:0>8}\n\n".format(str(datetime.timedelta(seconds=Total_Training_Time))))
+            #Closing Neural Network Loss Log
+            file.close()

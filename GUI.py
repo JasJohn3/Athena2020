@@ -8,9 +8,9 @@
 
 import sys
 from PyQt5.QtWidgets import *
+from Data.QtCustomWidgets import *
 from PyQt5.QtGui import QIcon, QColor, QPalette
 import PyQt5.QtCore as QtCore
-import Dialogues
 import PyQt5
 
 
@@ -71,7 +71,7 @@ class GUI(QMainWindow):
         self.train_dropButton = QAction('Train', self)
         self.train_dropButton.setShortcut('Ctrl+T')
         self.train_dropButton.setStatusTip('Train a model')
-        self.train_dropButton.triggered.connect(self.training)
+        self.train_dropButton.triggered.connect(self.train)
         self.trainMenu.addAction(self.train_dropButton)  # add test button to dropdown menu
         ###Import Dataset###
         self.customData_dropButton = QAction('Import Dataset', self)
@@ -139,22 +139,33 @@ class GUI(QMainWindow):
         # aboutDevs_dropButton.triggered.openDevsWindow() <-- TODO create window, create aboutDevs Center, enable portfolio linking.
         self.helpMenu.addAction(self.aboutDevs_dropButton)
 
-    #TODO fix Only shows widgets on tabs after first one
-    def training(self):
-        Dialogues.train(self)
+    ###
+    #Tab Functions
+    ###
+    def train(self):
+        self.trainTab = QTrainWidget(self.panel_tabs)
+        self.trainTab.setStyleSheet("background-color: #1C1C1C;")
+        self.panel_tabs.addTab(self.trainTab, "Model Training")
+
     def aboutDev(self):
-        Dialogues.aboutDev(self)
+        self.devTab = QDevWidget(self.panel_tabs)
+        self.devTab.setStyleSheet("background-color: #1C1C1C;")
+        self.panel_tabs.addTab(self.devTab, "Model Training")
 
-    def resizeEvent(self, *args, **kwargs):
-        self.panel_options.setGeometry(4, 20, self.width() * .2, self.height() - 24)
-        self.panel_canvas.setGeometry(self.panel_options.width() + 8, 20, self.width() - (self.panel_options.width() + 12), self.panel_options.height())
-        self.panel_tabs.setGeometry(0, 0, self.panel_canvas.width(), self.panel_canvas.height())
-
+    #Remove a tab
     def removeTab(self, index):
         widget = self.panel_tabs.widget(index)
         if widget is not None:
             widget.deleteLater()
         self.panel_tabs.removeTab(index)
+
+    ###
+    #Window Scaling
+    ###
+    def resizeEvent(self, *args, **kwargs):
+        self.panel_options.setGeometry(4, 20, self.width() * .2, self.height() - 24)
+        self.panel_canvas.setGeometry(self.panel_options.width() + 8, 20, self.width() - (self.panel_options.width() + 12), self.panel_options.height())
+        self.panel_tabs.setGeometry(0, 0, self.panel_canvas.width(), self.panel_canvas.height())
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

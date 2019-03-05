@@ -15,9 +15,8 @@ def getFrontEndImports():
     from PyQt5.QtWidgets import QMainWindow, QLabel, QWidget, QComboBox, QSpinBox, QAction, QApplication
     from PyQt5.QtGui import QIcon, QColor, QPalette
     import PyQt5.QtCore as QtCore
-    import Dialogues as DialoguesRail
+    from Data.QtCustomWidgets import *
     import PyQt5
-
 
 #     ==========BACKEND IMPORTS==========
 ''' ===== USED IN: GENERATOR, DISCRIMINATOR, TRAINING===== '''

@@ -10,7 +10,6 @@ import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon, QColor, QPalette
 import PyQt5.QtCore as QtCore
-import Dialogues as DialoguesRail
 import PyQt5
 
 
