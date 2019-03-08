@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import *
-import Training
+import Test
 
 class QTrainWidget(QWidget):
     def __init__(self, parent=None):
@@ -89,4 +89,4 @@ class QTrainWidget(QWidget):
         # else:
         #   self.trainingTimer.start(100, self)
         #  self.train_Button.setText('TRAINING')
-        Training.Train()
+        Test.createThread()
