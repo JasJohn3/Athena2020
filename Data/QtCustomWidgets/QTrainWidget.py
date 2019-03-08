@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import *
-from Data.Training import GAN_Threading
+from Data.Trainer import Threader
 
 
 class QTrainWidget(QWidget):
@@ -67,10 +67,10 @@ class QTrainWidget(QWidget):
 
         # ===TRAIN BUTTON===
         self.train_Button = QPushButton('Train', self)
-        self.train_Button.setToolTip('Athena Training')
+        self.train_Button.setToolTip('Athena Trainer')
         self.train_Button.setGeometry(4, 124, 90, 30)
         self.train_Button.clicked.connect(self.on_click)
-        # Training Button rework MARCH 1ST 2019
+        # Trainer Button rework MARCH 1ST 2019
         # self.trainingTimer = QBasicTimer()  # Declare a timer for timing the training process
         # self.timerStep = 0  # STEPS OF TIMER NOT GAN
 
@@ -90,4 +90,4 @@ class QTrainWidget(QWidget):
         # else:
         #   self.trainingTimer.start(100, self)
         #  self.train_Button.setText('TRAINING')
-        GAN_Threading.createThread()
+        Threader.createThread()

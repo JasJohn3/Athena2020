@@ -137,12 +137,12 @@ class GUI(QMainWindow):
     def train(self):
         self.trainTab = QTrainWidget(self.panel_tabs)
         self.trainTab.setStyleSheet(open('Data/CSS.cfg').read())
-        self.panel_tabs.addTab(self.trainTab, "Model Training")
+        self.panel_tabs.addTab(self.trainTab, "Model Trainer")
 
     def aboutDev(self):
         self.devTab = QDevWidget(self.panel_tabs)
         self.devTab.setStyleSheet(open('Data/CSS.cfg').read())
-        self.panel_tabs.addTab(self.devTab, "Model Training")
+        self.panel_tabs.addTab(self.devTab, "Model Trainer")
 
     #Remove a tab
     def removeTab(self, index):
