@@ -33,14 +33,14 @@ class GUI(QMainWindow):
         # Panel options
         ###
         self.panel_options = QWidget(self)
-        self.panel_options.setGeometry(4, 21, self.width() * .2, self.height() - 24)
+        self.panel_options.setGeometry(4, 20, self.width() * .2, self.height() - 24)
 
         ###
         # Panel Canvas
         ###
         self.panel_canvas = QWidget(self)
         self.panel_canvas.setStyleSheet("background-color: transparent; border: 0px;")
-        self.panel_canvas.setGeometry(self.panel_options.width() + 8, 21, self.width() - (self.panel_options.width() + 12), self.panel_options.height())
+        self.panel_canvas.setGeometry(self.panel_options.width() + 8, 20, self.width() - (self.panel_options.width() + 12), self.panel_options.height())
         #Tab pane
         self.panel_tabs = QTabWidget(self.panel_canvas)
         self.panel_tabs.setTabsClosable(True)
@@ -137,12 +137,12 @@ class GUI(QMainWindow):
     def train(self):
         self.trainTab = QTrainWidget(self.panel_tabs)
         self.trainTab.setStyleSheet(open('Data/CSS.cfg').read())
-        self.panel_tabs.addTab(self.trainTab, "Model Training")
+        self.panel_tabs.addTab(self.trainTab, "Model Trainer")
 
     def aboutDev(self):
         self.devTab = QDevWidget(self.panel_tabs)
         self.devTab.setStyleSheet(open('Data/CSS.cfg').read())
-        self.panel_tabs.addTab(self.devTab, "Meet The Developers!")
+        self.panel_tabs.addTab(self.devTab, "Model Trainer")
 
     #Remove a tab
     def removeTab(self, index):
@@ -155,8 +155,8 @@ class GUI(QMainWindow):
     #Window Scaling
     ###
     def resizeEvent(self, *args, **kwargs):
-        self.panel_options.setGeometry(4, 21, self.width() * .2, self.height() - 24)
-        self.panel_canvas.setGeometry(self.panel_options.width() + 8, 21, self.width() - (self.panel_options.width() + 12), self.panel_options.height())
+        self.panel_options.setGeometry(4, 20, self.width() * .2, self.height() - 24)
+        self.panel_canvas.setGeometry(self.panel_options.width() + 8, 20, self.width() - (self.panel_options.width() + 12), self.panel_options.height())
         self.panel_tabs.setGeometry(0, 0, self.panel_canvas.width(), self.panel_canvas.height())
 
 
