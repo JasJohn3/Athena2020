@@ -98,9 +98,7 @@ def createThread():
     t2 = ATHENA_CSV_Thread("Thread 2", 12)
     t2.daemon=True
     t2.start()
-    p = process(Target =begin())
-    t1.join()
-    t2.join()
+    #p = process(Target =begin())
 
 
 

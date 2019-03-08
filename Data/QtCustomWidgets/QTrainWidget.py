@@ -69,7 +69,7 @@ class QTrainWidget(QWidget):
         self.train_Button = QPushButton('Train', self)
         self.train_Button.setToolTip('Athena Trainer')
         self.train_Button.setGeometry(4, 124, 90, 30)
-        self.train_Button.clicked.connect(self.on_click)
+        self.train_Button.clicked.connect(Threader.createThread)
         # Trainer Button rework MARCH 1ST 2019
         # self.trainingTimer = QBasicTimer()  # Declare a timer for timing the training process
         # self.timerStep = 0  # STEPS OF TIMER NOT GAN
@@ -81,13 +81,3 @@ class QTrainWidget(QWidget):
 
     def updateLog(self, stringToUpdate):
         self.outputLog_TextBox.append(self, stringToUpdate)
-
-    def on_click(self):
-        # ====CHANGE BUTTON TEXT=====
-        # if self.trainingTimer.isActive():
-        #   self.trainingTimer.stop()
-        #  self.train_Button.setText('TRAIN')
-        # else:
-        #   self.trainingTimer.start(100, self)
-        #  self.train_Button.setText('TRAINING')
-        Threader.createThread()
