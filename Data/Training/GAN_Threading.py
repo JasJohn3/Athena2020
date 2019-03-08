@@ -1,5 +1,5 @@
 from multiprocessing import process
-from trainer_class import Trainer
+from Data.Training.Trainer import Trainer
 import threading
 import time
 import pandas
