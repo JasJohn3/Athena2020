@@ -1,15 +1,13 @@
-from __future__ import print_function
 import torch
 import torch.nn as nn
 import torch.nn.parallel
 import torch.optim as optim
 import torch.utils.data
-import torchvision.datasets as dset
-import torchvision.transforms as transforms
 import torchvision.utils as vutils
 from torch.autograd import Variable
 import os
 from Data.NeuralNetwork import *
+from .Dataset import createDataloader
 import time
 import datetime
 import csv
@@ -22,19 +20,7 @@ class Trainer:
         self.Generator = Generator()
 
     def Train(self):
-        # Setting some hyperparameters
-        batchSize = 64  # We set the size of the batch.
-        imageSize = 64  # We set the size of the generated images (64x64).
-
-        # Creating the transformations
-        transform = transforms.Compose([transforms.Resize(imageSize), transforms.ToTensor(),
-                                        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5,
-                                                                               0.5)), ])  # We create a list of transformations (scaling, tensor conversion, normalization) to apply to the input images.
-
-        dataset = dset.CIFAR10(root='./Data', download=True,
-                               transform=transform)  # We download the training set in the ./Data folder and we apply the previous transformations on each image.
-        dataloader = torch.utils.data.DataLoader(dataset, batch_size=batchSize, shuffle=True,
-                                                 num_workers=0)  # We use dataLoader to get the images of the training set batch by batch.
+        dataloader = createDataloader()
 
         # Defining the weights_init function that takes as input a neural network m and that will initialize all its weights.
         def weights_init(m):

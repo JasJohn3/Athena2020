@@ -1,5 +1,20 @@
+from torchvision.transforms import *
+from torchvision.datasets import *
+import torch
 import ctypes.wintypes
 import os
+
+def createDataloader():
+    # Setting some hyperparameters
+    batchSize = 64  # We set the size of the batch.
+    imageSize = 64  # We set the size of the generated images (64x64).
+
+    # We create a list of transformations (scaling, tensor conversion, normalization) to apply to the input images.
+    transform = Compose([Resize(imageSize), ToTensor(), Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),])
+
+    dataset = CIFAR10(root='./Data', download=True, transform=transform)  # We download the training set in the ./Data folder and we apply the previous transformations on each image.
+
+    return torch.utils.data.DataLoader(dataset, batch_size=batchSize, shuffle=True, num_workers=0)  # We use dataLoader to get the images of the training set batch by batch.
 
 def loadImage():
     # Setting some hyperparameters
