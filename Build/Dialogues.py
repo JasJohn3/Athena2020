@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QIcon, QDesktopServices, QColor
+from PyQt5.QtGui import QDesktopServices, QColor
 from PyQt5.QtCore import QUrl
 import sys
 import Training

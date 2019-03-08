@@ -14,17 +14,10 @@ import PyQt5.QtCore as QtCore
 import PyQt5
 
 
-if hasattr(QtCore.Qt, 'AA_EnableHighDpiScaling'):
-    PyQt5.QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
-
-if hasattr(QtCore.Qt, 'AA_UseHighDpiPixmaps'):
-    PyQt5.QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
-
-
 class GUI(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowIcon(QIcon('Athena_v1.ico'))
+        self.setWindowIcon(QIcon('Data/Athena_v1.ico'))
         self.setWindowTitle('Athena')
         self.resize(640, 400)
 
@@ -50,7 +43,6 @@ class GUI(QMainWindow):
         self.panel_canvas.setGeometry(self.panel_options.width() + 8, 20, self.width() - (self.panel_options.width() + 12), self.panel_options.height())
         #Tab pane
         self.panel_tabs = QTabWidget(self.panel_canvas)
-        self.panel_tabs.setStyleSheet("background-color: #1C1C1C;")
         self.panel_tabs.setTabsClosable(True)
         self.panel_tabs.tabCloseRequested.connect(self.removeTab)
         self.panel_tabs.setMovable(True)
@@ -144,12 +136,12 @@ class GUI(QMainWindow):
     ###
     def train(self):
         self.trainTab = QTrainWidget(self.panel_tabs)
-        self.trainTab.setStyleSheet("background-color: #1C1C1C;")
+        self.trainTab.setStyleSheet(open('Data/CSS.cfg').read())
         self.panel_tabs.addTab(self.trainTab, "Model Training")
 
     def aboutDev(self):
         self.devTab = QDevWidget(self.panel_tabs)
-        self.devTab.setStyleSheet("background-color: #1C1C1C;")
+        self.devTab.setStyleSheet(open('Data/CSS.cfg').read())
         self.panel_tabs.addTab(self.devTab, "Model Training")
 
     #Remove a tab
@@ -167,10 +159,18 @@ class GUI(QMainWindow):
         self.panel_canvas.setGeometry(self.panel_options.width() + 8, 20, self.width() - (self.panel_options.width() + 12), self.panel_options.height())
         self.panel_tabs.setGeometry(0, 0, self.panel_canvas.width(), self.panel_canvas.height())
 
+
 if __name__ == '__main__':
+    #Multi-Resolution Support
+    if hasattr(QtCore.Qt, 'AA_EnableHighDpiScaling'):
+        PyQt5.QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
+
+    if hasattr(QtCore.Qt, 'AA_UseHighDpiPixmaps'):
+        PyQt5.QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
+
     app = QApplication(sys.argv)
     #Set the style of the entire GUI
-    app.setStyleSheet(open('CSS.cfg').read())
+    app.setStyleSheet(open('Data/CSS.cfg').read())
     Athena = GUI()
     Athena.show()
     sys.exit(app.exec_())

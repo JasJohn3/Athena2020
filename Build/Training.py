@@ -47,7 +47,7 @@ def Train():
     optimizerD = optim.Adam(netD.parameters(), lr=0.0002, betas=(0.5, 0.999))
     optimizerG = optim.Adam(netG.parameters(), lr=0.0002, betas=(0.5, 0.999))
     Total_Training = 2
-    file = open("Neural Network Loss.txt", "w")
+    file = open("NeuralNetwork Loss.txt", "w")
 
     for epoch in range(Total_Training):
 
@@ -86,7 +86,7 @@ def Train():
             optimizerG.step()
 
             # 3rd Step: Printing the losses and saving the real images and the generated images of the minibatch every 100 steps
-            file = open("Neural Network Loss.txt", "a+")
+            file = open("NeuralNetwork Loss.txt", "a+")
             file.write('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f\n' % (epoch, Total_Training, i, len(dataloader), errD.item(), errG.item()))
             file.close()
             print('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f' % (epoch, Total_Training, i, len(dataloader), errD.item(), errG.item()))

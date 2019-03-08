@@ -13,6 +13,7 @@ import Generator
 import Discriminator
 import time
 import datetime
+import csv
 
 def Train():
     # Setting some hyperparameters
@@ -49,9 +50,10 @@ def Train():
     optimizerD = optim.Adam(netD.parameters(), lr=0.0002, betas=(0.5, 0.999))
     optimizerG = optim.Adam(netG.parameters(), lr=0.0002, betas=(0.5, 0.999))
     #Total Training will take an input from the user and set the total number of epochs to complete.
-    Total_Training = 25
+    Total_Training = 30
     #opening or creating the Neural Network Loss log. If file exists, overwrites the file for a new session.
     file = open("Neural Network Loss.txt", "w")
+
 
     for epoch in range(Total_Training):
 
@@ -92,27 +94,57 @@ def Train():
 
             # 3rd Step: Printing the losses and saving the real images and the generated images of the minibatch every 100 steps
             print('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f' % (epoch, Total_Training, i, len(dataloader), errD.item(), errG.item()))
-            if i % 100 == 0:
 
+            ###############################################   Real and Fake Image File Storage    ###############################################
+            if i % 100 == 0:
                 if not os.path.exists('./results'):
                     os.makedirs('./results')
                 vutils.save_image(real, '%s/real_samples.png' % "./results", normalize=True)
                 fake = netG(noise)
                 vutils.save_image(fake.data, '%s/fake_samples_epoch_%03d.png' % ("./results", epoch), normalize=True)
+
+            ###############################################   Real and Fake Image File Storage    ###############################################
+
+            ###############################################   Estimated Time    ###############################################
+
             #ending the timer to create our estimated completion times
             end = time.time()
+            #One Epoch = len(DataLoader)
+            Epoch = len(dataloader)
             #calculating the epoch trainging time
             epoch_time = len(dataloader) * (end-start)
+            epoch_time = datetime.timedelta(seconds=epoch_time)
             #printing the estimated time of completion for one epoch
-            print("Estimated Time too Epoch Completion: {:0>8}".format(str(datetime.timedelta(seconds=epoch_time))))
+            print("Estimated Time too Epoch Completion: {:0>8}".format(str(epoch_time)))
             #estimating the completion time for all epochs entered by the user
             Total_Training_Time = epoch_time * Total_Training
             #printing the estimation to the screen for total training
-            print("Estimated Time too Training Completion: {:0>8}".format(str(datetime.timedelta(seconds=Total_Training_Time))))
-            #Appending the Neural Network Loss Log
+            print("Estimated Time too Training Completion: {:0>8}".format(str(Total_Training_Time)))
+
+            ###############################################   Estimated Time    ###############################################
+
+            ###############################################   Text FILE    ###############################################
+
+            # Appending the Neural Network Loss Log
             file = open("Neural Network Loss.txt", "a+")
             file.write('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f' % (epoch, Total_Training, i, len(dataloader), errD.item(), errG.item()))
-            file.write("\nEstimated Time too Epoch Completion: {:0>8}".format(str(datetime.timedelta(seconds=epoch_time))))
-            file.write("\nEstimated Time too Training Completion: {:0>8}\n\n".format(str(datetime.timedelta(seconds=Total_Training_Time))))
+            file.write("\nEstimated Time too Epoch Completion: {:0>8}".format(str(epoch_time)))
+            file.write("\nEstimated Time too Training Completion: {:0>8}\n\n".format(str(Total_Training_Time)))
             #Closing Neural Network Loss Log
             file.close()
+
+            ###############################################   Text FILE    ###############################################
+
+            ###############################################   CSV FILE    ###############################################
+
+            with open('ATHENA.csv', 'w', encoding='utf8', newline='') as CSV_file:
+                fieldnames = ['Current_Step', 'Epoch', 'Current_Epoch', 'Total_Training', 'Epoch_Time','Total_Training']
+                writer = csv.DictWriter(CSV_file, fieldnames=fieldnames)
+                writer.writeheader()
+                ATHENA_DICT = {}
+                ATHENA_DICT = {'Current_Step':i, 'Epoch':Epoch, 'Current_Epoch':epoch,'Total_Training':Total_Training,'Epoch_Time':str(epoch_time), 'Total_Training':str(Total_Training_Time)}
+                print(ATHENA_DICT)
+                writer.writerow(ATHENA_DICT)
+            CSV_file.close()
+
+            ###############################################   CSV FILE    ###############################################
