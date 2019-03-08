@@ -8,7 +8,7 @@
 
 import sys
 from PyQt5.QtWidgets import *
-from data.QtCustomWidgets import *
+from Data.QtCustomWidgets import *
 from PyQt5.QtGui import QIcon, QColor, QPalette
 import PyQt5.QtCore as QtCore
 import PyQt5
