@@ -3,6 +3,7 @@ from trainer_class import Trainer
 import threading
 import time
 import pandas
+from data.QtCustomWidgets import QTrainWidget
 
 ###############################################   CSV FILE    ###############################################
 
@@ -67,10 +68,10 @@ class Loss_Log_Thread(threading.Thread):
             time.sleep(self.delay)
 
 ###############################################   External Function   ###############################################
-def Loss_Log_Reader(name_of_thread, delay):
-    time.sleep(delay)
-    File_Loss_Reader()
-    print(name_of_thread, "----------",time.time())
+# def Loss_Log_Reader(name_of_thread, delay):
+#     time.sleep(delay)
+#     File_Loss_Reader()
+#     print(name_of_thread, "----------",time.time())
 
 ###############################################   Text Thread   ###############################################
 def File_Loss_Reader():
@@ -78,6 +79,7 @@ def File_Loss_Reader():
         contents = loss.read()
         while contents != 0:
             print(contents)
+            QTrainWidget.outputLog_TextBox.textCursor().insertHtml('Test')
             time.sleep(4)
             loss.close()
 

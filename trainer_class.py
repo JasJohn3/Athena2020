@@ -9,7 +9,7 @@ import torchvision.transforms as transforms
 import torchvision.utils as vutils
 from torch.autograd import Variable
 import os
-from Data.NeuralNetwork import *
+from data.NeuralNetwork import *
 import time
 import datetime
 import csv
