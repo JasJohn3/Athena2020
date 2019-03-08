@@ -2,24 +2,25 @@ from multiprocessing import process
 from Debug.trainer_class import Trainer
 import threading
 import time
+import pandas
 
 ###############################################   CSV FILE    ###############################################
 
 
 
 ###############################################   CSV READ FILE    ###############################################
-def File_ATHENA_CSV_Reader():
-    with open('ATHENA.csv', 'r') as loss:
-        read = 100
-        contents = {}
-        contents = loss.read()
-        while contents != 0:
-            print(contents)
-            time.sleep(12)
+
+
 ###############################################   CSV READ FILE    ###############################################
 
+    # with open('ATHENA.csv', 'r') as CSV:
+    #     contents = []
+    #     contents = CSV.read()
+    #     while contents != 0:
+    #         print(contents[-6])
+    #         time.sleep(3)
 ###############################################   CSV THREAD    ###############################################
-class ATHEN_CSV_Thread(threading.Thread):
+class ATHENA_CSV_Thread(threading.Thread):
     def __init__(self, name, delay):
         threading.Thread.__init__(self)
         self.name = name
@@ -27,14 +28,21 @@ class ATHEN_CSV_Thread(threading.Thread):
 
     def run(self):
         print("Start Thread", self.name)
-        ATHENA_CSV_Reader(self.name, self.delay)
-        print("End Thread", self.name)
+        while True:
+            self.File_ATHENA_CSV_Reader()
+            time.sleep(self.delay)
+
+    def File_ATHENA_CSV_Reader(self):
+        df = pandas.read_csv('ATHENA.csv')
+        print(df)
+        return df
+
 
 ###############################################   External Function   ###############################################
-def ATHENA_CSV_Reader(name_of_thread, delay):
-    time.sleep(delay)
-    File_ATHENA_CSV_Reader()
-    print(name_of_thread, "----------", time.time())
+# def ATHENA_CSV_Reader(name_of_thread, delay):
+#     time.sleep(delay)
+#     File_ATHENA_CSV_Reader()
+#     print(name_of_thread, "----------",time.time())
 ###############################################   External Function   ###############################################
 
 ###############################################   CSV THREAD    ###############################################
@@ -53,24 +61,25 @@ class Loss_Log_Thread(threading.Thread):
         self.delay = delay
 
     def run(self):
-        print("Start Thread", self.name)
-        Loss_Log_Reader(self.name, self.delay)
-        print("End Thread", self.name)
+        while True:
+            print("Start Thread", self.name)
+            File_Loss_Reader()
+            time.sleep(self.delay)
+
 ###############################################   External Function   ###############################################
 def Loss_Log_Reader(name_of_thread, delay):
     time.sleep(delay)
     File_Loss_Reader()
-    print(name_of_thread, "----------", time.time())
+    print(name_of_thread, "----------",time.time())
 
 ###############################################   Text Thread   ###############################################
 def File_Loss_Reader():
     with open('Neural Network Loss.txt', 'r') as loss:
-        contents = []
         contents = loss.read()
         while contents != 0:
             print(contents)
-            contents = loss.read()
-            time.sleep(12)
+            time.sleep(4)
+            loss.close()
 
 
 ###############################################   Text FILE    ###############################################
@@ -84,8 +93,10 @@ def begin():
 
 if __name__== '__main__':
     t1 = Loss_Log_Thread("Thread 1", 12)
+    t1.daemon=True
     t1.start()
-    t2 = ATHEN_CSV_Thread("Thread 2", 12)
+    t2 = ATHENA_CSV_Thread("Thread 2", 12)
+    t2.daemon=True
     t2.start()
     p = process(Target =begin())
     t1.join()
