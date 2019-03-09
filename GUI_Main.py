@@ -12,6 +12,8 @@ from Data.QtCustomWidgets import *
 from PyQt5.QtGui import QIcon, QColor, QPalette
 import PyQt5.QtCore as QtCore
 import PyQt5
+import threading
+import time
 
 
 class GUI(QMainWindow):
@@ -33,14 +35,14 @@ class GUI(QMainWindow):
         # Panel options
         ###
         self.panel_options = QWidget(self)
-        self.panel_options.setGeometry(4, 20, self.width() * .2, self.height() - 24)
+        self.panel_options.setGeometry(4, 21, self.width() * .2, self.height() - 24)
 
         ###
         # Panel Canvas
         ###
         self.panel_canvas = QWidget(self)
         self.panel_canvas.setStyleSheet("background-color: transparent; border: 0px;")
-        self.panel_canvas.setGeometry(self.panel_options.width() + 8, 20, self.width() - (self.panel_options.width() + 12), self.panel_options.height())
+        self.panel_canvas.setGeometry(self.panel_options.width() + 8, 21, self.width() - (self.panel_options.width() + 12), self.panel_options.height())
         #Tab pane
         self.panel_tabs = QTabWidget(self.panel_canvas)
         self.panel_tabs.setTabsClosable(True)
@@ -135,14 +137,18 @@ class GUI(QMainWindow):
     #Tab Functions
     ###
     def train(self):
-        self.trainTab = QTrainWidget(self.panel_tabs)
-        self.trainTab.setStyleSheet(open('Data/CSS.cfg').read())
-        self.panel_tabs.addTab(self.trainTab, "Model Trainer")
+        #compare to an empty index and don't create another one if it already exists you dangus
+        if self.panel_tabs.findChildren(QTrainWidget) == []:
+            self.trainTab = QTrainWidget(self.panel_tabs)
+            self.trainTab.setStyleSheet(open('Data/CSS.cfg').read())
+            self.panel_tabs.addTab(self.trainTab, "Model Trainer")
+
 
     def aboutDev(self):
-        self.devTab = QDevWidget(self.panel_tabs)
-        self.devTab.setStyleSheet(open('Data/CSS.cfg').read())
-        self.panel_tabs.addTab(self.devTab, "Model Trainer")
+        if self.panel_tabs.findChildren(QDevWidget) == []:
+            self.devTab = QDevWidget(self.panel_tabs)
+            self.devTab.setStyleSheet(open('Data/CSS.cfg').read())
+            self.panel_tabs.addTab(self.devTab, "About the Developers")
 
     #Remove a tab
     def removeTab(self, index):
@@ -155,22 +161,47 @@ class GUI(QMainWindow):
     #Window Scaling
     ###
     def resizeEvent(self, *args, **kwargs):
-        self.panel_options.setGeometry(4, 20, self.width() * .2, self.height() - 24)
-        self.panel_canvas.setGeometry(self.panel_options.width() + 8, 20, self.width() - (self.panel_options.width() + 12), self.panel_options.height())
+        self.panel_options.setGeometry(4, 21, self.width() * .2, self.height() - 24)
+        self.panel_canvas.setGeometry(self.panel_options.width() + 8, 21, self.width() - (self.panel_options.width() + 12), self.panel_options.height())
         self.panel_tabs.setGeometry(0, 0, self.panel_canvas.width(), self.panel_canvas.height())
 
-
 if __name__ == '__main__':
-    #Multi-Resolution Support
+    # Multi-Resolution Support
     if hasattr(QtCore.Qt, 'AA_EnableHighDpiScaling'):
         PyQt5.QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 
     if hasattr(QtCore.Qt, 'AA_UseHighDpiPixmaps'):
         PyQt5.QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
-
     app = QApplication(sys.argv)
     #Set the style of the entire GUI
     app.setStyleSheet(open('Data/CSS.cfg').read())
     Athena = GUI()
     Athena.show()
     sys.exit(app.exec_())
+
+# def GUI_Main():
+#     #Multi-Resolution Support
+#     if hasattr(QtCore.Qt, 'AA_EnableHighDpiScaling'):
+#         PyQt5.QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
+#
+#     if hasattr(QtCore.Qt, 'AA_UseHighDpiPixmaps'):
+#         PyQt5.QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
+#     app = QApplication(sys.argv)
+#     #Set the style of the entire GUI
+#     app.setStyleSheet(open('Data/CSS.cfg').read())
+#     Athena = GUI()
+#     Athena.show()
+#     sys.exit(app.exec_())
+#
+# class GUI_Main_Thread(threading.Thread):
+#     def __init__(self, name, delay):
+#         threading.Thread.__init__(self)
+#         self.name = name
+#         self.delay = delay
+#
+#     def run(self):
+#         while True:
+#             print("Start Thread", self.name)
+#             GUI_Main_Thread()
+#             time.sleep(self.delay)
+#

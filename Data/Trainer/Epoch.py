@@ -4,12 +4,11 @@ import torch.nn as nn
 import torch.nn.parallel
 import torch.optim as optim
 import torch.utils.data
-import torchvision.datasets as dset
-import torchvision.transforms as transforms
 import torchvision.utils as vutils
 from torch.autograd import Variable
 import os
-from data.NeuralNetwork import *
+from Data.NeuralNetwork import *
+from .Dataset import createDataloader
 import time
 import datetime
 import csv
@@ -21,20 +20,10 @@ class Trainer:
         self.Discrimintor = Discriminator()
         self.Generator = Generator()
 
-    def Train(self):
-        # Setting some hyperparameters
-        batchSize = 64  # We set the size of the batch.
-        imageSize = 64  # We set the size of the generated images (64x64).
+    def Train(self, epochs):
+        epochs = int(epochs)
 
-        # Creating the transformations
-        transform = transforms.Compose([transforms.Resize(imageSize), transforms.ToTensor(),
-                                        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5,
-                                                                               0.5)), ])  # We create a list of transformations (scaling, tensor conversion, normalization) to apply to the input images.
-
-        dataset = dset.CIFAR10(root='./Data', download=True,
-                               transform=transform)  # We download the training set in the ./Data folder and we apply the previous transformations on each image.
-        dataloader = torch.utils.data.DataLoader(dataset, batch_size=batchSize, shuffle=True,
-                                                 num_workers=0)  # We use dataLoader to get the images of the training set batch by batch.
+        dataloader = createDataloader()
 
         # Defining the weights_init function that takes as input a neural network m and that will initialize all its weights.
         def weights_init(m):
@@ -55,13 +44,12 @@ class Trainer:
         criterion = nn.BCELoss()
         optimizerD = optim.Adam(netD.parameters(), lr=0.0002, betas=(0.5, 0.999))
         optimizerG = optim.Adam(netG.parameters(), lr=0.0002, betas=(0.5, 0.999))
-        #Total Trainer will take an input from the user and set the total number of epochs to complete.
-        Total_Training = 30
+
         #opening or creating the Neural Network Loss log. If file exists, overwrites the file for a new session.
         open("Neural Network Loss.txt", "w").close()
 
 
-        for epoch in range(Total_Training):
+        for epoch in range(epochs):
 
             for i, data in enumerate(dataloader, 0):
                 #initiating a timer to determine estimated completion time
@@ -99,7 +87,7 @@ class Trainer:
                 optimizerG.step()
 
                 # 3rd Step: Printing the losses and saving the real images and the generated images of the minibatch every 100 steps
-                print('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f' % (epoch, Total_Training, i, len(dataloader), errD.item(), errG.item()))
+                print('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f' % (epoch, epochs, i, len(dataloader), errD.item(), errG.item()))
 
                 ###############################################   Real and Fake Image File Storage    ###############################################
                 if i % 100 == 0:
@@ -123,7 +111,7 @@ class Trainer:
                 #printing the estimated time of completion for one epoch
                 print("Estimated Time too Epoch Completion: {:0>8}".format(str(epoch_time)))
                 #estimating the completion time for all epochs entered by the user
-                Total_Training_Time = epoch_time * Total_Training
+                Total_Training_Time = epoch_time * epochs
                 #printing the estimation to the screen for total training
                 print("Estimated Time too Trainer Completion: {:0>8}".format(str(Total_Training_Time)))
 
@@ -133,7 +121,7 @@ class Trainer:
 
                 # Appending the Neural Network Loss Log
                 file = open("Neural Network Loss.txt", "w")
-                file.write('ATHENA LOG [%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f' % (epoch, Total_Training, i, Epoch, errD.item(), errG.item()))
+                file.write('ATHENA LOG [%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f' % (epoch, epochs, i, Epoch, errD.item(), errG.item()))
                 file.write("\nEstimated Time too Epoch Completion: {:0>8}".format(str(epoch_time)))
                 file.write("\nEstimated Time too Trainer Completion: {:0>8}\n\n".format(str(Total_Training_Time)))
                 #Closing Neural Network Loss Log
@@ -144,11 +132,11 @@ class Trainer:
                 ###############################################   CSV FILE    ###############################################
 
                 with open('ATHENA.csv', 'w', encoding='utf8', newline='') as CSV_file:
-                    fieldnames = ['Current_Step', 'Epoch', 'Current_Epoch', 'Total_Training', 'Epoch_Time','Total_Training']
+                    fieldnames = ['Current_Step', 'Epoch', 'Current_Epoch', 'epochs', 'Epoch_Time','epochs']
                     writer = csv.DictWriter(CSV_file, fieldnames=fieldnames)
                     writer.writeheader()
                     ATHENA_DICT = {}
-                    ATHENA_DICT = {'Current_Step': i, 'Epoch': Epoch, 'Current_Epoch': epoch, 'Total_Training': Total_Training, 'Epoch_Time': str(epoch_time), 'Total_Training': str(Total_Training_Time)}
+                    ATHENA_DICT = {'Current_Step': i, 'Epoch': Epoch, 'Current_Epoch': epoch, 'epochs': epochs, 'Epoch_Time': str(epoch_time), 'epochs': str(Total_Training_Time)}
                     print(ATHENA_DICT)
                     writer.writerow(ATHENA_DICT)
                 CSV_file.close()
