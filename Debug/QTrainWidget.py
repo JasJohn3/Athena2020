@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import *
 from Data.Trainer.Epoch import Trainer
+from threading import Thread
 
 class QTrainWidget(QWidget):
     def __init__(self, parent=None):
@@ -25,32 +26,36 @@ class QTrainWidget(QWidget):
         self.inputEpochs_SB.setGeometry(self.inputEpochs_Label.width() + self.inputEpochs_Label.x() + 4, self.inputEpochs_Label.y(), 60, 15)
 
         # ===EPOCH ETA BOX===
-        self.epochETA_Label = QLabel(self)
-        self.epochETA_Label.setText("Epoch ETA:")
-        self.epochETA_Label.setGeometry(34, 42, self.epochETA_Label.fontMetrics().boundingRect(self.epochETA_Label.text()).width(), 15)
-        self.epochETA_Display = QLabel(self)
-        self.epochETA_Display.setGeometry(self.epochETA_Label.width() + self.epochETA_Label.x() + 4, self.epochETA_Label.y(), 60, 15)
+        self.calculatedEstimation_Label = QLabel(self)
+        self.calculatedEstimation_Label.setText("Epoch ETA:")
+        self.calculatedEstimation_Label.setGeometry(34, 42, self.calculatedEstimation_Label.fontMetrics().boundingRect(self.calculatedEstimation_Label.text()).width(), 15)
+        self.calculatedEstimation_TextBox = QTextEdit(self)
+        self.calculatedEstimation_TextBox.setReadOnly(True)
+        self.calculatedEstimation_TextBox.setGeometry(self.calculatedEstimation_Label.width() + self.calculatedEstimation_Label.x() + 4, self.calculatedEstimation_Label.y(), 60, 15)
 
         # ===EPOCHS PROGRESS BAR===
         self.epoch_PBLabel = QLabel(self)
         self.epoch_PBLabel.setText("Epochs:")
         self.epoch_PBLabel.setGeometry(34, 63, self.epoch_PBLabel.fontMetrics().boundingRect(self.epoch_PBLabel.text()).width(), 15)
         self.epoch_ProgressBar = QProgressBar(self)
+        self.epoch_ProgressBar.setMaximum(100)
         self.epoch_ProgressBar.setGeometry(self.epoch_PBLabel.width() + self.epoch_PBLabel.x() + 4, self.epoch_PBLabel.y(), 120, 15)
 
 
         # ===CALCULATION ESTIMATION BOX===
-        self.completionETA_Label = QLabel(self)
-        self.completionETA_Label.setText("Completion ETA:")
-        self.completionETA_Label.setGeometry(34, 86, self.completionETA_Label.fontMetrics().boundingRect(self.completionETA_Label.text()).width(), 15)
-        self.completionETA_Display = QLabel(self)
-        self.completionETA_Display.setGeometry(self.completionETA_Label.width() + self.completionETA_Label.x() + 4, self.completionETA_Label.y(), 60, 15)
+        self.calculatedEstimation_Label = QLabel(self)
+        self.calculatedEstimation_Label.setText("Completion ETA:")
+        self.calculatedEstimation_Label.setGeometry(34, 86, self.calculatedEstimation_Label.fontMetrics().boundingRect(self.calculatedEstimation_Label.text()).width(), 15)
+        self.calculatedEstimation_TextBox = QTextEdit(self)
+        self.calculatedEstimation_TextBox.setReadOnly(True)
+        self.calculatedEstimation_TextBox.setGeometry(self.calculatedEstimation_Label.width() + self.calculatedEstimation_Label.x() + 4, self.calculatedEstimation_Label.y(), 60, 15)
 
         # ===STEPS PROGRESS BAR===
         self.stepsPB_Label = QLabel(self)
         self.stepsPB_Label.setText("Steps:")
         self.stepsPB_Label.setGeometry(34, 105, self.stepsPB_Label.fontMetrics().boundingRect(self.stepsPB_Label.text()).width(), 15)
         self.steps_ProgressBar = QProgressBar(self)
+        self.steps_ProgressBar.setMaximum(100)
         self.steps_ProgressBar.setGeometry(self.stepsPB_Label.width() + self.stepsPB_Label.x() + 4, self.stepsPB_Label.y(), 120, 15)
 
         # ===OUTPUT LOG===
@@ -78,12 +83,9 @@ class QTrainWidget(QWidget):
                 child.setGeometry(child.x(), child.y(), self.width() - (child.x() + 4), self.height() - (child.y() + 4))
 
     def train(self):
-        self.epochs_Thread = Trainer(self.inputEpochs_SB.text())
-        self.epochs_Thread.logSignal.connect(self.outputLog_TextBox.append)
-        self.epochs_Thread.stepSignal.connect(self.steps_ProgressBar.setValue)
-        self.epochs_Thread.epochSignal.connect(self.epoch_ProgressBar.setValue)
-        self.epochs_Thread.maxstepsSignal.connect(self.steps_ProgressBar.setMaximum)
-        self.epochs_Thread.maxepochsSignal.connect(self.epoch_ProgressBar.setMaximum)
-        self.epochs_Thread.epochtimeSignal.connect(self.epochETA_Display.setText)
-        self.epochs_Thread.totaltimeSignal.connect(self.completionETA_Display.setText)
-        self.epochs_Thread.start()
+        self.GAN = Trainer()
+        epochs_Thread = Thread(group=None, target=self.trainStart, name="Epochs Thread")
+        epochs_Thread.start()
+
+    def trainStart(self):
+        self.GAN.Train(self.inputEpochs_SB.text(), self)
