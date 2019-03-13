@@ -113,7 +113,10 @@ class Trainer:
                 Total_Training_Time = epoch_time * epochs
                 #printing the estimation to the screen for total training
                 trainTab.outputLog_TextBox.append("Estimated Time too Trainer Completion: {:0>8}".format(str(Total_Training_Time)))
-
+                #trainTab.steps_ProgressBar.setValue(int(i))
+                #trainTab.steps_ProgressBar.setMaximum(int(Epoch))
+                #trainTab.epoch_ProgressBar.setValue(int(epoch))
+                #trainTab.epoch_ProgressBar.setMaximum(int(epochs))
                 ###############################################   Estimated Time    ###############################################
 
                 ###############################################   Text FILE    ###############################################
