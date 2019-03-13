@@ -1,4 +1,3 @@
-from __future__ import print_function
 import torch
 import torch.nn as nn
 import torch.nn.parallel
@@ -20,7 +19,7 @@ class Trainer:
         self.Discrimintor = Discriminator()
         self.Generator = Generator()
 
-    def Train(self, epochs):
+    def Train(self, epochs, trainTab):
         epochs = int(epochs)
 
         dataloader = createDataloader()
@@ -87,7 +86,7 @@ class Trainer:
                 optimizerG.step()
 
                 # 3rd Step: Printing the losses and saving the real images and the generated images of the minibatch every 100 steps
-                print('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f' % (epoch, epochs, i, len(dataloader), errD.item(), errG.item()))
+                trainTab.outputLog_TextBox.append('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f' % (epoch, epochs, i, len(dataloader), errD.item(), errG.item()))
 
                 ###############################################   Real and Fake Image File Storage    ###############################################
                 if i % 100 == 0:
@@ -109,11 +108,11 @@ class Trainer:
                 epoch_time = len(dataloader) * (end-start)
                 epoch_time = datetime.timedelta(seconds=epoch_time)
                 #printing the estimated time of completion for one epoch
-                print("Estimated Time too Epoch Completion: {:0>8}".format(str(epoch_time)))
+                trainTab.outputLog_TextBox.append("Estimated Time too Epoch Completion: {:0>8}".format(str(epoch_time)))
                 #estimating the completion time for all epochs entered by the user
                 Total_Training_Time = epoch_time * epochs
                 #printing the estimation to the screen for total training
-                print("Estimated Time too Trainer Completion: {:0>8}".format(str(Total_Training_Time)))
+                trainTab.outputLog_TextBox.append("Estimated Time too Trainer Completion: {:0>8}".format(str(Total_Training_Time)))
 
                 ###############################################   Estimated Time    ###############################################
 

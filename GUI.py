@@ -12,7 +12,6 @@ from Data.QtCustomWidgets import *
 from PyQt5.QtGui import QIcon, QColor, QPalette
 import PyQt5.QtCore as QtCore
 import PyQt5
-import threading
 import time
 
 
@@ -36,6 +35,8 @@ class GUI(QMainWindow):
         ###
         self.panel_options = QWidget(self)
         self.panel_options.setGeometry(4, 21, self.width() * .2, self.height() - 24)
+        self.widget_references = QRefWidget(self.panel_options)
+        self.widget_references.setStyleSheet(open('Data/CSS.cfg').read())
 
         ###
         # Panel Canvas
@@ -143,14 +144,12 @@ class GUI(QMainWindow):
             self.trainTab.setStyleSheet(open('Data/CSS.cfg').read())
             self.panel_tabs.addTab(self.trainTab, "Model Trainer")
 
-
     def aboutDev(self):
         if self.panel_tabs.findChildren(QDevWidget) == []:
             self.devTab = QDevWidget(self.panel_tabs)
             self.devTab.setStyleSheet(open('Data/CSS.cfg').read())
             self.panel_tabs.addTab(self.devTab, "About the Developers")
 
-    #Remove a tab
     def removeTab(self, index):
         widget = self.panel_tabs.widget(index)
         if widget is not None:
@@ -158,12 +157,13 @@ class GUI(QMainWindow):
         self.panel_tabs.removeTab(index)
 
     ###
-    #Window Scaling
+    #GUI Updates
     ###
     def resizeEvent(self, *args, **kwargs):
         self.panel_options.setGeometry(4, 21, self.width() * .2, self.height() - 24)
         self.panel_canvas.setGeometry(self.panel_options.width() + 8, 21, self.width() - (self.panel_options.width() + 12), self.panel_options.height())
         self.panel_tabs.setGeometry(0, 0, self.panel_canvas.width(), self.panel_canvas.height())
+
 
 if __name__ == '__main__':
     # Multi-Resolution Support

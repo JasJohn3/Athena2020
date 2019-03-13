@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import *
-from Data.Trainer import Threader
-
+from Data.Trainer.Epoch import Trainer
+from threading import Thread
 
 class QTrainWidget(QWidget):
     def __init__(self, parent=None):
@@ -22,6 +22,7 @@ class QTrainWidget(QWidget):
         self.inputEpochs_Label.setText("Desired Epochs:")
         self.inputEpochs_Label.setGeometry(4, 23, self.inputEpochs_Label.fontMetrics().boundingRect(self.inputEpochs_Label.text()).width(), 15)
         self.inputEpochs_SB = QSpinBox(self)
+        self.inputEpochs_SB.setMinimum(1)
         self.inputEpochs_SB.setGeometry(self.inputEpochs_Label.width() + self.inputEpochs_Label.x() + 4, self.inputEpochs_Label.y(), 60, 15)
 
         # ===EPOCH ETA BOX===
@@ -81,8 +82,10 @@ class QTrainWidget(QWidget):
             if child == self.outputLog_TextBox:
                 child.setGeometry(child.x(), child.y(), self.width() - (child.x() + 4), self.height() - (child.y() + 4))
 
-    def updateLog(self, stringToUpdate):
-        self.outputLog_TextBox.append(self, stringToUpdate)
-
     def train(self):
-        Threader.createThread(self.inputEpochs_SB.text())
+        self.GAN = Trainer()
+        epochs_Thread = Thread(group=None, target=self.trainStart, name="Epochs Thread")
+        epochs_Thread.start()
+
+    def trainStart(self):
+        self.GAN.Train(self.inputEpochs_SB.text(), self)
