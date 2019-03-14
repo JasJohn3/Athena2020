@@ -31,13 +31,13 @@ class QTrainWidget(QWidget):
         self.epochETA_Display = QLabel(self)
         self.epochETA_Display.setGeometry(self.epochETA_Label.width() + self.epochETA_Label.x() + 4, self.epochETA_Label.y(), 60, 15)
 
-        # ===EPOCHS PROGRESS BAR===
-        self.epoch_PBLabel = QLabel(self)
-        self.epoch_PBLabel.setText("Epochs:")
-        self.epoch_PBLabel.setGeometry(34, 63, self.epoch_PBLabel.fontMetrics().boundingRect(self.epoch_PBLabel.text()).width(), 15)
-        self.epoch_ProgressBar = QProgressBar(self)
-        self.epoch_ProgressBar.setGeometry(self.epoch_PBLabel.width() + self.epoch_PBLabel.x() + 4, self.epoch_PBLabel.y(), 120, 15)
-
+        # ===STEPS PROGRESS BAR===
+        self.stepsPB_Label = QLabel(self)
+        self.stepsPB_Label.setText("Steps:")
+        self.stepsPB_Label.setGeometry(34, 63, self.stepsPB_Label.fontMetrics().boundingRect(self.stepsPB_Label.text()).width(), 15)
+        self.steps_ProgressBar = QProgressBar(self)
+        self.steps_ProgressBar.setTextVisible(False)
+        self.steps_ProgressBar.setGeometry(self.stepsPB_Label.width() + self.stepsPB_Label.x() + 4, self.stepsPB_Label.y(), 120, 15)
 
         # ===CALCULATION ESTIMATION BOX===
         self.completionETA_Label = QLabel(self)
@@ -46,12 +46,13 @@ class QTrainWidget(QWidget):
         self.completionETA_Display = QLabel(self)
         self.completionETA_Display.setGeometry(self.completionETA_Label.width() + self.completionETA_Label.x() + 4, self.completionETA_Label.y(), 60, 15)
 
-        # ===STEPS PROGRESS BAR===
-        self.stepsPB_Label = QLabel(self)
-        self.stepsPB_Label.setText("Steps:")
-        self.stepsPB_Label.setGeometry(34, 105, self.stepsPB_Label.fontMetrics().boundingRect(self.stepsPB_Label.text()).width(), 15)
-        self.steps_ProgressBar = QProgressBar(self)
-        self.steps_ProgressBar.setGeometry(self.stepsPB_Label.width() + self.stepsPB_Label.x() + 4, self.stepsPB_Label.y(), 120, 15)
+        # ===EPOCHS PROGRESS BAR===
+        self.epoch_PBLabel = QLabel(self)
+        self.epoch_PBLabel.setText("Epochs:")
+        self.epoch_PBLabel.setGeometry(34, 105, self.epoch_PBLabel.fontMetrics().boundingRect(self.epoch_PBLabel.text()).width(), 15)
+        self.epoch_ProgressBar = QProgressBar(self)
+        self.epoch_ProgressBar.setTextVisible(False)
+        self.epoch_ProgressBar.setGeometry(self.epoch_PBLabel.width() + self.epoch_PBLabel.x() + 4, self.epoch_PBLabel.y(), 120, 15)
 
         # ===OUTPUT LOG===
         #self.output_Label = QLabel(self)

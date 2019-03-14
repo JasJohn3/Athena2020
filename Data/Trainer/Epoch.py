@@ -47,29 +47,32 @@ class Trainer(QThread):
                 # *Epoch start time*
                 start = time.time()
 
-                # 1st Step: Updating the weights of the neural network of the discriminator
-                self.discriminator.zero_grad()
+                # Creation of train and test data .3 seconds
                 trainData, _ = trainData
                 indata = Variable(trainData)
                 noise = Variable(torch.randn(indata.size()[0], 100, 1, 1))
                 testData = self.generator(noise)
 
-                # Train the discriminator with trainData
+                # Train & Optimize Discriminator
+                self.discriminator.zero_grad()
+
+                # Criterion run at an average of .3 seconds
                 error_train = criterion(self.discriminator(indata), Variable(torch.ones(indata.size()[0])))
                 error_test = criterion(self.discriminator(testData.detach()), Variable(torch.zeros(indata.size()[0])))
 
-                # Backpropagating the total error
                 error_discriminate = error_train + error_test
+
+                # Error & optimize 1 second
                 error_discriminate.backward()
                 optimize_discriminate.step()
 
-                # 2nd Step: Updating the weights of the neural network of the generator
+                # Train & Optimize Generator 1.5 seconds
                 self.generator.zero_grad()
                 error_generate = criterion(self.discriminator(testData), Variable(torch.ones(indata.size()[0])))
                 error_generate.backward()
                 optimize_generate.step()
 
-                # Save trainData and testData every 100 steps
+                # Save trainData and testData every 100 steps .002 seconds
                 if i % 100 == 0:
                     if not os.path.exists('./results'):
                         os.makedirs('./results')
@@ -81,11 +84,11 @@ class Trainer(QThread):
 
                 # ===Log Update===
                 # Calculating the training time
-                epoch_time = datetime.timedelta(seconds=(len(dataloader) * (end - start)))
-                training_Time = epoch_time * self.epochs
+                epoch_time = datetime.timedelta(seconds=((len(dataloader) - i) * (end - start)))
+                training_Time = epoch_time * (self.epochs - epoch)
 
                 # Print the loss Data & time to completion
-                self.logSignal.emit('[%d/%d][%d/%d] Discriminator Loss: %.4f Generator Loss: %.4f' % (epoch, self.epochs, i, len(dataloader), error_discriminate.item(), error_generate.item()))
+                self.logSignal.emit('[%d/%d][%d/%d] Discriminator Loss: %.4f Generator Loss: %.4f' % (epoch + 1, self.epochs, i + 1, len(dataloader), error_discriminate.item(), error_generate.item()))
                 self.logSignal.emit("Estimated Time to Epoch Completion: {:0>8}".format(str(epoch_time)))
                 self.logSignal.emit("Estimated Time to Trainer Completion: {:0>8}\n".format(str(training_Time)))
                 self.epochtimeSignal.emit("{:0>8}".format(str(epoch_time)))
