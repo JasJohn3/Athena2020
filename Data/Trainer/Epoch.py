@@ -29,6 +29,8 @@ class Trainer(QThread):
 
     def run(self):
         dataloader = createDataloader()
+        self.logSignal.emit("Starting...\n")
+
         self.maxstepsSignal.emit(len(dataloader))
         self.maxepochsSignal.emit((self.epochs * len(dataloader)))
 

@@ -20,6 +20,7 @@ class GUI(QMainWindow):
         super().__init__()
         self.setWindowIcon(QIcon('Data/Athena_v1.ico'))
         self.setWindowTitle('Athena')
+
         self.resize(640, 400)
 
         # Center window
@@ -30,6 +31,7 @@ class GUI(QMainWindow):
         self.initUI()
 
     def initUI(self):
+
         ###
         # Panel options
         ###
@@ -138,7 +140,6 @@ class GUI(QMainWindow):
     #Tab Functions
     ###
     def train(self):
-        #compare to an empty index and don't create another one if it already exists you dangus
         if self.panel_tabs.findChildren(QTrainWidget) == []:
             self.trainTab = QTrainWidget(self.panel_tabs)
             self.trainTab.setStyleSheet(open('Data/CSS.cfg').read())
@@ -155,6 +156,7 @@ class GUI(QMainWindow):
         if widget is not None:
             widget.deleteLater()
         self.panel_tabs.removeTab(index)
+
 
     ###
     #GUI Updates
@@ -178,30 +180,3 @@ if __name__ == '__main__':
     Athena = GUI()
     Athena.show()
     sys.exit(app.exec_())
-
-# def GUI_Main():
-#     #Multi-Resolution Support
-#     if hasattr(QtCore.Qt, 'AA_EnableHighDpiScaling'):
-#         PyQt5.QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
-#
-#     if hasattr(QtCore.Qt, 'AA_UseHighDpiPixmaps'):
-#         PyQt5.QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
-#     app = QApplication(sys.argv)
-#     #Set the style of the entire GUI
-#     app.setStyleSheet(open('Data/CSS.cfg').read())
-#     Athena = GUI()
-#     Athena.show()
-#     sys.exit(app.exec_())
-#
-# class GUI_Main_Thread(threading.Thread):
-#     def __init__(self, name, delay):
-#         threading.Thread.__init__(self)
-#         self.name = name
-#         self.delay = delay
-#
-#     def run(self):
-#         while True:
-#             print("Start Thread", self.name)
-#             GUI_Main_Thread()
-#             time.sleep(self.delay)
-#
