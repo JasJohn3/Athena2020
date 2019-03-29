@@ -100,6 +100,8 @@ class QTrainWidget(QWidget):
                 self.scrollBar.setGeometry(0, self.height() - 15, self.width(), 15)
 
     def train(self):
+        self.train_Button.setDisabled(True)
+
         self.epochs_Thread = Trainer(self.inputEpochs_SB.text())
         self.epochs_Thread.logSignal.connect(self.outputLog_TextBox.append)
         self.epochs_Thread.stepSignal.connect(self.steps_ProgressBar.setValue)
@@ -108,4 +110,5 @@ class QTrainWidget(QWidget):
         self.epochs_Thread.maxepochsSignal.connect(self.epoch_ProgressBar.setMaximum)
         self.epochs_Thread.epochtimeSignal.connect(self.epochETA_Display.setText)
         self.epochs_Thread.totaltimeSignal.connect(self.completionETA_Display.setText)
+        self.epochs_Thread.completeSignal.connect(lambda: self.train_Button.setDisabled(False))
         self.epochs_Thread.start()

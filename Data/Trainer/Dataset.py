@@ -4,6 +4,7 @@ from torch.utils.data import DataLoader
 import ctypes.wintypes
 import os
 
+
 def createDataloader():
     # Setting some hyperparameters
     batchSize = 64  # We set the size of the batch.
@@ -12,9 +13,8 @@ def createDataloader():
     # We create a list of transformations (scaling, tensor conversion, normalization) to apply to the input images.
     transform = Compose([Resize(imageSize), ToTensor(), Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),])
 
-    dataset = CIFAR10(root='./Data', download=True, transform=transform)  # We download the training set in the ./Data folder and we apply the previous transformations on each image.
+    return DataLoader(get_dataset(dataset='cifar10', transform=transform, path=''), batch_size=batchSize, shuffle=True, num_workers=0)  # We use dataLoader to get the images of the training set batch by batch.
 
-    return DataLoader(dataset, batch_size=batchSize, shuffle=True, num_workers=0)  # We use dataLoader to get the images of the training set batch by batch.
 
 def loadImage():
     # Setting some hyperparameters
@@ -38,40 +38,49 @@ def loadImage():
                       shuffle=True,
                       num_workers=0)
 
-def get_data(args, train_flag=True):
-    transform = Compose([
-        Scale(args.image_size),
-        CenterCrop(args.image_size),
-        ToTensor(),
-        Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),])
 
-    if args.dataset in ['imagenet', 'folder', 'lfw']:
-        dataset = ImageFolder(root=args.dataroot,
-                              transform=transform)
+def get_dataset(dataset='', train=True, transform=None, target_transform=None, download=True, path='Datasets'):
+    root = os.path.join(path, dataset)
 
-    elif args.dataset == 'lsun':
-        dataset = LSUN(db_path=args.dataroot,
-                       classes=['bedroom_train'],
-                       transform=transform)
+    if dataset == 'cifar10':
+        return CIFAR10(root=root,
+                       train=train,
+                       transform=transform,
+                       target_transform=target_transform,
+                       download=download)
 
-    elif args.dataset == 'cifar10':
-        dataset = CIFAR10(root=args.dataroot,
-                          download=True,
-                          train=train_flag,
-                          transform=transform)
+    elif dataset == 'cifar100':
+        return CIFAR100(root=root,
+                        train=train,
+                        transform=transform,
+                        target_transform=target_transform,
+                        download=download)
 
-    elif args.dataset == 'cifar100':
-        dataset = CIFAR100(root=args.dataroot,
-                           download=True,
-                           train=train_flag,
-                           transform=transform)
+    elif dataset == 'mnist':
+        return MNIST(root=root,
+                     train=train,
+                     transform=transform,
+                     target_transform=target_transform,
+                     download=download)
 
-    elif args.dataset == 'mnist':
-        dataset = MNIST(root=args.dataroot,
-                        download=True,
-                        train=train_flag,
-                        transform=transform)
+    elif dataset == 'stl10':
+        return STL10(root=root,
+                     split='train' if train else 'test',
+                     transform=transform,
+                     target_transform=target_transform,
+                     download=download)
 
-    else:
-        raise ValueError("Unknown dataset %s" % (args.dataset))
-    return DataLoader(dataset, batch_size=dataset.__sizeof__(), shuffle=True, num_workers=0)
+    elif dataset == 'lsun':
+        return LSUN(root=root,
+                    classes='train' if train else 'test',
+                    transform=transform)
+
+    elif dataset == 'imagenet':
+        if train:
+            root = os.path.join(root, 'train')
+        else:
+            root = os.path.join(root, 'val')
+
+        return ImageFolder(root=root,
+                           transform=transform,
+                           target_transform=target_transform)
