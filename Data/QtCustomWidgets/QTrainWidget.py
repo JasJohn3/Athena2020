@@ -33,12 +33,12 @@ class QTrainWidget(QWidget):
         self.datasets_ComboBox = QComboBox(self)
         self.datasets_ComboBox.setToolTip("Your current uploaded datasets.")
         self.datasets_ComboBox.addItem("<Your Datasets>")
-        self.datasets_ComboBox.addItem("Cifar10")
-        self.datasets_ComboBox.addItem("Cifar100")
-        self.datasets_ComboBox.addItem("Mnist")
-        self.datasets_ComboBox.addItem("Stl10")
-        self.datasets_ComboBox.addItem("Lsun")
-        self.datasets_ComboBox.addItem("Imagenet")
+        self.datasets_ComboBox.addItem("cifar10")
+        self.datasets_ComboBox.addItem("cifar100")
+        self.datasets_ComboBox.addItem("mnist")
+        self.datasets_ComboBox.addItem("stl10")
+        self.datasets_ComboBox.addItem("lsun")
+        self.datasets_ComboBox.addItem("imagenet")
         self.datasets_ComboBox.setGeometry(self.datasets_Label.width() + self.datasets_Label.x() + 4, self.datasets_Label.y(), 110, 15)
 
         # ===USER INPUT EPOCH===
@@ -98,7 +98,7 @@ class QTrainWidget(QWidget):
         self.load_button = QPushButton('Load', self)
         self.load_button.setToolTip('Load your neural network weights')
         self.load_button.setGeometry(100,350,90,30)
-        self.load_button.clicked.connect(self.Load)
+        #self.load_button.clicked.connect(self.Load)
 
         # ====SAVE BUTTON====
         self.save_button = QPushButton('Save', self)
