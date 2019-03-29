@@ -109,6 +109,7 @@ class QTrainWidget(QWidget):
         self.epochs_Thread.epochtimeSignal.connect(self.epochETA_Display.setText)
         self.epochs_Thread.totaltimeSignal.connect(self.completionETA_Display.setText)
         self.epochs_Thread.start()
+
     def Load(self):
         self.load_Thread = Trainer()
         self.load_Thread.epochLoadSuccess.connect(self.outputLog_TextBox.append)
