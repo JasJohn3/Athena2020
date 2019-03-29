@@ -1,6 +1,14 @@
 from PyQt5.QtWidgets import *
 from Data.Trainer.Epoch import Trainer
 
+
+"""
+NOTE: Improvements as of March 24th are based on Pytorch tutorial at link below
+https://pytorch.org/tutorials/beginner/dcgan_faces_tutorial.html
+
+Graphs will be implemented in the manner done by tutorial. 
+"""
+
 class QTrainWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__()
@@ -10,7 +18,7 @@ class QTrainWidget(QWidget):
         #===SCROLL AREA===
         self.scrollBar = QScrollArea(self)
         self.scrollBar.setGeometry(0, self.height() - 15, self.width(), 15)
-        # self.scrollBar.setWidgetResizable(True)
+        self.scrollBar.setWidgetResizable(True)
         self.scrollContent = QWidget(self.scrollBar)
         self.scrollLayout = QVBoxLayout(self.scrollContent)
         self.scrollContent.setLayout(self.scrollLayout)
@@ -25,6 +33,12 @@ class QTrainWidget(QWidget):
         self.datasets_ComboBox = QComboBox(self)
         self.datasets_ComboBox.setToolTip("Your current uploaded datasets.")
         self.datasets_ComboBox.addItem("<Your Datasets>")
+        self.datasets_ComboBox.addItem("Cifar10")
+        self.datasets_ComboBox.addItem("Cifar100")
+        self.datasets_ComboBox.addItem("Mnist")
+        self.datasets_ComboBox.addItem("Stl10")
+        self.datasets_ComboBox.addItem("Lsun")
+        self.datasets_ComboBox.addItem("Imagenet")
         self.datasets_ComboBox.setGeometry(self.datasets_Label.width() + self.datasets_Label.x() + 4, self.datasets_Label.y(), 110, 15)
 
         # ===USER INPUT EPOCH===
@@ -80,6 +94,18 @@ class QTrainWidget(QWidget):
         self.train_Button.setGeometry(100, 300, 90, 30)
         self.train_Button.clicked.connect(self.train)
 
+        # ===LOAD BUTTON====
+        self.load_button = QPushButton('Load', self)
+        self.load_button.setToolTip('Load your neural network weights')
+        self.load_button.setGeometry(100,350,90,30)
+        self.load_button.clicked.connect(self.Load)
+
+        # ====SAVE BUTTON====
+        self.save_button = QPushButton('Save', self)
+        self.save_button.setToolTip('Save your current epoch')
+        self.save_button.setGeometry(100,400,90,30)
+        #self.save_button.clicked.connect()
+
         # ===GRAPHS PANE===
         self.graphPanel_canvas = QWidget(self)
         self.graphPanel_options = QWidget(self)
@@ -93,10 +119,13 @@ class QTrainWidget(QWidget):
 
 
 
+
     def resizeEvent(self, *args, **kwargs):
-                self.train_Button.move(100, self.height() - (self.train_Button.height() + 4))
-                self.outputLog_TextBox.setGeometry(self.outputLog_TextBox.x(), self.outputLog_TextBox.y(), (self.width() - self.outputLog_TextBox.x()) * .5 + 4, self.height() - (self.outputLog_TextBox.y() + 4))
-                self.graphPanel_options.setGeometry(self.outputLog_TextBox.x() + self.outputLog_TextBox.width() + 4, self.graphPanel_options.y(), (self.width() - self.graphPanel_options.x()) * .5 + 4, self.height() - (self.graphPanel_options.y() + 4))
+                self.train_Button.move(100, self.height() - (self.train_Button.height() + 75))
+                self.load_button.move(100, self.height() - (self.load_button.height() + 35))
+                self.save_button.move(4, self.height() - (self.save_button.height() + 75))
+                self.outputLog_TextBox.setGeometry(self.outputLog_TextBox.x(), self.outputLog_TextBox.y(), (self.width() - self.outputLog_TextBox.x()) * .5 + 4, self.height() - (self.outputLog_TextBox.y() + 19))
+                self.graphPanel_options.setGeometry(self.outputLog_TextBox.x() + self.outputLog_TextBox.width() + 4, self.graphPanel_options.y(), self.graphPanel_options.width() + 4, self.height() - (self.graphPanel_options.y() + 19))
                 self.scrollBar.setGeometry(0, self.height() - 15, self.width(), 15)
 
     def train(self):

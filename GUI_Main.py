@@ -74,7 +74,7 @@ class GUI(QMainWindow):
         self.customData_dropButton = QAction('Import Dataset', self)
         self.customData_dropButton.setShortcut('Ctrl+C')
         self.customData_dropButton.setStatusTip('Generate based on your own dataset')
-        # custom_dropButton.triggered.openCustomizeDatasetWindow() <-- TODO create temporary window and enable dataset upload.
+        #self.customData_dropButton.triggered.connect(self.openFileExplorer)
         self.trainMenu.addAction(self.customData_dropButton)  # add button to dropdown menu
         ###Exit###
         self.exit_dropButton = QAction('Exit', self)
@@ -135,6 +135,16 @@ class GUI(QMainWindow):
         self.aboutDevs_dropButton.triggered.connect(self.aboutDev)
         # aboutDevs_dropButton.triggered.openDevsWindow() <-- TODO create window, create aboutDevs Center, enable portfolio linking.
         self.helpMenu.addAction(self.aboutDevs_dropButton)
+
+    ###
+    #Utility Function
+    ###
+    #def openFileExplorer(self):
+       # fileDialogue = QFileDialog()
+       # fileDialogue.setFileMode(QFileDialog.AnyFile)
+        #fileDialogue.setFilter("TAR-GZ files (*.gz)")
+
+
 
     ###
     #Tab Functions
