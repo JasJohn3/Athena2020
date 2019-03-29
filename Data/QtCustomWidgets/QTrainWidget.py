@@ -102,7 +102,7 @@ class QTrainWidget(QWidget):
     def train(self):
         self.train_Button.setDisabled(True)
 
-        self.epochs_Thread = Trainer(self.inputEpochs_SB.text())
+        self.epochs_Thread = Trainer(self.inputEpochs_SB.text(), self.datasets_ComboBox.currentText())
         self.epochs_Thread.logSignal.connect(self.outputLog_TextBox.append)
         self.epochs_Thread.stepSignal.connect(self.steps_ProgressBar.setValue)
         self.epochs_Thread.epochSignal.connect(self.epoch_ProgressBar.setValue)

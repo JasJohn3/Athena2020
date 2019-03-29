@@ -5,7 +5,7 @@ import ctypes.wintypes
 import os
 
 
-def createDataloader():
+def createDataloader(data):
     # Setting some hyperparameters
     batchSize = 64  # We set the size of the batch.
     imageSize = 64  # We set the size of the generated images (64x64).
@@ -13,7 +13,7 @@ def createDataloader():
     # We create a list of transformations (scaling, tensor conversion, normalization) to apply to the input images.
     transform = Compose([Resize(imageSize), ToTensor(), Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),])
 
-    return DataLoader(get_dataset(dataset='cifar10', transform=transform, path=''), batch_size=batchSize, shuffle=True, num_workers=0)  # We use dataLoader to get the images of the training set batch by batch.
+    return DataLoader(get_dataset(dataset=data, transform=transform, path=''), batch_size=batchSize, shuffle=True, num_workers=0)  # We use dataLoader to get the images of the training set batch by batch.
 
 
 def loadImage():

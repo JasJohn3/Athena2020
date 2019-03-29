@@ -21,14 +21,15 @@ class Trainer(QThread):
     epochSignal = pyqtSignal(int)
     completeSignal = pyqtSignal()
 
-    def __init__(self, epochs):
+    def __init__(self, epochs, dataset):
         QThread.__init__(self)
         self.discriminator = Discriminator()
         self.generator = Generator()
         self.epochs = int(epochs)
+        self.dataset = dataset
 
     def run(self):
-        dataloader = createDataloader()
+        dataloader = createDataloader(self.dataset)
         self.logSignal.emit("Starting...\n")
 
         self.maxstepsSignal.emit(len(dataloader))
@@ -99,9 +100,6 @@ class Trainer(QThread):
                 self.epochSignal.emit((epoch * len(dataloader)) + i + 1)
 
         self.completeSignal.emit()
-
-    def runProcess(self, sender, function, arg1, arg2):
-        sender.send(function(arg1, arg2))
 
     # Initialize all its weights in neural network
     def weights_init(self, m):
