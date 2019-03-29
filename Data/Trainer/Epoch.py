@@ -3,7 +3,6 @@ import torch.nn.parallel
 from torch.optim import Adam
 import torch.utils.data
 from torchvision.utils import *
-from torch.autograd import Variable
 import os
 from Data.NeuralNetwork import *
 from .Dataset import createDataloader
@@ -20,6 +19,7 @@ class Trainer(QThread):
     totaltimeSignal = pyqtSignal(str)
     stepSignal = pyqtSignal(int)
     epochSignal = pyqtSignal(int)
+    completeSignal = pyqtSignal()
 
     def __init__(self, epochs):
         QThread.__init__(self)
@@ -51,16 +51,15 @@ class Trainer(QThread):
 
                 # Creation of train and test data .3 seconds
                 trainData, _ = trainData
-                indata = Variable(trainData)
-                noise = Variable(torch.randn(indata.size()[0], 100, 1, 1))
+                noise = torch.randn(trainData.size()[0], 100, 1, 1)
                 testData = self.generator(noise)
-
+                ones = torch.ones(trainData.size()[0])
                 # Train & Optimize Discriminator
                 self.discriminator.zero_grad()
 
                 # Criterion run at an average of .3 seconds
-                error_train = criterion(self.discriminator(indata), Variable(torch.ones(indata.size()[0])))
-                error_test = criterion(self.discriminator(testData.detach()), Variable(torch.zeros(indata.size()[0])))
+                error_train = criterion(self.discriminator(trainData), ones)
+                error_test = criterion(self.discriminator(testData.detach()), torch.zeros(trainData.size()[0]))
 
                 error_discriminate = error_train + error_test
 
@@ -70,7 +69,8 @@ class Trainer(QThread):
 
                 # Train & Optimize Generator 1.5 seconds
                 self.generator.zero_grad()
-                error_generate = criterion(self.discriminator(testData), Variable(torch.ones(indata.size()[0])))
+
+                error_generate = criterion(self.discriminator(testData), ones)
                 error_generate.backward()
                 optimize_generate.step()
 
@@ -97,6 +97,11 @@ class Trainer(QThread):
                 self.totaltimeSignal.emit("{:0>8}".format(str(training_Time)))
                 self.stepSignal.emit(i + 1)
                 self.epochSignal.emit((epoch * len(dataloader)) + i + 1)
+
+        self.completeSignal.emit()
+
+    def runProcess(self, sender, function, arg1, arg2):
+        sender.send(function(arg1, arg2))
 
     # Initialize all its weights in neural network
     def weights_init(self, m):
