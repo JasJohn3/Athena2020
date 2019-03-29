@@ -97,6 +97,9 @@ class Trainer(QThread):
                 self.totaltimeSignal.emit("{:0>8}".format(str(training_Time)))
                 self.stepSignal.emit(i + 1)
                 self.epochSignal.emit((epoch * len(dataloader)) + i + 1)
+    def Load(self):
+        self.logSignal.emit("Load function successful")
+        pass
 
     # Initialize all its weights in neural network
     def weights_init(self, m):
