@@ -116,10 +116,6 @@ class QTrainWidget(QWidget):
                                            self.graphPanel_options.height())
 
 
-
-
-
-
     def resizeEvent(self, *args, **kwargs):
                 self.train_Button.move(100, self.height() - (self.train_Button.height() + 75))
                 self.load_button.move(100, self.height() - (self.load_button.height() + 35))

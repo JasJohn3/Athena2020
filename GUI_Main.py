@@ -1,6 +1,6 @@
 # Abstract: Athena Launchpad GUI: generates UI for Athena texture generator
 # Author: Zack Thompson
-# last updates February 1, 2019
+# last updates April 2nd, 2019
 
 # Version 0.01
 
@@ -22,6 +22,7 @@ class GUI(QMainWindow):
         self.setWindowTitle('Athena')
 
         self.resize(640, 400)
+
 
         # Center window
         window = self.frameGeometry()
@@ -53,6 +54,7 @@ class GUI(QMainWindow):
         self.panel_tabs.setMovable(True)
         self.panel_tabs.setGeometry(0, 0, self.panel_canvas.width(), self.panel_canvas.height())
 
+
         ###
         # Menu Bar
         ###
@@ -68,13 +70,13 @@ class GUI(QMainWindow):
         self.train_dropButton = QAction('Train', self)
         self.train_dropButton.setShortcut('Ctrl+T')
         self.train_dropButton.setStatusTip('Train a model')
-        self.train_dropButton.triggered.connect(self.train)
+        self.train_dropButton.triggered.connect(lambda: self.createTab(QTrainWidget, "Model Training"))
         self.trainMenu.addAction(self.train_dropButton)  # add test button to dropdown menu
         ###Import Dataset###
         self.customData_dropButton = QAction('Import Dataset', self)
         self.customData_dropButton.setShortcut('Ctrl+C')
         self.customData_dropButton.setStatusTip('Generate based on your own dataset')
-        #self.customData_dropButton.triggered.connect(self.openFileExplorer)
+        self.customData_dropButton.triggered.connect(lambda: self.createTab(QImportWidget, "Import A Dataset"))
         self.trainMenu.addAction(self.customData_dropButton)  # add button to dropdown menu
         ###Exit###
         self.exit_dropButton = QAction('Exit', self)
@@ -120,7 +122,7 @@ class GUI(QMainWindow):
         self.helpCenter_dropButton = QAction(QIcon('Data/Help.png'), 'Help Center', self)
         self.helpCenter_dropButton.setShortcut('Ctrl+H')
         self.helpCenter_dropButton.setStatusTip('Generate loss graph')
-        #self.helpCenter_dropButton.triggered.connect(Dialogues.helpcenter)
+        self.helpCenter_dropButton.triggered.connect(lambda: self.createTab(QHelpWidget, "Help Center"))
         self.helpMenu.addAction(self.helpCenter_dropButton)
         ###About Athena###
         self.aboutAthena_dropButton = QAction('About Athena', self)
@@ -149,6 +151,12 @@ class GUI(QMainWindow):
     ###
     #Tab Functions
     ###
+    def createTab(self, widget, name):
+        if self.panel_tabs.findChildren(widget) == []:
+            tab = widget(self.panel_tabs)
+            tab.setStyleSheet(open('Data/CSS.cfg').read())
+            self.panel_tabs.addTab(tab, name)
+
     def train(self):
         if self.panel_tabs.findChildren(QTrainWidget) == []:
             self.trainTab = QTrainWidget(self.panel_tabs)
@@ -166,6 +174,12 @@ class GUI(QMainWindow):
         if widget is not None:
             widget.deleteLater()
         self.panel_tabs.removeTab(index)
+
+    def importDatasets(self):
+        if self.panel_tabs.findChildren(QImportWidget) == []:
+            self.importTab = QImportWidget(self.panel_tabs)
+            self.importDatasets.setStyleSheet(open('Data/CSS.cfg').read())
+            self.panel_tabs.addTab(self.importTab, "Import A Dataset")
 
 
     ###

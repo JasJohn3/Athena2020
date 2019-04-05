@@ -1,0 +1,78 @@
+Welcome to the ATHENA help page!
+
+To get started here is the basic profile and functionality of the GAN:
+
+GAN runs on PyTorch APIs
+
+ -- ABSTRACT:
+A Generative Adversarial Network is a set of two neural networks designed to generate
+some form of data based on what is received as a data set. GANs can replicate a variety
+if different forms of media from images, to music, to poems. ATHENA, as of April 4th 2019
+is designed solely to work with images.
+
+===== SECTION 1.0 GETTING STARTED =====
+To begin, you may want to familiarize yourself with the environment.
+
+
+<Insert image of welcome screen here pointing out different widgets and what they do>
+
+===== SECTION 1.1 PYTHON INSTALLATION =====
+
+Python Installation:
+ATHENA is written entirely in Python and will need Python interpreters in order to run. Visit Python.org
+to install Python, as well as pip. You will need it later.
+
+!!!!! IMPORTANT !!!!!
+WARNING: ENSURE YOU HAVE THE CORRECT PYTHON 32/64BIT ARCHITECTURE INSTALLED OR PYTORCH WILL NOT WORK.
+!!!!! IMPORTANT !!!!!
+
+Python.org link <Insert Link Here>
+
+===== SECTION 1.2 PYTORCH INSTALLATION =====
+PyTorch Installation:
+As said above ATHENA functions with the powerful PyTorch GAN API. Before running anything it is recommended
+to install the PyTorch library from the website, linked below:
+
+PyTorch Library: <Insert link here>
+
+===== SECTION 2.0 FAMILIARIZATION =====
+
+===== SECTION 2.1 IMPORTING A data set =====
+Importing a data set:
+To import a data set, simply click file in the menu bar, then click the import data set
+menu button. This will open the import data set tab.
+
+File >> Import data set
+
+<Insert image of import tab, pointing out different buttons and widgets, and what they do.>
+
+As a word of warning, ATHENA only takes data sets in the format of cifar, mnist, stl10, lsun, and imagenets.
+As of April 4th 2019, no other data set formats are supported.
+
+!!!!! IMPORTANT !!!!!
+WARNING: Remember to look over your data set as it is displayed in the import tab's output log, this will
+ensure that your data is labeled, and formatted correctly for proper GAN execution!
+!!!!! IMPORTANT !!!!!
+
+===== SECTION 2.2 TRAINING AND GAN EXECUTION =====
+
+=== SECTION 2.2.1 SELECTING A DATA SET ===
+Training the GAN on a data set is the heart of this application. To begin, you will want to select which data set
+you wish to train off of.
+
+<Insert image of data set drop down menu>
+
+NOTE: ATHENA comes pre-packaged with a provided data set. You may use this as you wish within the application, but be
+advised this data set is a cifar100 data set with over 10,000 images to train off of. The usual ETA for this training
+session is anywhere from 24 to 48 hours of non stop training.
+
+=== SECITON 2.2.2 CHOOSING EPOCHS ===
+
+Epochs in a GAN is how many cycles of training the GAN will go through on a particular imagents results tab
+
+
+
+
+
+
+

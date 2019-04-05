@@ -1,0 +1,19 @@
+Welcome to the ATHENA Generative Adversarial Network (GAN) Tutorial Application!
+
+ABSTRACT:
+    This application is designed to help professionals, hobbyists, and the curious alike understand the inner workings
+    of a Generative Adversarial Network.
+
+How it works:
+    ATHENA works with PyTorch, and PyQt5 to create a wrapped, and isolated GAN that accepts imported image data sets.
+    These data sets are then sent through the GAN where they are scanned with Pytorch image recognition software, and
+    generated into new images based on the data set provided. These new images are then determined to be real or fake
+    via the internal discriminator within the PyTorch GAN, thus creating a generative adversarial network of neural
+    networks.
+
+    Eventually, the discriminator can no longer determine what is real, or faked by the generator. When this happens, the
+    GAN will begin to save the generated images as a new image of the same data set format provided. This new image data
+    will then be displayed on screen in a new tab for the you to observe, and laugh at the absurdity of. During the
+    execution process, ATHENA will display GAN specific data such as Loss over time, an ETA, and a host of graphs that
+    the user can choose to display as needed. This is to show in real time, how the GAN executes in a way that enables
+    a basic understanding of the data, and how it is manipulated by the GAN to create a new form of data.
