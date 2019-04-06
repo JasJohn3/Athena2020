@@ -21,12 +21,13 @@ class Trainer(QThread):
     epochSignal = pyqtSignal(int)
     completeSignal = pyqtSignal()
 
-    def __init__(self, epochs, dataset):
+    def __init__(self, epochs, dataset, Load):
         QThread.__init__(self)
         self.discriminator = Discriminator()
         self.generator = Generator()
         self.epochs = int(epochs)
         self.dataset = dataset
+        self.Load = Load
 
     def run(self):
         dataloader = createDataloader(self.dataset)
@@ -43,6 +44,18 @@ class Trainer(QThread):
         criterion = BCELoss()
         optimize_discriminate = Adam(self.discriminator.parameters(), lr=0.0002, betas=(0.5, 0.999))
         optimize_generate = Adam(self.generator.parameters(), lr=0.0002, betas=(0.5, 0.999))
+
+        if self.Load:
+            optimizerG = optimize_generate
+            optimizerD = optimize_discriminate
+
+            checkpoint = torch.load('./Save/ATHENA_GAN.tar')
+            self.generator.load_state_dict(checkpoint['Generator'])
+            self.discriminator.load_state_dict(checkpoint['Discriminator'])
+            optimize_discriminate = optimizerG.load_state_dict(checkpoint['optimizerG_state_dict'])
+            optimize_generate = optimizerD.load_state_dict(checkpoint['optimizerD_state_dict'])
+            self.generator.eval()
+            self.discriminator.eval()
 
         # ===Training Epochs===
         for epoch in range(self.epochs):
@@ -76,11 +89,15 @@ class Trainer(QThread):
                 optimize_generate.step()
 
                 # Save trainData and testData every 100 steps .002 seconds
-                if i % 100 == 0:
-                    if not os.path.exists('./results'):
-                        os.makedirs('./results')
-                    save_image(trainData, '%s/real_samples.png' % "./results", normalize=True)
-                    save_image(testData.data, '%s/fake_samples_epoch_%03d.png' % ("./results", epoch), normalize=True)
+                if i % 1 == 0:
+                    if not os.path.exists('./Results'):
+                        os.makedirs('./Results')
+                    if not os.path.exists('./Results/Real'):
+                        os.makedirs('./Results/real')
+                    if not os.path.exists('./Results/Fake'):
+                        os.makedirs('./Results/Fake')
+                    save_image(trainData, '%s/real_samples_epoch_%03d.bmp' % ("./Results/Real", epoch), normalize=True)
+                    save_image(testData.data, '%s/fake_samples_epoch_%03d.bmp' % ("./Results/Fake", epoch), normalize=True)
 
                 # *Epoch end time*
                 end = time.time()
@@ -98,6 +115,14 @@ class Trainer(QThread):
                 self.totaltimeSignal.emit("{:0>8}".format(str(training_Time)))
                 self.stepSignal.emit(i + 1)
                 self.epochSignal.emit((epoch * len(dataloader)) + i + 1)
+
+            if not os.path.exists('./Save'):
+                os.makedirs('./Save')
+            torch.save({
+                'Generator': self.generator.state_dict(),
+                'Discriminator': self.discriminator.state_dict(),
+                'optimizerD_state_dict': optimize_discriminate.state_dict(),
+                'optimizerG_state_dict': optimize_generate.state_dict()}, './Save/ATHENA_GAN.tar')
 
         self.completeSignal.emit()
 
