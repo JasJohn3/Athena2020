@@ -13,7 +13,7 @@ def createDataloader(data):
     # We create a list of transformations (scaling, tensor conversion, normalization) to apply to the input images.
     transform = Compose([Resize(imageSize), ToTensor(), Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),])
 
-    return DataLoader(get_dataset(dataset=data, transform=transform, path=''), batch_size=batchSize, shuffle=True, num_workers=0)  # We use dataLoader to get the images of the training set batch by batch.
+    return DataLoader(get_dataset(dataset=data, transform=transform), batch_size=batchSize, shuffle=True, num_workers=0)  # We use dataLoader to get the images of the training set batch by batch.
 
 
 def loadImage():

@@ -1,8 +1,8 @@
 # Abstract: Athena Launchpad GUI: generates UI for Athena texture generator
 # Author: Zack Thompson
-# last updates April 2nd, 2019
+# last updates April 5th, 2019
 
-# Version 0.01
+# Version 0.85
 
 # TODO Athena Neural network graph Owl Logo.
 
@@ -63,6 +63,7 @@ class GUI(QMainWindow):
         # Create Menu Items
         self.trainMenu = self.mainMenu.addMenu('File')
         self.graphsMenu = self.mainMenu.addMenu('Graphs')
+        self.graphsMenu.setEnabled(False)
         self.helpMenu = self.mainMenu.addMenu('Help')
 
         ###Menu Bar: File###
@@ -70,13 +71,13 @@ class GUI(QMainWindow):
         self.train_dropButton = QAction('Train', self)
         self.train_dropButton.setShortcut('Ctrl+T')
         self.train_dropButton.setStatusTip('Train a model')
-        self.train_dropButton.triggered.connect(lambda: self.createTab(QTrainWidget, "Model Training"))
+        self.train_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs, QTrainWidget, "Model Training"))
         self.trainMenu.addAction(self.train_dropButton)  # add test button to dropdown menu
         ###Import Dataset###
         self.customData_dropButton = QAction('Import Dataset', self)
         self.customData_dropButton.setShortcut('Ctrl+C')
         self.customData_dropButton.setStatusTip('Generate based on your own dataset')
-        self.customData_dropButton.triggered.connect(lambda: self.createTab(QImportWidget, "Import A Dataset"))
+        self.customData_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs, QImportWidget, "Import A Dataset"))
         self.trainMenu.addAction(self.customData_dropButton)  # add button to dropdown menu
         ###Exit###
         self.exit_dropButton = QAction('Exit', self)
@@ -90,31 +91,31 @@ class GUI(QMainWindow):
         self.histogram_dropButton = QAction('Histogram', self)
         self.histogram_dropButton.setShortcut('Shift+H')
         self.histogram_dropButton.setStatusTip('Generate Histogram')
-        # histogram_dropButton.triggered.openHistogramWindow() <-- TODO create window, enable histogram generation
+        self.histogram_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs, QHistogramWidget, "Histogram"))
         self.graphsMenu.addAction(self.histogram_dropButton)
         ###Scatterplot###
         self.scatterplot_dropButton = QAction('Scatterplot', self)
         self.scatterplot_dropButton.setShortcut('Shift+S')
         self.scatterplot_dropButton.setStatusTip('Generate Scatterplot')
-        # scatterplot_dropButton.triggered.openScattplotWindow() <-- TODO create window, enable scatterplot generation
+        self.scatterplot_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs, QScatterplotWidget, "Scatterplot"))
         self.graphsMenu.addAction(self.scatterplot_dropButton)
         ###Loss###
         self.lossGraph_dropButton = QAction('Loss', self)
         self.lossGraph_dropButton.setShortcut('Shift+L')
         self.lossGraph_dropButton.setStatusTip('Generate loss graph')
-        # lossGraph_dropButton.triggered.openLossWindow() <-- TODO create window, enable loss generation.
+        self.lossGraph_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs, QLinearWidget, "Linear"))
         self.graphsMenu.addAction(self.lossGraph_dropButton)
         ###Elapsed Time###
         self.timeGraph_dropButton = QAction('Elapsed Time', self)
         self.timeGraph_dropButton.setShortcut('Shift+T')
         self.timeGraph_dropButton.setStatusTip('Generate loss graph')
-        # timeGraph_dropButton.triggered.openLossWindow() <-- TODO create window, enable time elapsed graph.
+        self.timeGraph_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs, QElapsedTimeWidget, "Epochs / Time"))
         self.graphsMenu.addAction(self.timeGraph_dropButton)
         ###EEG###
         self.eegGraph_dropButton = QAction('Electroencephalography Graph (Yes, you can)', self)
         self.eegGraph_dropButton.setShortcut('Shift+E')
         self.eegGraph_dropButton.setStatusTip('Generate EEG graph')
-        # eegGraph_dropButton.triggered.openEEGWindow() <-- TODO create window, enable EEG graph
+        self.eegGraph_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs, QEEGWidget, "Neural Network EEG"))
         self.graphsMenu.addAction(self.eegGraph_dropButton)
 
         ###Menu Bar: Help###
@@ -122,7 +123,7 @@ class GUI(QMainWindow):
         self.helpCenter_dropButton = QAction(QIcon('Data/Help.png'), 'Help Center', self)
         self.helpCenter_dropButton.setShortcut('Ctrl+H')
         self.helpCenter_dropButton.setStatusTip('Generate loss graph')
-        self.helpCenter_dropButton.triggered.connect(lambda: self.createTab(QHelpWidget, "Help Center"))
+        self.helpCenter_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs,QHelpWidget, "Help Center"))
         self.helpMenu.addAction(self.helpCenter_dropButton)
         ###About Athena###
         self.aboutAthena_dropButton = QAction('About Athena', self)
@@ -134,7 +135,7 @@ class GUI(QMainWindow):
         self.aboutDevs_dropButton = QAction('Meet the Developers', self)
         self.aboutDevs_dropButton.setShortcut('Ctrl+M')
         self.aboutDevs_dropButton.setStatusTip('Learn about the developers! :)')
-        self.aboutDevs_dropButton.triggered.connect(self.aboutDev)
+        self.aboutDevs_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs, QDevWidget, "About Developers"))
         # aboutDevs_dropButton.triggered.openDevsWindow() <-- TODO create window, create aboutDevs Center, enable portfolio linking.
         self.helpMenu.addAction(self.aboutDevs_dropButton)
 
@@ -151,29 +152,23 @@ class GUI(QMainWindow):
     ###
     #Tab Functions
     ###
-    def createTab(self, widget, name):
-        if self.panel_tabs.findChildren(widget) == []:
-            tab = widget(self.panel_tabs)
+    def createTab(self, root, widget, name):
+        if not root.findChild(widget):
+            tab = widget(root)
             tab.setStyleSheet(open('Data/CSS.cfg').read())
-            self.panel_tabs.addTab(tab, name)
+            root.addTab(tab, name)
 
-    def train(self):
-        if self.panel_tabs.findChildren(QTrainWidget) == []:
-            self.trainTab = QTrainWidget(self.panel_tabs)
-            self.trainTab.setStyleSheet(open('Data/CSS.cfg').read())
-            self.panel_tabs.addTab(self.trainTab, "Model Trainer")
-
-    def aboutDev(self):
-        if self.panel_tabs.findChildren(QDevWidget) == []:
-            self.devTab = QDevWidget(self.panel_tabs)
-            self.devTab.setStyleSheet(open('Data/CSS.cfg').read())
-            self.panel_tabs.addTab(self.devTab, "About the Developers")
+        if self.panel_tabs.findChild(QTrainWidget):
+            self.graphsMenu.setEnabled(True)
 
     def removeTab(self, index):
         widget = self.panel_tabs.widget(index)
         if widget is not None:
             widget.deleteLater()
         self.panel_tabs.removeTab(index)
+
+        if type(widget) == QTrainWidget:
+            self.graphsMenu.setEnabled(False)
 
     def importDatasets(self):
         if self.panel_tabs.findChildren(QImportWidget) == []:

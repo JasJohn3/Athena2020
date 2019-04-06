@@ -12,4 +12,4 @@ class QResultsWidget(QWidget):
 
         self.resultsPane_canvas = QWidget(self)
         self.resultsPane_options = QWidget(self)
-        self.resultsPane_options
+        self.resultsPane_options.setGeometry(0,50,self.width() * .5, self.height() - 12)

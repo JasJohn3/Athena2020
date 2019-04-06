@@ -25,6 +25,9 @@ class QTrainWidget(QWidget):
 
         self.scrollBar.setWidget(self.scrollContent)
 
+        def comboBoxChecker():
+            currentSet = self.datasets_ComboBox.currentIndex()
+
 
         # ===DATASETS COMBOBOX===
         self.datasets_Label = QLabel(self)
@@ -39,6 +42,7 @@ class QTrainWidget(QWidget):
         self.datasets_ComboBox.addItem("stl10")
         self.datasets_ComboBox.addItem("lsun")
         self.datasets_ComboBox.addItem("imagenet")
+        comboBoxChecker()
         self.datasets_ComboBox.setGeometry(self.datasets_Label.width() + self.datasets_Label.x() + 4, self.datasets_Label.y(), 110, 15)
 
         # ===USER INPUT EPOCH===
@@ -90,6 +94,7 @@ class QTrainWidget(QWidget):
 
         # ===TRAIN BUTTON===
         self.train_Button = QPushButton('Train', self)
+        #self.train_Button.setEnabled(False)
         self.train_Button.setToolTip('Begin Training')
         self.train_Button.setGeometry(100, 300, 90, 30)
         self.train_Button.clicked.connect(self.train)
@@ -106,23 +111,39 @@ class QTrainWidget(QWidget):
         self.save_button.setGeometry(100,400,90,30)
         #self.save_button.clicked.connect()
 
-        # ===GRAPHS PANE===
-        self.graphPanel_canvas = QWidget(self)
-        self.graphPanel_options = QWidget(self)
-        self.graphPanel_options.setGeometry(365, 4, self.width() * .5, self.height() - 12)
-        self.graphPanel_canvas.setStyleSheet("background-color: transparent; border: 0px;")
-        self.graphPanel_canvas.setGeometry(self.graphPanel_options.width() + 4, 15,
-                                           self.width() - (self.graphPanel_options.width() + 6),
-                                           self.graphPanel_options.height())
+        # ====RESULTS BUTTON====
+        self.results_button = QPushButton('Results', self)
+        self.results_button.setToolTip('Show your results')
+        self.results_button.setGeometry(100, 450, 90, 30)
 
+
+        # ===GRAPHS PANE===
+        self.graph_canvas = QWidget(self)
+        #self.graph_canvas.setStyleSheet("background-color: transparent; border: 0px;")
+        self.graph_canvas.setGeometry(365, 4, self.width() *.5, self.height() - 12)
+        # ==== Graph Tab Pane ====
+        self.graph_tabs = QTabWidget(self.graph_canvas)
+        self.graph_tabs.setTabsClosable(True)
+        self.graph_tabs.tabCloseRequested.connect(self.removeTab)
+        self.graph_tabs.setMovable(True)
+        self.graph_tabs.setGeometry(0, 0, self.graph_canvas.width(), self.graph_canvas.height())
 
     def resizeEvent(self, *args, **kwargs):
                 self.train_Button.move(100, self.height() - (self.train_Button.height() + 75))
                 self.load_button.move(100, self.height() - (self.load_button.height() + 35))
                 self.save_button.move(4, self.height() - (self.save_button.height() + 75))
+                self.results_button.move(4, self.height() - (self.results_button.height() + 35))
                 self.outputLog_TextBox.setGeometry(self.outputLog_TextBox.x(), self.outputLog_TextBox.y(), (self.width() - self.outputLog_TextBox.x()) * .5 + 4, self.height() - (self.outputLog_TextBox.y() + 19))
-                self.graphPanel_options.setGeometry(self.outputLog_TextBox.x() + self.outputLog_TextBox.width() + 4, self.graphPanel_options.y(), self.graphPanel_options.width() + 4, self.height() - (self.graphPanel_options.y() + 19))
+                self.graph_canvas.setGeometry(self.outputLog_TextBox.x() + self.outputLog_TextBox.width() + 4, self.graph_canvas.y(), (self.width() - self.outputLog_TextBox.x()) * .5 + 4, self.height() - (self.outputLog_TextBox.y() + 19))
+                self.graph_tabs.setGeometry(0, 0, self.graph_canvas.width(), self.graph_canvas.height())
                 self.scrollBar.setGeometry(0, self.height() - 15, self.width(), 15)
+
+
+    def removeTab(self, index):
+        widget = self.graph_tabs.widget(index)
+        if widget is not None:
+            widget.deleteLater()
+        self.graph_tabs.removeTab(index)
 
     def train(self):
         self.train_Button.setDisabled(True)

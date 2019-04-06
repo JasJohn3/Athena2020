@@ -22,7 +22,7 @@ class QImportWidget(QWidget):
         self.import_Button = QPushButton(self)
         self.import_Button.setText("Import Dataset")
         self.import_Button.setGeometry(285, 50, 100, 30)
-        self.import_Button.clicked.connect(self.file_open())
+        self.import_Button.clicked.connect(self.file_open)
 
         ###
         #OUTPUT LOG
@@ -39,8 +39,8 @@ class QImportWidget(QWidget):
 
 
     def file_open(self):
-        name = QFileDialog.getOpenFileName(self, 'Import A Dataset')
-        file = open(name, 'r')
+        name = QFileDialog()
+        file = open(name.getOpenFileName(self, 'Import A Dataset'), 'r')
 
         self.GUI()
 
