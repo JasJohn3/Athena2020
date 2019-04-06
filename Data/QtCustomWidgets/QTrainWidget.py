@@ -13,6 +13,7 @@ class QTrainWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__()
         self.initUI()
+        self.Load = False
 
     def initUI(self):
         #===SCROLL AREA===
@@ -98,7 +99,6 @@ class QTrainWidget(QWidget):
         self.load_button = QPushButton('Load', self)
         self.load_button.setToolTip('Load your neural network weights')
         self.load_button.setGeometry(100,350,90,30)
-        #self.load_button.clicked.connect(self.Load)
 
         # ====SAVE BUTTON====
         self.save_button = QPushButton('Save', self)
@@ -127,7 +127,7 @@ class QTrainWidget(QWidget):
     def train(self):
         self.train_Button.setDisabled(True)
 
-        self.epochs_Thread = Trainer(self.inputEpochs_SB.text(), self.datasets_ComboBox.currentText())
+        self.epochs_Thread = Trainer(self.inputEpochs_SB.text(), self.datasets_ComboBox.currentText(), False)
         self.epochs_Thread.logSignal.connect(self.outputLog_TextBox.append)
         self.epochs_Thread.stepSignal.connect(self.steps_ProgressBar.setValue)
         self.epochs_Thread.epochSignal.connect(self.epoch_ProgressBar.setValue)
