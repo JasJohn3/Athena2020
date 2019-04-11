@@ -3,12 +3,13 @@ import torch.nn.parallel
 from torch.optim import Adam
 import torch.utils.data
 from torchvision.utils import *
-import os
+from os import path
 from Data.NeuralNetwork import *
 from .Dataset import createDataloader
 import time
 import datetime
 from PyQt5.QtCore import pyqtSignal, QThread
+from PIL import Image
 
 
 class Trainer(QThread):
@@ -19,15 +20,16 @@ class Trainer(QThread):
     totaltimeSignal = pyqtSignal(str)
     stepSignal = pyqtSignal(int)
     epochSignal = pyqtSignal(int)
+    trainImageSignal = pyqtSignal()
+    testImageSignal = pyqtSignal()
     completeSignal = pyqtSignal()
 
-    def __init__(self, epochs, dataset, Load):
+    def __init__(self, epochs, dataset):
         QThread.__init__(self)
         self.discriminator = Discriminator()
         self.generator = Generator()
         self.epochs = int(epochs)
         self.dataset = dataset
-        self.Load = Load
 
     def run(self):
         dataloader = createDataloader(self.dataset)
@@ -45,11 +47,12 @@ class Trainer(QThread):
         optimize_discriminate = Adam(self.discriminator.parameters(), lr=0.0002, betas=(0.5, 0.999))
         optimize_generate = Adam(self.generator.parameters(), lr=0.0002, betas=(0.5, 0.999))
 
-        if self.Load:
+        # Check for a saved GAN
+        if path.exists("./Data/ATHENA_GAN.tar"):
             optimizerG = optimize_generate
             optimizerD = optimize_discriminate
 
-            checkpoint = torch.load('./Save/ATHENA_GAN.tar')
+            checkpoint = torch.load('./Data/ATHENA_GAN.tar')
             self.generator.load_state_dict(checkpoint['Generator'])
             self.discriminator.load_state_dict(checkpoint['Discriminator'])
             optimize_discriminate = optimizerG.load_state_dict(checkpoint['optimizerG_state_dict'])
@@ -88,16 +91,10 @@ class Trainer(QThread):
                 error_generate.backward()
                 optimize_generate.step()
 
-                # Save trainData and testData every 100 steps .002 seconds
-                if i % 1 == 0:
-                    if not os.path.exists('./Results'):
-                        os.makedirs('./Results')
-                    if not os.path.exists('./Results/Real'):
-                        os.makedirs('./Results/real')
-                    if not os.path.exists('./Results/Fake'):
-                        os.makedirs('./Results/Fake')
-                    save_image(trainData, '%s/real_samples_epoch_%03d.bmp' % ("./Results/Real", epoch), normalize=True)
-                    save_image(testData.data, '%s/fake_samples_epoch_%03d.bmp' % ("./Results/Fake", epoch), normalize=True)
+                # Save trainData and testData images every 100 steps .002 seconds
+                if i % 100 == 0:
+                    self.emit_image(trainData, self.trainImageSignal, normalize=True)
+                    self.emit_image(testData.data, self.testImageSignal, normalize=True)
 
                 # *Epoch end time*
                 end = time.time()
@@ -116,13 +113,12 @@ class Trainer(QThread):
                 self.stepSignal.emit(i + 1)
                 self.epochSignal.emit((epoch * len(dataloader)) + i + 1)
 
-            if not os.path.exists('./Save'):
-                os.makedirs('./Save')
+            # Save the GAN state
             torch.save({
                 'Generator': self.generator.state_dict(),
                 'Discriminator': self.discriminator.state_dict(),
                 'optimizerD_state_dict': optimize_discriminate.state_dict(),
-                'optimizerG_state_dict': optimize_generate.state_dict()}, './Save/ATHENA_GAN.tar')
+                'optimizerG_state_dict': optimize_generate.state_dict()}, './Data/ATHENA_GAN.tar')
 
         self.completeSignal.emit()
 
@@ -134,3 +130,12 @@ class Trainer(QThread):
         elif classname.find('BatchNorm') != -1:
             m.weight.data.normal_(1.0, 0.02)
             m.bias.data.fill_(0)
+
+    # Convert created image arrays to image
+    def emit_image(self, tensor, signal,  nrow=8, padding=2,
+               normalize=False, range=None, scale_each=False, pad_value=0):
+
+        grid = make_grid(tensor, nrow=nrow, padding=padding, pad_value=pad_value,
+                         normalize=normalize, range=range, scale_each=scale_each)
+        ndarr = grid.mul(255).clamp(0, 255).byte().permute(1, 2, 0).cpu().numpy()
+        signal.emit(Image.fromarray(ndarr))
