@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import *
 from Data.Trainer.Epoch import Trainer
+from Data.QtCustomWidgets import QTrainWidget, QResultsWidget
 
 
 """
@@ -35,6 +36,10 @@ class QTrainWidget(QWidget):
         self.datasets_Label.setText("Datasets:")
         self.datasets_Label.setGeometry(4, 4, self.datasets_Label.fontMetrics().boundingRect(self.datasets_Label.text()).width(), 15)
         self.datasets_ComboBox = QComboBox(self)
+        # self.datasets_ComboBox.changeEvent(lambda: self.train_Button.setEnabled(self.datasets_ComboBox.currentIndex() != 0)) <-- Todo lookup
+
+        #print(self.datasets_ComboBox.activated)
+        #print(self.datasets_ComboBox.currentIndex())
         self.datasets_ComboBox.setToolTip("Your current uploaded datasets.")
         self.datasets_ComboBox.addItem("<Your Datasets>")
         self.datasets_ComboBox.addItem("cifar10")
@@ -43,6 +48,8 @@ class QTrainWidget(QWidget):
         self.datasets_ComboBox.addItem("stl10")
         self.datasets_ComboBox.addItem("lsun")
         self.datasets_ComboBox.addItem("imagenet")
+
+
         comboBoxChecker()
         self.datasets_ComboBox.setGeometry(self.datasets_Label.width() + self.datasets_Label.x() + 4, self.datasets_Label.y(), 110, 15)
 
@@ -111,12 +118,6 @@ class QTrainWidget(QWidget):
         self.save_button.setGeometry(100,400,90,30)
         #self.save_button.clicked.connect()
 
-        # ====RESULTS BUTTON====
-        self.results_button = QPushButton('Results', self)
-        self.results_button.setToolTip('Show your results')
-        self.results_button.setGeometry(100, 450, 90, 30)
-
-
         # ===GRAPHS PANE===
         self.graph_canvas = QWidget(self)
         #self.graph_canvas.setStyleSheet("background-color: transparent; border: 0px;")
@@ -128,11 +129,15 @@ class QTrainWidget(QWidget):
         self.graph_tabs.setMovable(True)
         self.graph_tabs.setGeometry(0, 0, self.graph_canvas.width(), self.graph_canvas.height())
 
+
+
+    def activateTrainButton(self):
+        self.train_Button.setEnabled(self.datasets_ComboBox.currentIndex() != 0)
+
     def resizeEvent(self, *args, **kwargs):
                 self.train_Button.move(100, self.height() - (self.train_Button.height() + 75))
                 self.load_button.move(100, self.height() - (self.load_button.height() + 35))
                 self.save_button.move(4, self.height() - (self.save_button.height() + 75))
-                self.results_button.move(4, self.height() - (self.results_button.height() + 35))
                 self.outputLog_TextBox.setGeometry(self.outputLog_TextBox.x(), self.outputLog_TextBox.y(), (self.width() - self.outputLog_TextBox.x()) * .5 + 4, self.height() - (self.outputLog_TextBox.y() + 19))
                 self.graph_canvas.setGeometry(self.outputLog_TextBox.x() + self.outputLog_TextBox.width() + 4, self.graph_canvas.y(), (self.width() - self.outputLog_TextBox.x()) * .5 + 4, self.height() - (self.outputLog_TextBox.y() + 19))
                 self.graph_tabs.setGeometry(0, 0, self.graph_canvas.width(), self.graph_canvas.height())
@@ -147,7 +152,7 @@ class QTrainWidget(QWidget):
 
     def train(self):
         self.train_Button.setDisabled(True)
-
+        newTab = lambda: self.createTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs, QResultsWidget)
         self.epochs_Thread = Trainer(self.inputEpochs_SB.text(), self.datasets_ComboBox.currentText(), False)
         self.epochs_Thread.logSignal.connect(self.outputLog_TextBox.append)
         self.epochs_Thread.stepSignal.connect(self.steps_ProgressBar.setValue)

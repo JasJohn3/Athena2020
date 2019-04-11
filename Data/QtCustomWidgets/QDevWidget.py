@@ -17,10 +17,10 @@ class QDevWidget(QWidget):
         greetingLabel.setText(
             "<font color = white>About the developers: Click a link to visit their portfolio sites!</font>")
 
-        # JasonLink = QLabel(self)
-        # JasonLink.linkActivated.connect(self.link)
-        # JasonLink.setText("<Insert link here>")
-        # JasonLink.move(50,50)
+        JasonLink = QLabel(self)
+        JasonLink.linkActivated.connect(self.link)
+        JasonLink.setText('<a href="https://www.linkedin.com/in/jason-johnson-32a37354/">Jason Johnson</a>')
+        JasonLink.move(50,50)
 
         TrevorLink = QLabel(self)
         TrevorLink.linkActivated.connect(self.link)
@@ -32,7 +32,7 @@ class QDevWidget(QWidget):
         ZackLink.setText('<a href="https://overclockedthompson.wixsite.com/mysite">Zack Thompson</a>')
         ZackLink.move(50, 150)
 
-        # WyattLink = QLabel(self)
-        # WyattLink.linkActivated.connect(self.link)
-        # WyattLink.setText("<Insert link here>")
-        # WyattLink.move(50,200)
+        WyattLink = QLabel(self)
+        WyattLink.linkActivated.connect(self.link)
+        WyattLink.setText('<a href ="https://www.linkedin.com/in/wyatt-dooley-8a4896156/"> Wyatt Dooley</a>')
+        WyattLink.move(50,200)

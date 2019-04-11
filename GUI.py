@@ -62,8 +62,8 @@ class GUI(QMainWindow):
         self.mainMenu = self.menuBar()
         # Create Menu Items
         self.trainMenu = self.mainMenu.addMenu('File')
-        self.graphsMenu = self.mainMenu.addMenu('Graphs')
-        self.graphsMenu.setEnabled(False)
+        self.viewMenu = self.mainMenu.addMenu('View')
+        self.viewMenu.setEnabled(False)
         self.helpMenu = self.mainMenu.addMenu('Help')
 
         ###Menu Bar: File###
@@ -72,7 +72,8 @@ class GUI(QMainWindow):
         self.train_dropButton.setShortcut('Ctrl+T')
         self.train_dropButton.setStatusTip('Train a model')
         self.train_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs, QTrainWidget, "Model Training"))
-        self.trainMenu.addAction(self.train_dropButton)  # add test button to dropdown menu
+        self.trainMenu.addAction(self.train_dropButton)  # add button to dropdown menu
+
         ###Import Dataset###
         self.customData_dropButton = QAction('Import Dataset', self)
         self.customData_dropButton.setShortcut('Ctrl+C')
@@ -86,37 +87,43 @@ class GUI(QMainWindow):
         self.exit_dropButton.triggered.connect(self.close)
         self.trainMenu.addAction(self.exit_dropButton)  # add button to dropdown menu
 
-        ###Menu Bar: Graphs###
+        ###Menu Bar: View###
+        ###Results###
+        self.results_dropButton = QAction('Results', self)
+        self.results_dropButton.setShortcut('Shift+V')
+        self.results_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs, QResultsWidget, "Results"))
+        self.viewMenu.addAction(self.results_dropButton)
+
         ###Histogram###
         self.histogram_dropButton = QAction('Histogram', self)
         self.histogram_dropButton.setShortcut('Shift+H')
         self.histogram_dropButton.setStatusTip('Generate Histogram')
         self.histogram_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs, QHistogramWidget, "Histogram"))
-        self.graphsMenu.addAction(self.histogram_dropButton)
+        self.viewMenu.addAction(self.histogram_dropButton)
         ###Scatterplot###
         self.scatterplot_dropButton = QAction('Scatterplot', self)
         self.scatterplot_dropButton.setShortcut('Shift+S')
         self.scatterplot_dropButton.setStatusTip('Generate Scatterplot')
         self.scatterplot_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs, QScatterplotWidget, "Scatterplot"))
-        self.graphsMenu.addAction(self.scatterplot_dropButton)
+        self.viewMenu.addAction(self.scatterplot_dropButton)
         ###Loss###
         self.lossGraph_dropButton = QAction('Loss', self)
         self.lossGraph_dropButton.setShortcut('Shift+L')
         self.lossGraph_dropButton.setStatusTip('Generate loss graph')
         self.lossGraph_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs, QLinearWidget, "Linear"))
-        self.graphsMenu.addAction(self.lossGraph_dropButton)
+        self.viewMenu.addAction(self.lossGraph_dropButton)
         ###Elapsed Time###
         self.timeGraph_dropButton = QAction('Elapsed Time', self)
         self.timeGraph_dropButton.setShortcut('Shift+T')
         self.timeGraph_dropButton.setStatusTip('Generate loss graph')
         self.timeGraph_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs, QElapsedTimeWidget, "Epochs / Time"))
-        self.graphsMenu.addAction(self.timeGraph_dropButton)
+        self.viewMenu.addAction(self.timeGraph_dropButton)
         ###EEG###
         self.eegGraph_dropButton = QAction('Electroencephalography Graph (Yes, you can)', self)
         self.eegGraph_dropButton.setShortcut('Shift+E')
         self.eegGraph_dropButton.setStatusTip('Generate EEG graph')
         self.eegGraph_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs, QEEGWidget, "Neural Network EEG"))
-        self.graphsMenu.addAction(self.eegGraph_dropButton)
+        self.viewMenu.addAction(self.eegGraph_dropButton)
 
         ###Menu Bar: Help###
         ###Help Center###
@@ -159,7 +166,7 @@ class GUI(QMainWindow):
             root.addTab(tab, name)
 
         if self.panel_tabs.findChild(QTrainWidget):
-            self.graphsMenu.setEnabled(True)
+            self.viewMenu.setEnabled(True)
 
     def removeTab(self, index):
         widget = self.panel_tabs.widget(index)
@@ -168,7 +175,7 @@ class GUI(QMainWindow):
         self.panel_tabs.removeTab(index)
 
         if type(widget) == QTrainWidget:
-            self.graphsMenu.setEnabled(False)
+            self.viewMenu.setEnabled(False)
 
     def importDatasets(self):
         if self.panel_tabs.findChildren(QImportWidget) == []:
