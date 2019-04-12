@@ -11,20 +11,16 @@ class QResultsWidget(QWidget):
     def initUI(self):
         self.trainingSet_Label = QLabel(self)
         self.trainingSet_Label.setText("Training set")
-        self.trainingSet_Label.move(15, 35)
+        self.trainingSet_Label.move(15,35)
         self.trainingImage = QLabel(self)
         self.trainingImage.resize(530, 530)
-        self.pixmapTrained = QPixmap("real_samples.png")
-        self.trainingImage.setPixmap(self.pixmapTrained)
-        self.trainingImage.move(15, 50)
+        self.trainingImage.move(15,50)
 
         self.producedSet_Label = QLabel(self)
         self.producedSet_Label.setText("Generated set")
         self.producedSet_Label.move(15, 605)
         self.producedImg = QLabel(self)
         self.producedImg.resize(530, 530)
-        self.pixmapGenerated = QPixmap("fake_samples_epoch_000.png")
-        self.producedImg.setPixmap(self.pixmapGenerated)
         # Previous location (15, 625)
         self.producedImg.move(15, 100)
 
@@ -47,6 +43,7 @@ class QResultsWidget(QWidget):
             self.producedImg.setPixmap(self.pixmapGenerated)
         # Swap emitted signal for label setting
         self.signal = not self.signal
+
 
     def refresh(self):
         placeholder = "placeholder"

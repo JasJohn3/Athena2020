@@ -92,9 +92,9 @@ class Trainer(QThread):
                 optimize_generate.step()
 
                 # Save trainData and testData images every 100 steps .002 seconds
-                if i % 100 == 0:
-                    self.emit_image(trainData, self.trainImageSignal, normalize=True)
-                    self.emit_image(testData.data, self.testImageSignal, normalize=True)
+
+                self.emit_image(trainData, self.trainImageSignal, normalize=True)
+                self.emit_image(testData.data, self.testImageSignal, normalize=True)
 
                 # *Epoch end time*
                 end = time.time()
