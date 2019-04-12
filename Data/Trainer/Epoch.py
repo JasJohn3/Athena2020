@@ -1,9 +1,12 @@
+import ctypes
+from os import path
+
 from torch.nn import BCELoss
 import torch.nn.parallel
 from torch.optim import Adam
 import torch.utils.data
 from torchvision.utils import *
-from os import path
+import os
 from Data.NeuralNetwork import *
 from .Dataset import createDataloader
 import time
@@ -24,12 +27,13 @@ class Trainer(QThread):
     testImageSignal = pyqtSignal(Image.Image)
     completeSignal = pyqtSignal()
 
-    def __init__(self, epochs, dataset):
+    def __init__(self, epochs, dataset, user_session):
         QThread.__init__(self)
         self.discriminator = Discriminator()
         self.generator = Generator()
         self.epochs = int(epochs)
         self.dataset = dataset
+        self.user_session = user_session
 
     def run(self):
         dataloader = createDataloader(self.dataset)
@@ -92,9 +96,24 @@ class Trainer(QThread):
                 optimize_generate.step()
 
                 # Save trainData and testData images every 100 steps .002 seconds
+                # Get User Document Folder
+                buf = ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
+                ctypes.windll.shell32.SHGetFolderPathW(None, 5, None, 0, buf)
 
-                self.emit_image(trainData, self.trainImageSignal, normalize=True)
-                self.emit_image(testData.data, self.testImageSignal, normalize=True)
+                root = buf.value + '\\Athena'
+
+                if i % 1 == 0:
+                    if not os.path.exists(root + '/%s/Results' % self.user_session):
+                        os.makedirs(root + '/%s/Results' % self.user_session)
+                    if not os.path.exists(root + './%s/Results/real' % self.user_session):
+                        os.makedirs(root + '/%s/Results/real' % self.user_session)
+                    if not os.path.exists(root + '/%s/Results/Fake' %self.user_session):
+                        os.makedirs(root + '/%s/Results/Fake' %self.user_session)
+                    save_image(trainData, '%s/real_samples_epoch_%03d.bmp' % (root + "/%s/Results/Real" % self.user_session, epoch), normalize=True)
+                    save_image(testData.data, '%s/fake_samples_epoch_%03d.bmp' % (root + "/%s/Results/Fake" % self.user_session, epoch), normalize=True)
+                    self.emit_image(trainData, self.trainImageSignal, normalize=True)
+                    self.emit_image(testData.data, self.testImageSignal, normalize=True)
+
 
                 # *Epoch end time*
                 end = time.time()
@@ -114,11 +133,13 @@ class Trainer(QThread):
                 self.epochSignal.emit((epoch * len(dataloader)) + i + 1)
 
             # Save the GAN state
+            if not os.path.exists(root + '/%s/Save' % self.user_session):
+                os.makedirs(root + '/%s/Save' % self.user_session)
             torch.save({
                 'Generator': self.generator.state_dict(),
                 'Discriminator': self.discriminator.state_dict(),
                 'optimizerD_state_dict': optimize_discriminate.state_dict(),
-                'optimizerG_state_dict': optimize_generate.state_dict()}, './Data/ATHENA_GAN.tar')
+                'optimizerG_state_dict': optimize_generate.state_dict()}, './Save/ATHENA_GAN.tar')
 
         self.completeSignal.emit()
 
