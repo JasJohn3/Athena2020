@@ -20,9 +20,15 @@ class GUI(QMainWindow):
         super().__init__()
         self.setWindowIcon(QIcon('Data/Athena_v1.ico'))
         self.setWindowTitle('Athena')
-        self.setMinimumSize(640, 400)
-        self.resize(640, 400)
+        self.setMinimumSize(.5 * app.desktop().screenGeometry().width(), (5 / 9) * app.desktop().screenGeometry().height())
+        #self.setMinimumSize(640, 400)
 
+        from win32api import GetSystemMetrics
+
+        print("Width =", GetSystemMetrics(0))
+        print("Height =", GetSystemMetrics(1))
+
+        print(app.desktop().screenGeometry())
 
         # Center window
         window = self.frameGeometry()
@@ -36,10 +42,10 @@ class GUI(QMainWindow):
         ###
         # Panel options
         ###
-        self.panel_options = QWidget(self)
+        self.panel_options = QRefWidget(self)
         self.panel_options.setGeometry(4, 21, self.width() * .2, self.height() - 24)
-        self.widget_references = QRefWidget(self.panel_options)
-        self.widget_references.setStyleSheet(open('Data/CSS.cfg').read())
+        #self.widget_references = QRefWidget(self.panel_options)
+        #self.widget_references.setStyleSheet(open('Data/CSS.cfg').read())
 
         ###
         # Panel Canvas
@@ -170,12 +176,13 @@ class GUI(QMainWindow):
 
     def removeTab(self, index):
         widget = self.panel_tabs.widget(index)
-        if widget is not None:
-            widget.deleteLater()
-        self.panel_tabs.removeTab(index)
+        if (type(widget) == QTrainWidget and self.panel_tabs.findChild(QTrainWidget).findChild(QPushButton).isEnabled()) or type(widget) != QTrainWidget:
+            if type(widget) == QTrainWidget:
+                self.viewMenu.setEnabled(False)
 
-        if type(widget) == QTrainWidget:
-            self.viewMenu.setEnabled(False)
+            if widget is not None:
+                widget.deleteLater()
+            self.panel_tabs.removeTab(index)
 
     def importDatasets(self):
         if self.panel_tabs.findChildren(QImportWidget) == []:
@@ -201,6 +208,7 @@ if __name__ == '__main__':
     if hasattr(QtCore.Qt, 'AA_UseHighDpiPixmaps'):
         PyQt5.QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
     app = QApplication(sys.argv)
+
     #Set the style of the entire GUI
     app.setStyleSheet(open('Data/CSS.cfg').read())
     Athena = GUI()
