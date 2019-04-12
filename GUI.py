@@ -32,8 +32,9 @@ class GUI(QMainWindow):
 
         # Center window
         window = self.frameGeometry()
+        self.move(window.topRight())
         window.moveCenter(QDesktopWidget().availableGeometry().center())
-        self.move(window.topLeft())
+
 
         self.initUI()
 
@@ -73,6 +74,13 @@ class GUI(QMainWindow):
         self.helpMenu = self.mainMenu.addMenu('Help')
 
         ###Menu Bar: File###
+
+        ###New Session###
+        self.newSession_DropButton=QAction('New Session', self)
+        self.newSession_DropButton.setShortcut('CTRL+N')
+        #self.newSession_DropButton.triggered.connect()
+        self.trainMenu.addAction(self.newSession_DropButton)
+
         ###Train###
         self.train_dropButton = QAction('Train', self)
         self.train_dropButton.setShortcut('Ctrl+T')
@@ -97,7 +105,7 @@ class GUI(QMainWindow):
         ###Results###
         self.results_dropButton = QAction('Results', self)
         self.results_dropButton.setShortcut('Shift+V')
-        self.results_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs, QResultsWidget, "Results"))
+        self.results_dropButton.triggered.connect(lambda: self.panel_tabs.findChild(QTrainWidget).graph_tabs.addTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs.findChild(QResultsWidget), "Results"))
         self.viewMenu.addAction(self.results_dropButton)
 
         ###Histogram###

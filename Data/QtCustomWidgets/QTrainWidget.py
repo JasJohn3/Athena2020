@@ -16,6 +16,7 @@ class QTrainWidget(QWidget):
         self.initUI()
 
     def initUI(self):
+
         # ===DATASETS COMBOBOX===
         self.datasets_Label = QLabel(self)
         self.datasets_Label.setText("Datasets:")
@@ -23,8 +24,8 @@ class QTrainWidget(QWidget):
         self.datasets_ComboBox = QComboBox(self)
         # self.datasets_ComboBox.changeEvent(lambda: self.train_Button.setEnabled(self.datasets_ComboBox.currentIndex() != 0)) <-- Todo lookup
 
-        #print(self.datasets_ComboBox.activated)
-        #print(self.datasets_ComboBox.currentIndex())
+        print(self.datasets_ComboBox.activated)
+        print(self.datasets_ComboBox.currentIndex())
         self.datasets_ComboBox.setToolTip("Your current uploaded datasets.")
         self.datasets_ComboBox.addItem("<Your Datasets>")
         self.datasets_ComboBox.addItem("cifar10")
@@ -34,6 +35,8 @@ class QTrainWidget(QWidget):
         self.datasets_ComboBox.addItem("lsun")
         self.datasets_ComboBox.addItem("imagenet")
         self.datasets_ComboBox.setGeometry(self.datasets_Label.width() + self.datasets_Label.x() + 4, self.datasets_Label.y(), 110, 15)
+
+        self.datasets_ComboBox.currentTextChanged.connect(lambda: self.train_Button.setEnabled(True) if self.datasets_ComboBox.currentText() != "<Your Datasets>" else self.train_Button.setEnabled(False))
 
         # ===USER INPUT EPOCH===
         self.inputEpochs_Label = QLabel(self)
@@ -84,7 +87,7 @@ class QTrainWidget(QWidget):
 
         # ===TRAIN BUTTON===
         self.train_Button = QPushButton('Train', self)
-        #self.train_Button.setEnabled(False)
+        self.train_Button.setEnabled(False)
         self.train_Button.setToolTip('Begin Training')
         self.train_Button.setGeometry(100, 300, 90, 30)
         self.train_Button.clicked.connect(self.train)
@@ -119,9 +122,6 @@ class QTrainWidget(QWidget):
             root.addTab(tab, name)
 
     def removeTab(self, index):
-        widget = self.graph_tabs.widget(index)
-        if widget is not None:
-            widget.deleteLater()
         self.graph_tabs.removeTab(index)
 
     def train(self):
