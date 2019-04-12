@@ -20,7 +20,7 @@ class GUI(QMainWindow):
         super().__init__()
         self.setWindowIcon(QIcon('Data/Athena_v1.ico'))
         self.setWindowTitle('Athena')
-
+        self.setMinimumSize(640, 400)
         self.resize(640, 400)
 
 

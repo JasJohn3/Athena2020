@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import *
 from Data.Trainer.Epoch import Trainer
-from Data.QtCustomWidgets import QTrainWidget, QResultsWidget
+from Data.QtCustomWidgets import *
 
 
 """
@@ -14,23 +14,8 @@ class QTrainWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__()
         self.initUI()
-        self.Load = False
 
     def initUI(self):
-        #===SCROLL AREA===
-        self.scrollBar = QScrollArea(self)
-        self.scrollBar.setGeometry(0, self.height() - 15, self.width(), 15)
-        self.scrollBar.setWidgetResizable(True)
-        self.scrollContent = QWidget(self.scrollBar)
-        self.scrollLayout = QVBoxLayout(self.scrollContent)
-        self.scrollContent.setLayout(self.scrollLayout)
-
-        self.scrollBar.setWidget(self.scrollContent)
-
-        def comboBoxChecker():
-            currentSet = self.datasets_ComboBox.currentIndex()
-
-
         # ===DATASETS COMBOBOX===
         self.datasets_Label = QLabel(self)
         self.datasets_Label.setText("Datasets:")
@@ -48,9 +33,6 @@ class QTrainWidget(QWidget):
         self.datasets_ComboBox.addItem("stl10")
         self.datasets_ComboBox.addItem("lsun")
         self.datasets_ComboBox.addItem("imagenet")
-
-
-        comboBoxChecker()
         self.datasets_ComboBox.setGeometry(self.datasets_Label.width() + self.datasets_Label.x() + 4, self.datasets_Label.y(), 110, 15)
 
         # ===USER INPUT EPOCH===
@@ -107,42 +89,34 @@ class QTrainWidget(QWidget):
         self.train_Button.setGeometry(100, 300, 90, 30)
         self.train_Button.clicked.connect(self.train)
 
-        # ===LOAD BUTTON====
-        self.load_button = QPushButton('Load', self)
-        self.load_button.setToolTip('Load your neural network weights')
-        self.load_button.setGeometry(100,350,90,30)
-
-        # ====SAVE BUTTON====
-        self.save_button = QPushButton('Save', self)
-        self.save_button.setToolTip('Save your current epoch')
-        self.save_button.setGeometry(100,400,90,30)
-        #self.save_button.clicked.connect()
-
-        # ===GRAPHS PANE===
-        self.graph_canvas = QWidget(self)
-        #self.graph_canvas.setStyleSheet("background-color: transparent; border: 0px;")
-        self.graph_canvas.setGeometry(365, 4, self.width() *.5, self.height() - 12)
         # ==== Graph Tab Pane ====
+        self.graph_canvas = QWidget(self)
+        self.graph_canvas.setStyleSheet("background-color: transparent; border: 0px;")
+
         self.graph_tabs = QTabWidget(self.graph_canvas)
         self.graph_tabs.setTabsClosable(True)
         self.graph_tabs.tabCloseRequested.connect(self.removeTab)
         self.graph_tabs.setMovable(True)
-        self.graph_tabs.setGeometry(0, 0, self.graph_canvas.width(), self.graph_canvas.height())
 
-
+        # ===Scroll Bar===
+        self.scrollbar = QScrollBar(self)
+        self.scrollbar.setOrientation(1)
 
     def activateTrainButton(self):
         self.train_Button.setEnabled(self.datasets_ComboBox.currentIndex() != 0)
 
     def resizeEvent(self, *args, **kwargs):
-                self.train_Button.move(100, self.height() - (self.train_Button.height() + 75))
-                self.load_button.move(100, self.height() - (self.load_button.height() + 35))
-                self.save_button.move(4, self.height() - (self.save_button.height() + 75))
-                self.outputLog_TextBox.setGeometry(self.outputLog_TextBox.x(), self.outputLog_TextBox.y(), (self.width() - self.outputLog_TextBox.x()) * .5 + 4, self.height() - (self.outputLog_TextBox.y() + 19))
-                self.graph_canvas.setGeometry(self.outputLog_TextBox.x() + self.outputLog_TextBox.width() + 4, self.graph_canvas.y(), (self.width() - self.outputLog_TextBox.x()) * .5 + 4, self.height() - (self.outputLog_TextBox.y() + 19))
-                self.graph_tabs.setGeometry(0, 0, self.graph_canvas.width(), self.graph_canvas.height())
-                self.scrollBar.setGeometry(0, self.height() - 15, self.width(), 15)
+        self.train_Button.move(57, self.height() - (self.train_Button.height() + 75))
+        self.outputLog_TextBox.setGeometry(self.outputLog_TextBox.x(), self.outputLog_TextBox.y(), (self.width() - self.outputLog_TextBox.x()) * .5 + 4, self.height() - (self.outputLog_TextBox.y() + 19))
+        self.graph_canvas.setGeometry(self.outputLog_TextBox.x() + self.outputLog_TextBox.width() + 4, self.outputLog_TextBox.y(), (self.width() - self.outputLog_TextBox.x()) * .5 - 12, self.height() - (self.outputLog_TextBox.y() + 19))
+        self.graph_tabs.setGeometry(0, 0, self.graph_canvas.width(), self.graph_canvas.height())
+        self.scrollbar.setGeometry(0, self.height() - 15, self.width(), 15)
 
+    def createTab(self, root, widget, name):
+        if not root.findChild(widget):
+            tab = widget(root)
+            tab.setStyleSheet(open('Data/CSS.cfg').read())
+            root.addTab(tab, name)
 
     def removeTab(self, index):
         widget = self.graph_tabs.widget(index)
@@ -152,8 +126,9 @@ class QTrainWidget(QWidget):
 
     def train(self):
         self.train_Button.setDisabled(True)
-        newTab = lambda: self.createTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs, QResultsWidget)
-        self.epochs_Thread = Trainer(self.inputEpochs_SB.text(), self.datasets_ComboBox.currentText(), False)
+        self.createTab(self.graph_tabs, QResultsWidget, "Results")
+
+        self.epochs_Thread = Trainer(self.inputEpochs_SB.text(), self.datasets_ComboBox.currentText())
         self.epochs_Thread.logSignal.connect(self.outputLog_TextBox.append)
         self.epochs_Thread.stepSignal.connect(self.steps_ProgressBar.setValue)
         self.epochs_Thread.epochSignal.connect(self.epoch_ProgressBar.setValue)
@@ -162,4 +137,6 @@ class QTrainWidget(QWidget):
         self.epochs_Thread.epochtimeSignal.connect(self.epochETA_Display.setText)
         self.epochs_Thread.totaltimeSignal.connect(self.completionETA_Display.setText)
         self.epochs_Thread.completeSignal.connect(lambda: self.train_Button.setDisabled(False))
+        self.epochs_Thread.trainImageSignal.connect(self.graph_tabs.findChild(QResultsWidget).addImage)
+        self.epochs_Thread.testImageSignal.connect(self.graph_tabs.findChild(QResultsWidget).addImage)
         self.epochs_Thread.start()

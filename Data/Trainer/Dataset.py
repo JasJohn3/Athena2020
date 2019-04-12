@@ -39,7 +39,7 @@ def loadImage():
                       num_workers=0)
 
 
-def get_dataset(dataset='', train=True, transform=None, target_transform=None, download=True, path='Datasets'):
+def get_dataset(dataset='', train=True, transform=None, target_transform=None, download=True, path='Datasets\\'):
     root = os.path.join(path, dataset)
 
     if dataset == 'cifar10':

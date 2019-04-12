@@ -20,8 +20,8 @@ class Trainer(QThread):
     totaltimeSignal = pyqtSignal(str)
     stepSignal = pyqtSignal(int)
     epochSignal = pyqtSignal(int)
-    trainImageSignal = pyqtSignal()
-    testImageSignal = pyqtSignal()
+    trainImageSignal = pyqtSignal(Image.Image)
+    testImageSignal = pyqtSignal(Image.Image)
     completeSignal = pyqtSignal()
 
     def __init__(self, epochs, dataset):
@@ -132,10 +132,13 @@ class Trainer(QThread):
             m.bias.data.fill_(0)
 
     # Convert created image arrays to image
-    def emit_image(self, tensor, signal,  nrow=8, padding=2,
-               normalize=False, range=None, scale_each=False, pad_value=0):
+    def emit_image(self, tensor, signal, nrow=8, padding=2,
+                   normalize=False, range=None, scale_each=False, pad_value=0):
 
+        # Take tensor and create a image with the grid size and padding between each image
         grid = make_grid(tensor, nrow=nrow, padding=padding, pad_value=pad_value,
                          normalize=normalize, range=range, scale_each=scale_each)
+        # Convert grid to a ndarray with image notations
         ndarr = grid.mul(255).clamp(0, 255).byte().permute(1, 2, 0).cpu().numpy()
+        # Emit and convert ndarray to a Pillow Image
         signal.emit(Image.fromarray(ndarr))
