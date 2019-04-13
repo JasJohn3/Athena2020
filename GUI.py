@@ -12,6 +12,7 @@ from Data.QtCustomWidgets import *
 from PyQt5.QtGui import QIcon, QColor, QPalette
 import PyQt5.QtCore as QtCore
 import PyQt5
+
 import time
 
 
@@ -20,13 +21,11 @@ class GUI(QMainWindow):
         super().__init__()
         self.setWindowIcon(QIcon('Data/Athena_v1.ico'))
         self.setWindowTitle('Athena')
-        self.setMinimumSize(640, 400)
-        self.resize(640, 400)
+        self.setMinimumSize(.5 * app.desktop().screenGeometry().width(), (5 / 9) * app.desktop().screenGeometry().height())
 
 
         # Center window
         window = self.frameGeometry()
-        self.move(window.topRight())
         window.moveCenter(QDesktopWidget().availableGeometry().center())
 
 
@@ -37,10 +36,9 @@ class GUI(QMainWindow):
         ###
         # Panel options
         ###
-        self.panel_options = QWidget(self)
+        self.panel_options = QRefWidget(self)
         self.panel_options.setGeometry(4, 21, self.width() * .2, self.height() - 24)
-        self.widget_references = QRefWidget(self.panel_options)
-        self.widget_references.setStyleSheet(open('Data/CSS.cfg').read())
+        #self.panel_options.setStyleSheet(open('Data/CSS.cfg').read())
 
         ###
         # Panel Canvas
@@ -70,7 +68,7 @@ class GUI(QMainWindow):
         ###Menu Bar: File###
 
         ###New Session###
-        self.newSession_DropButton=QAction('New Session', self)
+        self.newSession_DropButton = QAction('New Session', self)
         self.newSession_DropButton.setShortcut('CTRL+N')
         #self.newSession_DropButton.triggered.connect()
         self.trainMenu.addAction(self.newSession_DropButton)
@@ -81,6 +79,8 @@ class GUI(QMainWindow):
         self.train_dropButton.setStatusTip('Train a model')
         self.train_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs, QTrainWidget, "Model Training"))
         self.trainMenu.addAction(self.train_dropButton)  # add button to dropdown menu
+
+
 
         ###Import Dataset###
         self.customData_dropButton = QAction('Import Dataset', self)
@@ -209,6 +209,7 @@ if __name__ == '__main__':
     if hasattr(QtCore.Qt, 'AA_UseHighDpiPixmaps'):
         PyQt5.QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
     app = QApplication(sys.argv)
+    print(app.desktop().screenGeometry())
     #Set the style of the entire GUI
     app.setStyleSheet(open('Data/CSS.cfg').read())
     Athena = GUI()

@@ -5,6 +5,7 @@ from PyQt5.QtCore import QUrl
 class QDevWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__()
+        self.setParent(parent)
         self.initUI()
 
     # Allows for linking to personal websites of developers.

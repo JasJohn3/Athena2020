@@ -4,6 +4,7 @@ from PyQt5 import QtGui, QtCore, QtWidgets
 class QImportWidget(QWidget):
     def __init__(self, parent = None):
         super().__init__()
+        self.setParent(parent)
         self.initUI()
 
     def initUI(self):

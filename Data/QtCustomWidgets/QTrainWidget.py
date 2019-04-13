@@ -13,6 +13,7 @@ Graphs will be implemented in the manner done by tutorial.
 class QTrainWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__()
+        self.setParent(parent)
         self.initUI()
 
     def initUI(self):
@@ -22,10 +23,6 @@ class QTrainWidget(QWidget):
         self.datasets_Label.setText("Datasets:")
         self.datasets_Label.setGeometry(4, 4, self.datasets_Label.fontMetrics().boundingRect(self.datasets_Label.text()).width(), 15)
         self.datasets_ComboBox = QComboBox(self)
-        # self.datasets_ComboBox.changeEvent(lambda: self.train_Button.setEnabled(self.datasets_ComboBox.currentIndex() != 0)) <-- Todo lookup
-
-        print(self.datasets_ComboBox.activated)
-        print(self.datasets_ComboBox.currentIndex())
         self.datasets_ComboBox.setToolTip("Your current uploaded datasets.")
         self.datasets_ComboBox.addItem("<Your Datasets>")
         self.datasets_ComboBox.addItem("cifar10")

@@ -5,6 +5,7 @@ from PIL.ImageQt import ImageQt
 class QResultsWidget(QWidget):
     def __init__(self, parent = None):
         super().__init__()
+        self.setParent(parent)
         self.signal = True
         self.initUI()
 
