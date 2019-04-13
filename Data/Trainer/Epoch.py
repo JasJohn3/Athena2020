@@ -1,16 +1,18 @@
+import ctypes
+import ctypes.wintypes
+from os import path
 from torch.nn import BCELoss
 import torch.nn.parallel
 from torch.optim import Adam
 import torch.utils.data
 from torchvision.utils import *
-from os import path
+import os
 from Data.NeuralNetwork import *
 from .Dataset import createDataloader
 import time
 import datetime
 from PyQt5.QtCore import pyqtSignal, QThread
 from PIL import Image
-
 
 class Trainer(QThread):
     maxstepsSignal = pyqtSignal(int)
@@ -24,14 +26,19 @@ class Trainer(QThread):
     testImageSignal = pyqtSignal(Image.Image)
     completeSignal = pyqtSignal()
 
-    def __init__(self, epochs, dataset):
+    def __init__(self, epochs, dataset, user_session):
         QThread.__init__(self)
         self.discriminator = Discriminator()
         self.generator = Generator()
         self.epochs = int(epochs)
         self.dataset = dataset
+        self.user_session = user_session
 
     def run(self):
+        buf = ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
+        ctypes.windll.shell32.SHGetFolderPathW(None, 5, None, 0, buf)
+        root = buf.value + '\\Athena'
+
         dataloader = createDataloader(self.dataset)
         self.logSignal.emit("Starting...\n")
 
@@ -48,15 +55,12 @@ class Trainer(QThread):
         optimize_generate = Adam(self.generator.parameters(), lr=0.0002, betas=(0.5, 0.999))
 
         # Check for a saved GAN
-        if path.exists("./Data/ATHENA_GAN.tar"):
-            optimizerG = optimize_generate
-            optimizerD = optimize_discriminate
-
-            checkpoint = torch.load('./Data/ATHENA_GAN.tar')
+        if path.exists(root + '/%s/Save/ATHENA_GAN.tar' % self.user_session):
+            checkpoint = torch.load(root + '/%s/Save/ATHENA_GAN.tar' % self.user_session)
             self.generator.load_state_dict(checkpoint['Generator'])
             self.discriminator.load_state_dict(checkpoint['Discriminator'])
-            optimize_discriminate = optimizerG.load_state_dict(checkpoint['optimizerG_state_dict'])
-            optimize_generate = optimizerD.load_state_dict(checkpoint['optimizerD_state_dict'])
+            optimize_generate.load_state_dict(checkpoint['optimizerG_state_dict'])
+            optimize_discriminate.load_state_dict(checkpoint['optimizerD_state_dict'])
             self.generator.eval()
             self.discriminator.eval()
 
@@ -92,7 +96,7 @@ class Trainer(QThread):
                 optimize_generate.step()
 
                 # Save trainData and testData images every 100 steps .002 seconds
-
+                # Get User Document Folder
                 self.emit_image(trainData, self.trainImageSignal, normalize=True)
                 self.emit_image(testData.data, self.testImageSignal, normalize=True)
 
@@ -113,12 +117,27 @@ class Trainer(QThread):
                 self.stepSignal.emit(i + 1)
                 self.epochSignal.emit((epoch * len(dataloader)) + i + 1)
 
+            #Save an image file at the completion of each Epoch
+            if not os.path.exists(root + '/%s/Results' % self.user_session):
+                os.makedirs(root + '/%s/Results' % self.user_session)
+            if not os.path.exists(root + './%s/Results/real' % self.user_session):
+                os.makedirs(root + '/%s/Results/real' % self.user_session)
+            if not os.path.exists(root + '/%s/Results/Fake' % self.user_session):
+                os.makedirs(root + '/%s/Results/Fake' % self.user_session)
+            save_image(trainData,
+                       '%s/real_samples_epoch_%03d.bmp' % (root + "/%s/Results/Real" % self.user_session, epoch),
+                       normalize=True)
+            save_image(testData.data,
+                       '%s/fake_samples_epoch_%03d.bmp' % (root + "/%s/Results/Fake" % self.user_session, epoch),
+                       normalize=True)
             # Save the GAN state
+            if not os.path.exists(root + '/%s/Save' % self.user_session):
+                os.makedirs(root + '/%s/Save' % self.user_session)
             torch.save({
                 'Generator': self.generator.state_dict(),
                 'Discriminator': self.discriminator.state_dict(),
                 'optimizerD_state_dict': optimize_discriminate.state_dict(),
-                'optimizerG_state_dict': optimize_generate.state_dict()}, './Data/ATHENA_GAN.tar')
+                'optimizerG_state_dict': optimize_generate.state_dict()},root + '/%s/Save/ATHENA_GAN.tar' % self.user_session)
 
         self.completeSignal.emit()
 

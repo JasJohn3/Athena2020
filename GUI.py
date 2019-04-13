@@ -12,7 +12,6 @@ from Data.QtCustomWidgets import *
 from PyQt5.QtGui import QIcon, QColor, QPalette
 import PyQt5.QtCore as QtCore
 import PyQt5
-
 import time
 
 
@@ -79,8 +78,6 @@ class GUI(QMainWindow):
         self.train_dropButton.setStatusTip('Train a model')
         self.train_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs, QTrainWidget, "Model Training"))
         self.trainMenu.addAction(self.train_dropButton)  # add button to dropdown menu
-
-
 
         ###Import Dataset###
         self.customData_dropButton = QAction('Import Dataset', self)
@@ -178,12 +175,13 @@ class GUI(QMainWindow):
 
     def removeTab(self, index):
         widget = self.panel_tabs.widget(index)
-        if widget is not None:
-            widget.deleteLater()
-        self.panel_tabs.removeTab(index)
+        if (type(widget) == QTrainWidget and self.panel_tabs.findChild(QTrainWidget).findChild(QPushButton).isEnabled()) or type(widget) != QTrainWidget:
+            if type(widget) == QTrainWidget:
+                self.viewMenu.setEnabled(False)
 
-        if type(widget) == QTrainWidget:
-            self.viewMenu.setEnabled(False)
+            if widget is not None:
+                widget.deleteLater()
+            self.panel_tabs.removeTab(index)
 
     def importDatasets(self):
         if self.panel_tabs.findChildren(QImportWidget) == []:
@@ -209,7 +207,6 @@ if __name__ == '__main__':
     if hasattr(QtCore.Qt, 'AA_UseHighDpiPixmaps'):
         PyQt5.QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
     app = QApplication(sys.argv)
-    print(app.desktop().screenGeometry())
     #Set the style of the entire GUI
     app.setStyleSheet(open('Data/CSS.cfg').read())
     Athena = GUI()
