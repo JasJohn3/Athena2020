@@ -25,6 +25,9 @@ class Trainer(QThread):
     trainImageSignal = pyqtSignal(Image.Image)
     testImageSignal = pyqtSignal(Image.Image)
     completeSignal = pyqtSignal()
+    generatorLossSignal = pyqtSignal(list)
+    discriminatorLossSignal = pyqtSignal(list)
+    totaltraining = pyqtSignal(int)
 
     def __init__(self, epochs, dataset, user_session):
         QThread.__init__(self)
@@ -69,7 +72,7 @@ class Trainer(QThread):
             for i, trainData in enumerate(dataloader, 0):
                 # *Epoch start time*
                 start = time.time()
-
+                total_training = (len(dataloader) * epoch)
                 # Creation of train and test data .3 seconds
                 trainData, _ = trainData
                 noise = torch.randn(trainData.size()[0], 100, 1, 1)
@@ -94,7 +97,10 @@ class Trainer(QThread):
                 error_generate = criterion(self.discriminator(testData), ones)
                 error_generate.backward()
                 optimize_generate.step()
-
+                G_Loss = []
+                D_Loss = []
+                G_Loss.append(error_generate.item())
+                D_Loss.append(error_generate.item())
                 # Save trainData and testData images every 100 steps .002 seconds
                 # Get User Document Folder
                 self.emit_image(trainData, self.trainImageSignal, normalize=True)
@@ -116,6 +122,9 @@ class Trainer(QThread):
                 self.totaltimeSignal.emit("{:0>8}".format(str(training_Time)))
                 self.stepSignal.emit(i + 1)
                 self.epochSignal.emit((epoch * len(dataloader)) + i + 1)
+                self.totaltraining.emit(total_training)
+                self.generatorLossSignal.emit(G_Loss)
+                self.discriminatorLossSignal.emit(D_Loss)
 
             #Save an image file at the completion of each Epoch
             if not os.path.exists(root + '/%s/Results' % self.user_session):
