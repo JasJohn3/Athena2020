@@ -2,8 +2,6 @@ from PyQt5.QtWidgets import *
 from Data.Trainer.Epoch import Trainer
 from Data.QtCustomWidgets import *
 from PyQt5.QtGui import QPainter
-from Data.QtCustomWidgets.QHistogramWidget import QHistogramWidget
-from Data.QtCustomWidgets.QResultsWidget import QResultsWidget
 
 
 """
@@ -131,10 +129,10 @@ class QTrainWidget(QWidget):
         # Use Parent function to create tab
         self.parent().parent().parent().parent().createTab(self.graph_tabs, QResultsWidget, "Results")
         self.parent().parent().parent().parent().createTab(self.graph_tabs, QResultsWidget, "Results")
-        self.parent().parent().parent().parent().createTab(self.graph_tabs, QHistogramWidget, "Histogram").hide()
-        self.parent().parent().parent().parent().createTab(self.graph_tabs, QScatterplotWidget, "Scatterplot").hide()
-        self.parent().parent().parent().parent().createTab(self.graph_tabs, QEEGWidget, "EEG").hide()
-        self.parent().parent().parent().parent().createTab(self.graph_tabs, QLinearWidget, "Loss over time").hide()
+        self.parent().parent().parent().parent().createTab(self.graph_tabs, QHistogramWidget, "Histogram")
+        self.parent().parent().parent().parent().createTab(self.graph_tabs, QScatterplotWidget, "Scatterplot")
+        self.parent().parent().parent().parent().createTab(self.graph_tabs, QEEGWidget, "EEG")
+        self.parent().parent().parent().parent().createTab(self.graph_tabs, QLinearWidget, "Loss over time")
 
         # Create thread for training GAN
         self.epochs_Thread = Trainer(self.inputEpochs_SB.text(), self.datasets_ComboBox.currentText(), 'Test')
