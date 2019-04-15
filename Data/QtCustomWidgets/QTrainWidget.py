@@ -126,7 +126,7 @@ class QTrainWidget(QWidget):
     def train(self):
         self.train_Button.setDisabled(True)
         self.createTab(self.graph_tabs, QResultsWidget, "Results")
-        self.createTab(self.graph_tabs, QHistogramWidget, "Histogram").hide()
+        self.createTab(self.graph_tabs, QHistogramWidget, "Histogram")
         self.createTab(self.graph_tabs, QScatterplotWidget, "Scatterplot")
         self.createTab(self.graph_tabs, QEEGWidget, "EEG")
         self.createTab(self.graph_tabs, QLinearWidget, "Loss over time")
