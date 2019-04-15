@@ -25,8 +25,8 @@ class Trainer(QThread):
     trainImageSignal = pyqtSignal(Image.Image)
     testImageSignal = pyqtSignal(Image.Image)
     completeSignal = pyqtSignal()
-    generatorLossSignal = pyqtSignal(list)
-    discriminatorLossSignal = pyqtSignal(list)
+    LossSignal = pyqtSignal(float, float)
+    #discriminatorLossSignal = pyqtSignal(float)
     totaltraining = pyqtSignal(int)
 
     def __init__(self, epochs, dataset, user_session):
@@ -68,8 +68,6 @@ class Trainer(QThread):
             self.discriminator.eval()
         #Creating Lists for Histogram data
         total_training = int((len(dataloader) * self.epochs))
-        G_Loss = [0] * total_training
-        D_Loss = [0] * total_training
         # ===Training Epochs===
         for epoch in range(self.epochs):
             for i, trainData in enumerate(dataloader, 0):
@@ -101,9 +99,6 @@ class Trainer(QThread):
                 error_generate.backward()
                 optimize_generate.step()
 
-                G_Loss[current_training] = error_generate.item()
-                D_Loss[current_training] = error_discriminate.item()
-
                 # Save trainData and testData images every 100 steps .002 seconds
                 # Get User Document Folder
                 self.emit_image(trainData, self.trainImageSignal, normalize=True)
@@ -126,8 +121,7 @@ class Trainer(QThread):
                 self.stepSignal.emit(i + 1)
                 self.epochSignal.emit((epoch * len(dataloader)) + i + 1)
                 self.totaltraining.emit(total_training)
-                self.generatorLossSignal.emit(G_Loss)
-                self.discriminatorLossSignal.emit(D_Loss)
+                self.LossSignal.emit(error_generate.item(), error_discriminate.item())
 
             #Save an image file at the completion of each Epoch
             if not os.path.exists(root + '/%s/Results' % self.user_session):

@@ -1,6 +1,5 @@
 from PyQt5.QtWidgets import *
 import matplotlib.pyplot as plt
-import Data.QtCustomWidgets.QTrainWidget
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.colors import ListedColormap
@@ -40,16 +39,16 @@ class QHistogramWidget(QWidget):
         self.figure.clear()
 
         #create an axis
-        ax = self.figure.add_subplot(111)
+        self.ax = self.figure.add_subplot(111)
 
         #plot data
-        ax.set_facecolor('black')
-        ax.hist(self.GVals, bins='auto', color='cyan', alpha=0.7, rwidth=0.85)
-        ax.hist(self.DVals, bins='auto', color='blue', alpha=None)
-        ax.set_title("GAN Loss")
-        ax.set_xlabel('Iterations')
-        ax.set_ylabel('Loss')
-        ax.legend()
+        self.ax.set_facecolor('black')
+        self.ax.hist(self.GVals, bins='auto', color='cyan', alpha=0.7, rwidth=0.85)
+        self.ax.hist(self.DVals, bins='auto', color='blue', alpha=None)
+        self.ax.set_title("GAN Loss")
+        self.ax.set_xlabel('Iterations')
+        self.ax.set_ylabel('Loss')
+        self.ax.legend()
 
         #refresh
         self.canvas.draw()
@@ -63,5 +62,28 @@ class QHistogramWidget(QWidget):
 
         #plt.legend()
         #plt.show()
-
-
+    # def set_GVals(self, value ):
+    #     self.GVals.append(value)
+    #     print(self.GVals)
+    #     self.ax.hist(self.GVals, bins='auto', color='cyan', alpha=0.7, rwidth=0.85)
+    #
+    # def set_DVals(self, value):
+    #     self.DVals.append(value)
+    #     print(self.DVals)
+    #     self.ax.hist(self.DVals, bins='auto', color='blue', alpha=None)
+        # , current, training
+        # self.GVals[0] * training
+        # self.GVals[current] = value
+    def updateGraph(self, ValG = None, ValD = None):
+        self.GVals.append(ValG)
+        self.DVals.append(ValD)
+        self.ax.clear()
+        self.ax.set_facecolor('black')
+        self.ax.hist(self.GVals, bins='auto', color='cyan', alpha=0.7, rwidth=0.85)
+        self.ax.hist(self.DVals, bins='auto', color='blue', alpha=None)
+        self.ax.set_title("GAN Loss")
+        self.ax.set_xlabel('Iterations')
+        self.ax.set_ylabel('Loss')
+        #self.ax.legend()
+        self.repaint()
+        #self.parent().parent().parent().parent().parent().repaint()
