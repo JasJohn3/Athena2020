@@ -84,6 +84,6 @@ class QHistogramWidget(QWidget):
         self.ax.set_title("GAN Loss")
         self.ax.set_xlabel('Iterations')
         self.ax.set_ylabel('Loss')
-        self.ax.legend()
+        #self.ax.legend()
         self.repaint()
         #self.parent().parent().parent().parent().parent().repaint()
