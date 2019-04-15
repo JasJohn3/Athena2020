@@ -1,6 +1,5 @@
 from .QHistogramWidget import QHistogramWidget
 from .QResultsWidget import QResultsWidget
-from .QTrainWidget import QTrainWidget
 from .QDevWidget import QDevWidget
 from .QRefWidget import QRefWidget
 from .QImportWidget import QImportWidget
@@ -10,3 +9,4 @@ from .QElapsedTimeWidget import QElapsedTimeWidget
 from .QLinearWidget import QLinearWidget
 from .QEEGWidget import QEEGWidget
 from .QSessionWindow import QSessionWindow
+from .QTrainWidget import QTrainWidget
