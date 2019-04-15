@@ -66,13 +66,18 @@ class Trainer(QThread):
             optimize_discriminate.load_state_dict(checkpoint['optimizerD_state_dict'])
             self.generator.eval()
             self.discriminator.eval()
-
+        #Creating Lists for Histogram data
+        total_training = int((len(dataloader) * self.epochs))
+        G_Loss = [0] * total_training
+        D_Loss = [0] * total_training
+        print(G_Loss)
+        print(D_Loss)
         # ===Training Epochs===
         for epoch in range(self.epochs):
             for i, trainData in enumerate(dataloader, 0):
                 # *Epoch start time*
                 start = time.time()
-                total_training = (len(dataloader) * epoch)
+                current_training = int((total_training - ((total_training/(epoch + 1)) -  i)))
                 # Creation of train and test data .3 seconds
                 trainData, _ = trainData
                 noise = torch.randn(trainData.size()[0], 100, 1, 1)
@@ -97,10 +102,10 @@ class Trainer(QThread):
                 error_generate = criterion(self.discriminator(testData), ones)
                 error_generate.backward()
                 optimize_generate.step()
-                G_Loss = []
-                D_Loss = []
-                G_Loss.append(error_generate.item())
-                D_Loss.append(error_generate.item())
+
+                G_Loss[current_training] = error_generate.item()
+                D_Loss[current_training] = error_discriminate.item()
+
                 # Save trainData and testData images every 100 steps .002 seconds
                 # Get User Document Folder
                 self.emit_image(trainData, self.trainImageSignal, normalize=True)
