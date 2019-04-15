@@ -1,10 +1,11 @@
 from PyQt5.QtWidgets import *
-from PyQt5 import QtGui, QtCore, QtWidgets
+from PyQt5.QtGui import QPainter
 
 
-class QHelpWidget(QtWidgets.QWidget):
+class QHelpWidget(QWidget):
     def __init__(self, parent = None):
         super().__init__()
+        self.setParent(parent)
         self.initUI()
 
     def initUI(self):
@@ -24,3 +25,14 @@ class QHelpWidget(QtWidgets.QWidget):
 
     def resizeEvent(self,*args, **kwargs):
         self.welcome_Textbox.setGeometry(4, 21, self.width() * .5, self.height() - 24)
+
+    def setGeometry(self, *__args):
+        super().setGeometry(*__args)
+
+    def paintEvent(self, event):
+        super(type(self), self).paintEvent(event)
+        styleSheet = QStyleOption()
+        styleSheet.initFrom(self)
+        paint = QPainter(self)
+        styling = self.style()
+        styling.drawPrimitive(QStyle.PE_CustomBase, styleSheet, paint, self)

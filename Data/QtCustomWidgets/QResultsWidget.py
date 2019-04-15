@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QPainter
 from PIL.ImageQt import ImageQt
 
 class QResultsWidget(QWidget):
@@ -49,4 +49,14 @@ class QResultsWidget(QWidget):
     def refresh(self):
         placeholder = "placeholder"
 
+    def setGeometry(self, *__args):
+        super().setGeometry(*__args)
+
+    def paintEvent(self, event):
+        super(type(self), self).paintEvent(event)
+        styleSheet = QStyleOption()
+        styleSheet.initFrom(self)
+        paint = QPainter(self)
+        styling = self.style()
+        styling.drawPrimitive(QStyle.PE_CustomBase, styleSheet, paint, self)
 

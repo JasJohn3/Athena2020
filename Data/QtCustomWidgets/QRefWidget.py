@@ -2,9 +2,9 @@ from PyQt5.QtWidgets import *
 import PyQt5.QtGui as QtGui
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPainter
 from Data.Trainer.Epoch import Trainer
 from Data.QtCustomWidgets import *
-
 
 
 class QRefWidget(QWidget):
@@ -98,9 +98,7 @@ class QRefWidget(QWidget):
         ###
         self.saveHistogram_CheckBox = QCheckBox(self)
         self.saveHistogram_CheckBox.setToolTip("Save histogram at end of full execution.")
-        self.saveHistogram_CheckBox.setGeometry(self.histogramCB_Label.width() + self.histogramCB_Label.x() + 4,
-                                                self.histogramCB_Label.y(), 15, 15)
-
+        self.saveHistogram_CheckBox.setGeometry(self.histogramCB_Label.width() + self.histogramCB_Label.x() + 4, self.histogramCB_Label.y(), 15, 15)
 
         ###
         #Begin Training Button
@@ -146,12 +144,23 @@ class QRefWidget(QWidget):
             root.addTab(tab, name)
 
         ###
-        #Epoch Progress bar
+        # Epoch Progress bar
         ###
-        #self.epoch_ProgressBar = QProgressBar(self)
-        #self.epoch_ProgressBar.setTextVisible(False)
-        #self.epoch_ProgressBar.setGeometry(self.stepsPB_Label.width() + self.stepsPB_Label.x() + 4,
-                                          # self.stepsPB_Label.y(), 120, 15)
+        # self.epoch_ProgressBar = QProgressBar(self)
+        # self.epoch_ProgressBar.setTextVisible(False)
+        # self.epoch_ProgressBar.setGeometry(self.stepsPB_Label.width() + self.stepsPB_Label.x() + 4,
+        # self.stepsPB_Label.y(), 120, 15)
 
-        #self.datasets_ComboBox.currentTextChanged.connect(lambda: self.train_Button.setEnabled(
+        # self.datasets_ComboBox.currentTextChanged.connect(lambda: self.train_Button.setEnabled(
         #    True) if self.datasets_ComboBox.currentText() != "<Your Datasets>" else self.train_Button.setEnabled(False))
+
+    def setGeometry(self, *__args):
+        super().setGeometry(*__args)
+
+    def paintEvent(self, event):
+        super(type(self), self).paintEvent(event)
+        styleSheet = QStyleOption()
+        styleSheet.initFrom(self)
+        paint = QPainter(self)
+        styling = self.style()
+        styling.drawPrimitive(QStyle.PE_Widget, styleSheet, paint, self)
