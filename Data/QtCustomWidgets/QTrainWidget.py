@@ -1,6 +1,8 @@
 from PyQt5.QtWidgets import *
 from Data.Trainer.Epoch import Trainer
 from Data.QtCustomWidgets import *
+from Data.QtCustomWidgets.QHistogramWidget import QHistogramWidget
+from Data.QtCustomWidgets.QResultsWidget import QResultsWidget
 
 
 """
@@ -136,6 +138,6 @@ class QTrainWidget(QWidget):
         self.epochs_Thread.completeSignal.connect(lambda: self.train_Button.setDisabled(False))
         self.epochs_Thread.trainImageSignal.connect(self.graph_tabs.findChild(QResultsWidget).addImage)
         self.epochs_Thread.testImageSignal.connect(self.graph_tabs.findChild(QResultsWidget).addImage)
-        #self.epochs_Thread.generatorLossSignal.connect(self.graph_tabs.findChild(QHistogramWidget).GVals)
-        #self.epochs_Thread.discriminatorLossSignal.connect(self.graph_tabs.findChild(QHistogramWidget).DVals)
+        self.epochs_Thread.LossSignal.connect(self.graph_tabs.findChild(QHistogramWidget).updateGraph)
+        #self.epochs_Thread.discriminatorLossSignal.connect(self.graph_tabs.findChild(QHistogramWidget).set_DVals)
         self.epochs_Thread.start()
