@@ -8,4 +8,4 @@ class QEEGWidget(QWidget):
 
     def initUI(self):
         self.noDataLabel = QLabel(self)
-        self.noDataLabel.setText("No data received...")
+        self.noDataLabel.setText("FEATURE COMING SOON!")

@@ -96,38 +96,38 @@ class GUI(QMainWindow):
         ###Results###
         self.results_dropButton = QAction('Results', self)
         self.results_dropButton.setShortcut('Shift+V')
-        self.results_dropButton.triggered.connect(lambda: self.panel_tabs.findChild(QTrainWidget).graph_tabs.addTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs.findChild(QResultsWidget), "Results"))
+        self.results_dropButton.triggered.connect(lambda: map(self.panel_tabs.findChild(QTrainWidget).graph_tabs.addTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs.findChild(QResultsWidget), "Results"), self.panel_tabs.findChild(QTrainWidget).graph_tabs.findChild(QResultsWidget).hide()))
         self.viewMenu.addAction(self.results_dropButton)
 
         ###Histogram###
         self.histogram_dropButton = QAction('Histogram', self)
         self.histogram_dropButton.setShortcut('Shift+H')
         self.histogram_dropButton.setStatusTip('Generate Histogram')
-        self.histogram_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs, QHistogramWidget, "Histogram"))
+        self.histogram_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs, QHistogramWidget, "Histogram") if not self.panel_tabs.findChild(QTrainWidget).graph_tabs.findChild(QHistogramWidget) else self.panel_tabs.findChild(QTrainWidget).graph_tabs.findChild(QHistogramWidget).show())
         self.viewMenu.addAction(self.histogram_dropButton)
         ###Scatterplot###
         self.scatterplot_dropButton = QAction('Scatterplot', self)
         self.scatterplot_dropButton.setShortcut('Shift+S')
         self.scatterplot_dropButton.setStatusTip('Generate Scatterplot')
-        self.scatterplot_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs, QScatterplotWidget, "Scatterplot"))
+        self.scatterplot_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs, QScatterplotWidget, "Scatterplot") if not self.panel_tabs.findChild(QTrainWidget).graph_tabs.findChild(QScatterplotWidget) else self.panel_tabs.findChild(QTrainWidget).graph_tab.findChild(QScatterplotWidget).show())
         self.viewMenu.addAction(self.scatterplot_dropButton)
         ###Loss###
         self.lossGraph_dropButton = QAction('Loss', self)
         self.lossGraph_dropButton.setShortcut('Shift+L')
         self.lossGraph_dropButton.setStatusTip('Generate loss graph')
-        self.lossGraph_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs, QLinearWidget, "Linear"))
+        self.lossGraph_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs, QLinearWidget, "Linear") if not self.panel_tabs.findChild(QTrainWidget).graph_tabs.findChild(QLinearWidget) else self.panel_tabs.findChild(QTrainWidget).graph_tab.findChild(QLinearWidget).show())
         self.viewMenu.addAction(self.lossGraph_dropButton)
         ###Elapsed Time###
         self.timeGraph_dropButton = QAction('Elapsed Time', self)
         self.timeGraph_dropButton.setShortcut('Shift+T')
         self.timeGraph_dropButton.setStatusTip('Generate loss graph')
-        self.timeGraph_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs, QElapsedTimeWidget, "Epochs / Time"))
+        self.timeGraph_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs, QElapsedTimeWidget, "Epochs / Time") if not self.panel_tabs.findChild(QTrainWidget).graph_tabs.findChild(QElapsedTimeWidget) else self.panel_tabs.findChild(QElapsedTimeWidget).show())
         self.viewMenu.addAction(self.timeGraph_dropButton)
         ###EEG###
         self.eegGraph_dropButton = QAction('Electroencephalography Graph (Yes, you can)', self)
         self.eegGraph_dropButton.setShortcut('Shift+E')
         self.eegGraph_dropButton.setStatusTip('Generate EEG graph')
-        self.eegGraph_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs, QEEGWidget, "Neural Network EEG"))
+        self.eegGraph_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs, QEEGWidget, "Neural Network EEG") if not self.panel_tabs.findChild(QTrainWidget).graph_tabs.findChild(QEEGWidget) else self.panel_tabs.findChild(QEEGWidget).show())
         self.viewMenu.addAction(self.eegGraph_dropButton)
 
         ###Menu Bar: Help###

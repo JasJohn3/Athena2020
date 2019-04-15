@@ -124,7 +124,14 @@ class QTrainWidget(QWidget):
     def train(self):
         self.train_Button.setDisabled(True)
         self.createTab(self.graph_tabs, QResultsWidget, "Results")
+        self.createTab(self.graph_tabs, QHistogramWidget, "Histogram").hide()
+        self.createTab(self.graph_tabs, QScatterplotWidget, "Scatterplot")
+        self.createTab(self.graph_tabs, QEEGWidget, "EEG")
+        self.createTab(self.graph_tabs, QLinearWidget, "Loss over time")
+
+
         user_session = 'Test'
+
         self.epochs_Thread = Trainer(self.inputEpochs_SB.text(), self.datasets_ComboBox.currentText(),user_session)
         self.epochs_Thread.logSignal.connect(self.outputLog_TextBox.append)
         self.epochs_Thread.stepSignal.connect(self.steps_ProgressBar.setValue)
