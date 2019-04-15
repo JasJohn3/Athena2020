@@ -1,5 +1,6 @@
-from PyQt5.QtWidgets import QMessageBox, QScrollArea, QWidget, QVBoxLayout, QLabel
+from PyQt5.QtWidgets import *
 import PyQt5.QtCore as QtCore
+from PyQt5.QtGui import QPainter
 
 # Custom message dialog
 class ScrollMessageBox(QMessageBox):
@@ -26,3 +27,14 @@ class ScrollMessageBox(QMessageBox):
         label = QLabel(p_str, self)
         label.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.grid.addWidget(label)
+
+    def setGeometry(self, *__args):
+        super().setGeometry(*__args)
+
+    def paintEvent(self, event):
+        super(type(self), self).paintEvent(event)
+        styleSheet = QStyleOption()
+        styleSheet.initFrom(self)
+        paint = QPainter(self)
+        styling = self.style()
+        styling.drawPrimitive(QStyle.PE_CustomBase, styleSheet, paint, self)

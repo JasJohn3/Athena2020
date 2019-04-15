@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import *
-from PyQt5 import QtGui, QtCore, QtWidgets
+from PyQt5.QtGui import QPainter
 
 class QImportWidget(QWidget):
     def __init__(self, parent = None):
@@ -37,8 +37,6 @@ class QImportWidget(QWidget):
         self.readFile_Data.setGeometry(0, 250, self.width() - (self.readFile_Data.x() + 4),
                                            self.height() - (self.readFile_Data.y() + 4))
 
-
-
     def file_open(self):
         name = QFileDialog()
         file = open(name.getOpenFileName(self, 'Import A Dataset'), 'r')
@@ -51,7 +49,16 @@ class QImportWidget(QWidget):
 
         file.close()
 
+    def setGeometry(self, *__args):
+        super().setGeometry(*__args)
 
+    def paintEvent(self, event):
+        super(type(self), self).paintEvent(event)
+        styleSheet = QStyleOption()
+        styleSheet.initFrom(self)
+        paint = QPainter(self)
+        styling = self.style()
+        styling.drawPrimitive(QStyle.PE_CustomBase, styleSheet, paint, self)
 
 
 

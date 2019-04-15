@@ -175,18 +175,16 @@ class GUI(QMainWindow):
 
     def removeTab(self, index):
         widget = self.panel_tabs.widget(index)
-        if (type(widget) == QTrainWidget and self.panel_tabs.findChild(QTrainWidget).findChild(QPushButton).isEnabled()) or type(widget) != QTrainWidget:
-            if type(widget) == QTrainWidget:
-                self.viewMenu.setEnabled(False)
+        if widget is not None:
+            widget.deleteLater()
+        self.panel_tabs.removeTab(index)
 
-            if widget is not None:
-                widget.deleteLater()
-            self.panel_tabs.removeTab(index)
+        if type(widget) == QTrainWidget:
+            self.viewMenu.setEnabled(False)
 
     def importDatasets(self):
         if self.panel_tabs.findChildren(QImportWidget) == []:
             self.importTab = QImportWidget(self.panel_tabs)
-            self.importDatasets.setStyleSheet(open('Data/CSS.cfg').read())
             self.panel_tabs.addTab(self.importTab, "Import A Dataset")
 
 

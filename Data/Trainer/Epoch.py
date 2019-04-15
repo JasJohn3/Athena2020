@@ -15,6 +15,7 @@ from PyQt5.QtCore import pyqtSignal, QThread
 from PIL import Image
 
 class Trainer(QThread):
+    # Signals linked to main thread
     maxstepsSignal = pyqtSignal(int)
     maxepochsSignal = pyqtSignal(int)
     logSignal = pyqtSignal(str)

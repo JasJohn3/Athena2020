@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QDesktopServices
+from PyQt5.QtGui import QDesktopServices, QPainter
 from PyQt5.QtCore import QUrl
 
 class QDevWidget(QWidget):
@@ -37,3 +37,14 @@ class QDevWidget(QWidget):
         WyattLink.linkActivated.connect(self.link)
         WyattLink.setText('<a href ="https://www.linkedin.com/in/wyatt-dooley-8a4896156/"> Wyatt Dooley</a>')
         WyattLink.move(50,200)
+
+    def setGeometry(self, *__args):
+        super().setGeometry(*__args)
+
+    def paintEvent(self, event):
+        super(type(self), self).paintEvent(event)
+        styleSheet = QStyleOption()
+        styleSheet.initFrom(self)
+        paint = QPainter(self)
+        styling = self.style()
+        styling.drawPrimitive(QStyle.PE_CustomBase, styleSheet, paint, self)

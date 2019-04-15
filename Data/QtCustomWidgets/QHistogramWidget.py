@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import *
+from PyQt5.QtGui import QPainter
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
@@ -30,11 +31,6 @@ class QHistogramWidget(QWidget):
         layout.addWidget(self.toolbar)
         layout.addWidget(self.canvas)
         self.setLayout(layout)
-
-
-        # self.introduction_Label = QLabel(self)
-        # self.introduction_Label.setText("No training data received...")
-
 
         self.figure.clear()
 
@@ -87,3 +83,16 @@ class QHistogramWidget(QWidget):
         #self.ax.legend()
         self.repaint()
         #self.parent().parent().parent().parent().parent().repaint()
+
+    def setGeometry(self, *__args):
+        super().setGeometry(*__args)
+
+    def paintEvent(self, event):
+        super(type(self), self).paintEvent(event)
+        styleSheet = QStyleOption()
+        styleSheet.initFrom(self)
+        paint = QPainter(self)
+        styling = self.style()
+        styling.drawPrimitive(QStyle.PE_CustomBase, styleSheet, paint, self)
+        # self.introduction_Label = QLabel(self)
+        # self.introduction_Label.setText("No training data received...")
