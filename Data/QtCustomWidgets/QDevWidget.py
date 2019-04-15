@@ -30,7 +30,7 @@ class QDevWidget(QWidget):
 
         ZackLink = QLabel(self)
         ZackLink.linkActivated.connect(self.link)
-        ZackLink.setText('<a href="https://overclockedthompson.wixsite.com/mysite">Zack Thompson</a>')
+        ZackLink.setText('<a href="https://www.linkedin.com/in/zack-thompson-24095b183/">Zack Thompson</a>')
         ZackLink.move(50, 150)
 
         WyattLink = QLabel(self)

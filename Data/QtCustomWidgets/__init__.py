@@ -9,3 +9,4 @@ from .QScatterplotWidget import QScatterplotWidget
 from .QElapsedTimeWidget import QElapsedTimeWidget
 from .QLinearWidget import QLinearWidget
 from .QEEGWidget import QEEGWidget
+from .QSessionWindow import QSessionWindow

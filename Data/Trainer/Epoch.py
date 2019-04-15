@@ -70,8 +70,6 @@ class Trainer(QThread):
         total_training = int((len(dataloader) * self.epochs))
         G_Loss = [0] * total_training
         D_Loss = [0] * total_training
-        print(G_Loss)
-        print(D_Loss)
         # ===Training Epochs===
         for epoch in range(self.epochs):
             for i, trainData in enumerate(dataloader, 0):

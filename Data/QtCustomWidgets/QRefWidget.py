@@ -2,6 +2,9 @@ from PyQt5.QtWidgets import *
 import PyQt5.QtGui as QtGui
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
+from Data.Trainer.Epoch import Trainer
+from Data.QtCustomWidgets import *
+
 
 
 class QRefWidget(QWidget):
@@ -31,7 +34,8 @@ class QRefWidget(QWidget):
             # Session name textbox label
         self.sessionTB_Label = QLabel(self)
         self.sessionTB_Label.setText("Session Name")
-        self.sessionTB_Label.setGeometry(4, 175, self.sessionTB_Label.fontMetrics().boundingRect(self.sessionTB_Label.text()).width()+4, 15)
+        self.sessionTB_Label.setGeometry(50, 175, 115, 25)
+        self.sessionTB_Label.setAlignment(Qt.AlignCenter)
             #Save image checkbox label
         self.saveImageCB_Label = QLabel(self)
         self.saveImageCB_Label.setText("Save images")
@@ -62,6 +66,8 @@ class QRefWidget(QWidget):
         self.datasets_ComboBox.addItem("imagenet")
         self.datasets_ComboBox.setGeometry(self.dataCB_Label.width() + self.dataCB_Label.x() + 4,
                                            self.dataCB_Label.y(), 100, 25)
+        self.datasets_ComboBox.currentTextChanged.connect(lambda: self.train_Button.setEnabled(
+            True) if self.datasets_ComboBox.currentText() != "<Your Datasets>" else self.train_Button.setEnabled(False))
         ###
         #Epoch scroll box
         ###
@@ -75,8 +81,7 @@ class QRefWidget(QWidget):
         ###
         self.sessionName_TextBox = QLineEdit(self)
         self.sessionName_TextBox.setToolTip("Name your session.")
-        self.sessionName_TextBox.setGeometry(self.sessionTB_Label.width() + self.sessionTB_Label.x()+4,
-                                             self.sessionTB_Label.y(), 115, 25)
+        self.sessionName_TextBox.setGeometry(50,195, 115, 25)
 
         ###
         #Save images check box
@@ -96,6 +101,49 @@ class QRefWidget(QWidget):
         self.saveHistogram_CheckBox.setGeometry(self.histogramCB_Label.width() + self.histogramCB_Label.x() + 4,
                                                 self.histogramCB_Label.y(), 15, 15)
 
+
+        ###
+        #Begin Training Button
+        ###
+        self.train_Button = QPushButton(self)
+        self.train_Button.setEnabled(False)
+        self.buttonEnabled = False
+        self.train_Button.setText("Train")
+        self.train_Button.clicked.connect(self.train)
+
+
+        if not self.buttonEnabled:
+            self.train_Button.setToolTip("You have not selected a dataset yet!")
+        else:
+            self.train_Button.setToolTip("Begin Training")
+
+
+
+        self.train_Button.setGeometry(100, 300, 90, 30)
+
+
+
+    def train(self):
+        self.train_Button.setDisabled(True)
+        self.createTab(self.graph_tabs, QTrainWidget, "Results")
+        self.epochs_Thread = Trainer(self.inputEpochs_SB.text(), self.datasets_ComboBox.currentText(), user_session)
+        self.epochs_Thread.logSignal.connect(self.outputLog_TextBox.append)
+        self.epochs_Thread.stepSignal.connect(self.steps_ProgressBar.setValue)
+        self.epochs_Thread.epochSignal.connect(self.epoch_ProgressBar.setValue)
+        self.epochs_Thread.maxstepsSignal.connect(self.steps_ProgressBar.setMaximum)
+        self.epochs_Thread.maxepochsSignal.connect(self.epoch_ProgressBar.setMaximum)
+        self.epochs_Thread.epochtimeSignal.connect(self.epochETA_Display.setText)
+        self.epochs_Thread.totaltimeSignal.connect(self.completionETA_Display.setText)
+        self.epochs_Thread.completeSignal.connect(lambda: self.train_Button.setDisabled(False))
+        self.epochs_Thread.trainImageSignal.connect(self.graph_tabs.findChild(QResultsWidget).addImage)
+        self.epochs_Thread.testImageSignal.connect(self.graph_tabs.findChild(QResultsWidget).addImage)
+        self.epochs_Thread.start()
+
+    def createTab(self, root, widget, name):
+        if not root.findChild(widget):
+            tab = widget(root)
+            tab.setStyleSheet(open('Data/CSS.cfg').read())
+            root.addTab(tab, name)
 
         ###
         #Epoch Progress bar

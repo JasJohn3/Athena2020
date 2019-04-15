@@ -80,7 +80,7 @@ class QTrainWidget(QWidget):
         self.outputLog_TextBox.setLineWrapMode(QTextEdit.NoWrap)
         self.outputLog_TextBox.verticalScrollBar()
         self.outputLog_TextBox.setMinimumWidth(295)
-        self.outputLog_TextBox.setGeometry(200, 4, self.width() - (self.outputLog_TextBox.x() + 4), self.height() - (self.outputLog_TextBox.y() + 4))
+        self.outputLog_TextBox.setGeometry(200, 4, self.width() - (self.outputLog_TextBox.x() + 4), self.height() - (self.outputLog_TextBox.y())/2)
 
         # ===TRAIN BUTTON===
         self.train_Button = QPushButton('Train', self)
@@ -136,4 +136,6 @@ class QTrainWidget(QWidget):
         self.epochs_Thread.completeSignal.connect(lambda: self.train_Button.setDisabled(False))
         self.epochs_Thread.trainImageSignal.connect(self.graph_tabs.findChild(QResultsWidget).addImage)
         self.epochs_Thread.testImageSignal.connect(self.graph_tabs.findChild(QResultsWidget).addImage)
+        #self.epochs_Thread.generatorLossSignal.connect(self.graph_tabs.findChild(QHistogramWidget).GVals)
+        #self.epochs_Thread.discriminatorLossSignal.connect(self.graph_tabs.findChild(QHistogramWidget).DVals)
         self.epochs_Thread.start()

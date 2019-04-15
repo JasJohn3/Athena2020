@@ -23,7 +23,7 @@ class QResultsWidget(QWidget):
         self.producedImg = QLabel(self)
         self.producedImg.resize(530, 530)
         # Previous location (15, 625)
-        self.producedImg.move(15, 100)
+        self.producedImg.move(15, 625)
 
     # Add Image to the QResults Widget from emitted images in QTrainWidget
     def addImage(self, Image):
