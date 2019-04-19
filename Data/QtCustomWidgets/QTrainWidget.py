@@ -134,11 +134,17 @@ class QTrainWidget(QWidget):
         self.parent().parent().tabBar().tabButton(self.parent().parent().currentIndex(), 1).setDisabled(True)
         # Use Parent function to create tab
         self.parent().parent().parent().parent().createTab(self.graph_tabs, QResultsWidget, "Results")
-        self.parent().parent().parent().parent().createTab(self.graph_tabs, QResultsWidget, "Results")
         self.parent().parent().parent().parent().createTab(self.graph_tabs, QHistogramWidget, "Histogram")
         self.parent().parent().parent().parent().createTab(self.graph_tabs, QScatterplotWidget, "Scatterplot")
-        self.parent().parent().parent().parent().createTab(self.graph_tabs, QEEGWidget, "EEG")
         self.parent().parent().parent().parent().createTab(self.graph_tabs, QLinearWidget, "Loss over time")
+        self.parent().parent().parent().parent().createTab(self.graph_tabs, QElapsedTimeWidget, "Elapsed Time")
+        self.parent().parent().parent().parent().createTab(self.graph_tabs, QEEGWidget, "EEG")
+        #Remove tab from graph tabs that are these widgets
+        self.graph_tabs.removeTab(self.graph_tabs.indexOf(self.graph_tabs.findChild(QHistogramWidget)))
+        self.graph_tabs.removeTab(self.graph_tabs.indexOf(self.graph_tabs.findChild(QScatterplotWidget)))
+        self.graph_tabs.removeTab(self.graph_tabs.indexOf(self.graph_tabs.findChild(QLinearWidget)))
+        self.graph_tabs.removeTab(self.graph_tabs.indexOf(self.graph_tabs.findChild(QElapsedTimeWidget)))
+        self.graph_tabs.removeTab(self.graph_tabs.indexOf(self.graph_tabs.findChild(QEEGWidget)))
 
         # Create thread for training GAN
         self.epochs_Thread = Trainer(self.inputEpochs_SB.text(), self.datasets_ComboBox.currentText(), 'Test')

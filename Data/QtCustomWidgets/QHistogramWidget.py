@@ -3,7 +3,7 @@ from PyQt5.QtGui import QPainter
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-from matplotlib.colors import ListedColormap
+#from matplotlib.colors import ListedColormap
 
 
 class QHistogramWidget(QWidget):
