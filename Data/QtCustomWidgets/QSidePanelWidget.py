@@ -39,11 +39,11 @@ class QRefWidget(QWidget):
             #Save image checkbox label
         self.saveImageCB_Label = QLabel(self)
         self.saveImageCB_Label.setText("Save images")
-        self.saveImageCB_Label.setGeometry(4, 225, self.saveImageCB_Label.fontMetrics().boundingRect(self.saveImageCB_Label.text()).width() + 4, 15)
+        self.saveImageCB_Label.setGeometry(69, 225, self.saveImageCB_Label.fontMetrics().boundingRect(self.saveImageCB_Label.text()).width() + 4, 15)
             # Save histogram checkbox label
         self.histogramCB_Label = QLabel(self)
         self.histogramCB_Label.setText("Save Histogram")
-        self.histogramCB_Label.setGeometry(4, 250, self.histogramCB_Label.fontMetrics().boundingRect(self.histogramCB_Label.text()).width()+4, 15)
+        self.histogramCB_Label.setGeometry(52, 255, self.histogramCB_Label.fontMetrics().boundingRect(self.histogramCB_Label.text()).width()+4, 15)
             # Progess area label
         self.progressArea_Label = QLabel(self)
         self.progressArea_Label.setText("Progress")
@@ -115,17 +115,54 @@ class QRefWidget(QWidget):
         else:
             self.train_Button.setToolTip("Begin Training")
 
-
-
         self.train_Button.setGeometry(100, 300, 90, 30)
+
+        # ===STEPS PROGRESS BAR===
+        self.stepsPB_Label = QLabel(self)
+        self.stepsPB_Label.setText("Steps:")
+        self.stepsPB_Label.setGeometry(0, 400,
+                                       self.stepsPB_Label.fontMetrics().boundingRect(self.stepsPB_Label.text()).width(),
+                                       15)
+        self.steps_ProgressBar = QProgressBar(self)
+        self.steps_ProgressBar.setTextVisible(False)
+        self.steps_ProgressBar.setGeometry(self.stepsPB_Label.width() + self.stepsPB_Label.x() + 11,
+                                           self.stepsPB_Label.y(), 120, 15)
+        # ===EPOCH ETA BOX===
+        self.epochETA_Label = QLabel(self)
+        self.epochETA_Label.setText("Epoch ETA:")
+        self.epochETA_Label.setGeometry(0, 375, self.epochETA_Label.fontMetrics().boundingRect(
+            self.epochETA_Label.text()).width(), 15)
+        self.epochETA_Display = QLabel(self)
+        self.epochETA_Display.setGeometry(self.epochETA_Label.width() + self.epochETA_Label.x() + 4,
+                                          self.epochETA_Label.y(), 60, 15)
+
+        # ===EPOCHS PROGRESS BAR===
+        self.epoch_PBLabel = QLabel(self)
+        self.epoch_PBLabel.setText("Epochs:")
+        self.epoch_PBLabel.setGeometry(0, 475,
+                                       self.epoch_PBLabel.fontMetrics().boundingRect(self.epoch_PBLabel.text()).width(),
+                                       15)
+        self.epoch_ProgressBar = QProgressBar(self)
+        self.epoch_ProgressBar.setTextVisible(False)
+        self.epoch_ProgressBar.setGeometry(self.epoch_PBLabel.width() + self.epoch_PBLabel.x() + 4,
+                                           self.epoch_PBLabel.y(), 120, 15)
+
+        # ===ETA OF COMPLETION BOX===
+        self.completionETA_Label = QLabel(self)
+        self.completionETA_Label.setText("Completion ETA:")
+        self.completionETA_Label.setGeometry(0, 455, self.completionETA_Label.fontMetrics().boundingRect(
+            self.completionETA_Label.text()).width(), 15)
+        self.completionETA_Display = QLabel(self)
+        self.completionETA_Display.setGeometry(self.completionETA_Label.width() + self.completionETA_Label.x() + 4,
+                                               self.completionETA_Label.y(), 60, 15)
 
 
 
     def train(self):
         self.train_Button.setDisabled(True)
-        self.createTab(self.graph_tabs, QTrainWidget, "Results")
-        self.epochs_Thread = Trainer(self.inputEpochs_SB.text(), self.datasets_ComboBox.currentText(), user_session)
-        self.epochs_Thread.logSignal.connect(self.outputLog_TextBox.append)
+        self.parent().panel_tabs.findChild(QTrainWidget)
+        self.epochs_Thread = Trainer(self.inputEpochs_SB.text(), self.datasets_ComboBox.currentText(), 'Test')
+        self.epochs_Thread.logSignal.connect(self.parent().panel_tabs.findChild(QTrainWidget).outputLog_TextBox.append)
         self.epochs_Thread.stepSignal.connect(self.steps_ProgressBar.setValue)
         self.epochs_Thread.epochSignal.connect(self.epoch_ProgressBar.setValue)
         self.epochs_Thread.maxstepsSignal.connect(self.steps_ProgressBar.setMaximum)
@@ -133,7 +170,7 @@ class QRefWidget(QWidget):
         self.epochs_Thread.epochtimeSignal.connect(self.epochETA_Display.setText)
         self.epochs_Thread.totaltimeSignal.connect(self.completionETA_Display.setText)
         self.epochs_Thread.completeSignal.connect(lambda: self.train_Button.setDisabled(False))
-        self.epochs_Thread.trainImageSignal.connect(self.graph_tabs.findChild(QResultsWidget).addImage)
+        self.epochs_Thread.trainImageSignal.connect(self.parent().findChild(QTrainWidget).graph_tabs.findChild(QTrainWidget).graph_tabs.findChild(QResultsWidget).addImage)
         self.epochs_Thread.testImageSignal.connect(self.graph_tabs.findChild(QResultsWidget).addImage)
         self.epochs_Thread.start()
 

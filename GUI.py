@@ -37,6 +37,8 @@ class GUI(QMainWindow):
         ###
         self.panel_options = QRefWidget(self)
         self.panel_options.setGeometry(4, 21, self.width() * .2, self.height() - 24)
+        self.panel_options.hide()
+
         #self.panel_options.setStyleSheet(open('Data/CSS.cfg').read())
 
         ###
@@ -77,6 +79,8 @@ class GUI(QMainWindow):
         self.train_dropButton.setShortcut('Ctrl+T')
         self.train_dropButton.setStatusTip('Train a model')
         self.train_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs, QTrainWidget, "Model Training"))
+        self.train_dropButton.triggered.connect(self.panel_options.show)
+        self.train_dropButton.triggered.connect(lambda: self.findChild(QTrainWidget).createTab())
         self.trainMenu.addAction(self.train_dropButton)  # add button to dropdown menu
 
         ###Import Dataset###
@@ -96,7 +100,7 @@ class GUI(QMainWindow):
         ###Results###
         self.results_dropButton = QAction('Results', self)
         self.results_dropButton.setShortcut('Shift+V')
-        self.results_dropButton.triggered.connect(lambda: map(self.panel_tabs.findChild(QTrainWidget).graph_tabs.addTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs.findChild(QResultsWidget), "Results"), self.panel_tabs.findChild(QTrainWidget).graph_tabs.findChild(QResultsWidget).hide()))
+        self.results_dropButton.triggered.connect(lambda: map(self.panel_tabs.findChild(QTrainWidget).graph_tabs.addTab(self.panel_tabs.findChild(QTrainWidget).graph_tabs.findChild(QResultsWidget), "Results"), self.panel_tabs.findChild(QTrainWidget).graph_tabs.findChild(QResultsWidget)))
         self.viewMenu.addAction(self.results_dropButton)
 
         ###Histogram###
