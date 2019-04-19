@@ -43,6 +43,7 @@ class Trainer(QThread):
         ctypes.windll.shell32.SHGetFolderPathW(None, 5, None, 0, buf)
         root = buf.value + '\\Athena'
 
+        print(root + '\\%s\\Save\\ATHENA_GAN.tar' % self.user_session)
         dataloader = createDataloader(self.dataset)
         self.logSignal.emit("Starting...\n")
 
@@ -124,27 +125,27 @@ class Trainer(QThread):
                 self.totaltraining.emit(total_training)
                 self.LossSignal.emit(error_generate.item(), error_discriminate.item())
 
-            #Save an image file at the completion of each Epoch
-            if not os.path.exists(root + '/%s/Results' % self.user_session):
-                os.makedirs(root + '/%s/Results' % self.user_session)
-            if not os.path.exists(root + './%s/Results/real' % self.user_session):
-                os.makedirs(root + '/%s/Results/real' % self.user_session)
-            if not os.path.exists(root + '/%s/Results/Fake' % self.user_session):
-                os.makedirs(root + '/%s/Results/Fake' % self.user_session)
-            save_image(trainData,
-                       '%s/real_samples_epoch_%03d.bmp' % (root + "/%s/Results/Real" % self.user_session, epoch),
-                       normalize=True)
-            save_image(testData.data,
-                       '%s/fake_samples_epoch_%03d.bmp' % (root + "/%s/Results/Fake" % self.user_session, epoch),
-                       normalize=True)
-            # Save the GAN state
-            if not os.path.exists(root + '/%s/Save' % self.user_session):
-                os.makedirs(root + '/%s/Save' % self.user_session)
-            torch.save({
-                'Generator': self.generator.state_dict(),
-                'Discriminator': self.discriminator.state_dict(),
-                'optimizerD_state_dict': optimize_discriminate.state_dict(),
-                'optimizerG_state_dict': optimize_generate.state_dict()},root + '/%s/Save/ATHENA_GAN.tar' % self.user_session)
+                #Save an image file at the completion of each Epoch
+                if not os.path.exists(root + '/%s/Results' % self.user_session):
+                    os.makedirs(root + '/%s/Results' % self.user_session)
+                if not os.path.exists(root + './%s/Results/real' % self.user_session):
+                    os.makedirs(root + '/%s/Results/real' % self.user_session)
+                if not os.path.exists(root + '/%s/Results/Fake' % self.user_session):
+                    os.makedirs(root + '/%s/Results/Fake' % self.user_session)
+                save_image(trainData,
+                           '%s/real_samples_epoch_%03d.bmp' % (root + "/%s/Results/Real" % self.user_session, epoch),
+                           normalize=True)
+                save_image(testData.data,
+                           '%s/fake_samples_epoch_%03d.bmp' % (root + "/%s/Results/Fake" % self.user_session, epoch),
+                           normalize=True)
+                # Save the GAN state
+                if not os.path.exists(root + '/%s/Save' % self.user_session):
+                    os.makedirs(root + '/%s/Save' % self.user_session)
+                torch.save({
+                    'Generator': self.generator.state_dict(),
+                    'Discriminator': self.discriminator.state_dict(),
+                    'optimizerD_state_dict': optimize_discriminate.state_dict(),
+                    'optimizerG_state_dict': optimize_generate.state_dict()},root + '/%s/Save/ATHENA_GAN.tar' % self.user_session)
 
         self.completeSignal.emit()
 
