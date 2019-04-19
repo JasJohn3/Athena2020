@@ -7,7 +7,7 @@ from Data.Trainer.Epoch import Trainer
 from Data.QtCustomWidgets import *
 
 
-class QRefWidget(QWidget):
+class QSidePanelWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__()
         self.setParent(parent)
