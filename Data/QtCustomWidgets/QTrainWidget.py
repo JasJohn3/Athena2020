@@ -103,6 +103,12 @@ class QTrainWidget(QWidget):
         self.scrollbar = QScrollBar(self)
         self.scrollbar.setOrientation(1)
 
+    def createTab(self, root, widget, name):
+        if not root.findChild(widget):
+            tab = widget(root)
+            tab.setStyleSheet(open('Data/CSS.cfg').read())
+            root.addTab(tab, name)
+
     def activateTrainButton(self):
         self.train_Button.setEnabled(self.datasets_ComboBox.currentIndex() != 0)
 
@@ -118,6 +124,12 @@ class QTrainWidget(QWidget):
 
     def train(self):
         self.train_Button.setDisabled(True)
+        self.createTab(self.graph_tabs, QResultsWidget, "Results")
+        self.createTab(self.graph_tabs, QHistogramWidget, "Histogram")
+        #self.createTab(self.graph_tabs, QScatterplotWidget, "Scatterplot")
+        self.createTab(self.graph_tabs, QEEGWidget, "EEG")
+        self.createTab(self.graph_tabs, QLinearWidget, "Loss over time")
+
         # Grab parent tab widget to disable tab button
         self.parent().parent().tabBar().tabButton(self.parent().parent().currentIndex(), 1).setDisabled(True)
         # Use Parent function to create tab

@@ -22,9 +22,11 @@ class GUI(QMainWindow):
         self.setWindowTitle('Athena')
         self.setMinimumSize(.5 * app.desktop().screenGeometry().width(), (5 / 9) * app.desktop().screenGeometry().height())
 
+
         # Center window
         window = self.frameGeometry()
         window.moveCenter(QDesktopWidget().availableGeometry().center())
+
 
         self.initUI()
 
@@ -33,8 +35,10 @@ class GUI(QMainWindow):
         ###
         # Panel options
         ###
-        self.panel_options = QRefWidget(self)
+        self.panel_options = QSidePanelWidget(self)
         self.panel_options.setGeometry(4, 21, self.width() * .2, self.height() - 24)
+        self.panel_options.hide()
+
         #self.panel_options.setStyleSheet(open('Data/CSS.cfg').read())
 
         ###
@@ -75,6 +79,7 @@ class GUI(QMainWindow):
         self.train_dropButton.setShortcut('Ctrl+T')
         self.train_dropButton.setStatusTip('Train a model')
         self.train_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs, QTrainWidget, "Model Training"))
+        self.train_dropButton.triggered.connect(lambda: self.findChild(QSidePanelWidget).show())
         self.trainMenu.addAction(self.train_dropButton)  # add button to dropdown menu
 
         ###Import Dataset###
