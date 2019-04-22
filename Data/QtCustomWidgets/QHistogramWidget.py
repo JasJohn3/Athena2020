@@ -39,7 +39,7 @@ class QHistogramWidget(QWidget):
 
         #plot data
         self.ax.set_facecolor('black')
-        self.ax.hist(self.GVals, bins='auto', color='cyan', alpha=0.7, rwidth=0.85)
+        self.ax.hist(self.GVals, bins='auto', color='cyan', alpha=0.7)
         self.ax.hist(self.DVals, bins='auto', color='blue', alpha=None)
         self.ax.set_title("GAN Loss")
         self.ax.set_xlabel('Iterations')
@@ -70,13 +70,18 @@ class QHistogramWidget(QWidget):
         # , current, training
         # self.GVals[0] * training
         # self.GVals[current] = value
-    def updateGraph(self, ValG = None, ValD = None):
+    def updateGraph(self, ValG = None, ValD = None, total_training = None, current_Training = None):
+
+        #self.GVals.append(ValG)
+        #self.DVals.append(ValD)
         self.GVals.append(ValG)
         self.DVals.append(ValD)
         self.ax.clear()
         self.ax.set_facecolor('black')
-        self.ax.hist(self.GVals, bins='auto', color='cyan', alpha=0.7, rwidth=0.85)
+        self.ax.hist(self.GVals, bins='auto', color='cyan', alpha=0.7)
+        self.ax.plot(self.GVals)
         self.ax.hist(self.DVals, bins='auto', color='blue', alpha=None)
+        self.ax.plot(self.DVals)
         self.ax.set_title("GAN Loss")
         self.ax.set_xlabel('Iterations')
         self.ax.set_ylabel('Loss')

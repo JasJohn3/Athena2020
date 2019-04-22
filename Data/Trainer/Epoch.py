@@ -26,9 +26,7 @@ class Trainer(QThread):
     trainImageSignal = pyqtSignal(Image.Image)
     testImageSignal = pyqtSignal(Image.Image)
     completeSignal = pyqtSignal()
-    LossSignal = pyqtSignal(float, float)
-    #discriminatorLossSignal = pyqtSignal(float)
-    totaltraining = pyqtSignal(int)
+    LossSignal = pyqtSignal(float, float, int, int)
 
     def __init__(self, epochs, dataset, user_session):
         QThread.__init__(self)
@@ -122,8 +120,8 @@ class Trainer(QThread):
                 self.totaltimeSignal.emit("{:0>8}".format(str(training_Time)))
                 self.stepSignal.emit(i + 1)
                 self.epochSignal.emit((epoch * len(dataloader)) + i + 1)
-                self.totaltraining.emit(total_training)
-                self.LossSignal.emit(error_generate.item(), error_discriminate.item())
+                self.LossSignal.emit(error_generate.item(), error_discriminate.item(), total_training, current_training)
+
 
                 #Save an image file at the completion of each Epoch
                 if not os.path.exists(root + '/%s/Results' % self.user_session):
