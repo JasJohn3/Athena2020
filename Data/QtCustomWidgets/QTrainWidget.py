@@ -2,6 +2,8 @@ from PyQt5.QtWidgets import *
 from Data.Trainer.Epoch import Trainer
 from Data.QtCustomWidgets import *
 from PyQt5.QtGui import QPainter
+from PyQt5.QtCore import Qt
+
 
 
 """
@@ -103,6 +105,18 @@ class QTrainWidget(QWidget):
         self.scrollbar = QScrollBar(self)
         self.scrollbar.setOrientation(1)
 
+
+            # Session name textbox label
+        self.sessionTB_Label = QLabel(self)
+        self.sessionTB_Label.setText("Session Name")
+        self.sessionTB_Label.setGeometry(50, 250, 115, 25)
+        self.sessionTB_Label.setAlignment(Qt.AlignCenter)
+        #Session name textbox
+        ###
+        self.sessionName_TextBox = QLineEdit(self)
+        self.sessionName_TextBox.setToolTip("Name your session.")
+        self.sessionName_TextBox.setGeometry(50, 270, 115, 25)
+
     def createTab(self, root, widget, name):
         if not root.findChild(widget):
             tab = widget(root)
@@ -147,7 +161,7 @@ class QTrainWidget(QWidget):
         self.graph_tabs.removeTab(self.graph_tabs.indexOf(self.graph_tabs.findChild(QEEGWidget)))
 
         # Create thread for training GAN
-        self.epochs_Thread = Trainer(self.inputEpochs_SB.text(), self.datasets_ComboBox.currentText(), 'Test')
+        self.epochs_Thread = Trainer(self.inputEpochs_SB.text(), self.datasets_ComboBox.currentText(), self.sessionName_TextBox.text())
         # Update text output from emitted data
         self.epochs_Thread.logSignal.connect(self.outputLog_TextBox.append)
         # Set Value bar's maximum from emitted total epoch's and step size

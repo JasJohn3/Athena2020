@@ -161,7 +161,7 @@ class QSidePanelWidget(QWidget):
     def train(self):
         self.train_Button.setDisabled(True)
         self.parent().panel_tabs.findChild(QTrainWidget)
-        self.epochs_Thread = Trainer(self.inputEpochs_SB.text(), self.datasets_ComboBox.currentText(), 'Test')
+        self.epochs_Thread = Trainer(self.inputEpochs_SB.text(), self.datasets_ComboBox.currentText(), self.sessionName_TextBox.text())
         self.epochs_Thread.logSignal.connect(self.parent().panel_tabs.findChild(QTrainWidget).outputLog_TextBox.append)
         self.epochs_Thread.stepSignal.connect(self.steps_ProgressBar.setValue)
         self.epochs_Thread.epochSignal.connect(self.epoch_ProgressBar.setValue)
