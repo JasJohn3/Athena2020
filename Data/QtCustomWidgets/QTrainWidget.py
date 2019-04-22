@@ -116,6 +116,7 @@ class QTrainWidget(QWidget):
         self.sessionName_TextBox = QLineEdit(self)
         self.sessionName_TextBox.setToolTip("Name your session.")
         self.sessionName_TextBox.setGeometry(50, 270, 115, 25)
+        self.sessionName_TextBox.setStyleSheet('color:#FFFFFF')
 
     def createTab(self, root, widget, name):
         if not root.findChild(widget):
