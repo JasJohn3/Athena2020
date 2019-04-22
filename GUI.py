@@ -79,7 +79,7 @@ class GUI(QMainWindow):
         self.train_dropButton.setShortcut('Ctrl+T')
         self.train_dropButton.setStatusTip('Train a model')
         self.train_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs, QTrainWidget, "Model Training"))
-        self.train_dropButton.triggered.connect(lambda: self.findChild(QSidePanelWidget).show())
+        #self.train_dropButton.triggered.connect(lambda: self.findChild(QSidePanelWidget).show())
         self.trainMenu.addAction(self.train_dropButton)  # add button to dropdown menu
 
         ###Import Dataset###
