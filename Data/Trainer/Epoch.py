@@ -28,13 +28,14 @@ class Trainer(QThread):
     completeSignal = pyqtSignal()
     LossSignal = pyqtSignal(float, float, int, int)
 
-    def __init__(self, epochs, dataset, user_session):
+    def __init__(self, epochs, dataset, user_session, saving):
         QThread.__init__(self)
         self.discriminator = Discriminator()
         self.generator = Generator()
         self.epochs = int(epochs)
         self.dataset = dataset
         self.user_session = user_session
+        self.image_save = saving
 
     def run(self):
         buf = ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
@@ -58,8 +59,9 @@ class Trainer(QThread):
         optimize_generate = Adam(self.generator.parameters(), lr=0.0002, betas=(0.5, 0.999))
 
         # Check for a saved GAN
-        if path.exists(root + '/%s/Save/ATHENA_GAN.tar' % self.user_session):
-            checkpoint = torch.load(root + '/%s/Save/ATHENA_GAN.tar' % self.user_session)
+        if not self.user_session or path.exists(root + '/%s/Save/ATHENA_GAN.tar' % self.user_session):
+            # If not selected session load program default otherwise set named session
+            checkpoint = torch.load("Data/ATHENA_GAN.tar") if not self.user_session else torch.load(root + '/%s/Save/ATHENA_GAN.tar' % self.user_session)
             self.generator.load_state_dict(checkpoint['Generator'])
             self.discriminator.load_state_dict(checkpoint['Discriminator'])
             optimize_generate.load_state_dict(checkpoint['optimizerG_state_dict'])
@@ -124,18 +126,19 @@ class Trainer(QThread):
 
 
                 #Save an image file at the completion of each Epoch
-                if not os.path.exists(root + '/%s/Results' % self.user_session):
-                    os.makedirs(root + '/%s/Results' % self.user_session)
-                if not os.path.exists(root + './%s/Results/real' % self.user_session):
-                    os.makedirs(root + '/%s/Results/real' % self.user_session)
-                if not os.path.exists(root + '/%s/Results/Fake' % self.user_session):
-                    os.makedirs(root + '/%s/Results/Fake' % self.user_session)
-                save_image(trainData,
-                           '%s/real_samples_epoch_%03d.bmp' % (root + "/%s/Results/Real" % self.user_session, epoch),
-                           normalize=True)
-                save_image(testData.data,
-                           '%s/fake_samples_epoch_%03d.bmp' % (root + "/%s/Results/Fake" % self.user_session, epoch),
-                           normalize=True)
+                if self.image_save:
+                    if not os.path.exists(root + '/%s/Results' % self.user_session):
+                        os.makedirs(root + '/%s/Results' % self.user_session)
+                    if not os.path.exists(root + './%s/Results/real' % self.user_session):
+                        os.makedirs(root + '/%s/Results/real' % self.user_session)
+                    if not os.path.exists(root + '/%s/Results/Fake' % self.user_session):
+                        os.makedirs(root + '/%s/Results/Fake' % self.user_session)
+                    save_image(trainData,
+                               '%s/real_samples_epoch_%03d.bmp' % (root + "/%s/Results/Real" % self.user_session, epoch),
+                               normalize=True)
+                    save_image(testData.data,
+                               '%s/fake_samples_epoch_%03d.bmp' % (root + "/%s/Results/Fake" % self.user_session, epoch),
+                               normalize=True)
                 # Save the GAN state
                 if not os.path.exists(root + '/%s/Save' % self.user_session):
                     os.makedirs(root + '/%s/Save' % self.user_session)
