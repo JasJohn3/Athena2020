@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import *
 from Data.Trainer.Epoch import Trainer
 from Data.QtCustomWidgets import *
+from Data.QtCustomWidgets import QLinearWidget
 #from PyQt5.QtGui import QPainter <-- Todo Fix paint event
 
 class QTrainOutputWidget(QWidget):
@@ -85,7 +86,8 @@ class QTrainOutputWidget(QWidget):
         # Set displayed images from emitted training and testing images
         self.epochs_Thread.trainImageSignal.connect(self.graph_tabs.findChild(QResultsWidget).addImage)
         self.epochs_Thread.testImageSignal.connect(self.graph_tabs.findChild(QResultsWidget).addImage)
-        self.epochs_Thread.LossSignal.connect(self.graph_tabs.findChild(QHistogramWidget).updateGraph)
+        #self.epochs_Thread.LossSignal.connect(self.graph_tabs.findChild(QHistogramWidget).updateGraph)
+        self.epochs_Thread.LossSignal.connect(self.graph_tabs.findChild(QLinearWidget).loss_update_Graph)
         #self.epochs_Thread.discriminatorLossSignal.connect(self.graph_tabs.findChild(QHistogramWidget).set_DVals)
         # Start the GAN's training thread
         self.epochs_Thread.start()
