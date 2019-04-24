@@ -71,6 +71,16 @@ class Trainer(QThread):
         #Creating Lists for Histogram data
         total_training = int((len(dataloader) * self.epochs))
         # ===Training Epochs===
+
+        #generating the file architecture for our training session
+        if not os.path.exists(root + '/%s/Results' % self.user_session): #creates the documents/Athena/Results folder
+            os.makedirs(root + '/%s/Results' % self.user_session)
+        if not os.path.exists(root + './%s/Results/Real' % self.user_session):#creates the documents/Athena/Results/Real folder
+            os.makedirs(root + '/%s/Results/Real' % self.user_session)
+        if not os.path.exists(root + '/%s/Results/Fake' % self.user_session):#creates the documents/Athena/Results/Fake folder
+            os.makedirs(root + '/%s/Results/Fake' % self.user_session)
+        if not os.path.exists(root + '/%s/Save' % self.user_session):#creates the documents/Athena/Save folder
+            os.makedirs(root + '/%s/Save' % self.user_session)
         for epoch in range(self.epochs):
             for i, trainData in enumerate(dataloader, 0):
                 # *Epoch start time*
@@ -125,28 +135,28 @@ class Trainer(QThread):
                 self.LossSignal.emit(error_generate.item(), error_discriminate.item(), total_training, current_training)
 
 
-                #Save an image file at the completion of each Epoch
-                if self.image_save:
-                    if not os.path.exists(root + '/%s/Results' % self.user_session):
-                        os.makedirs(root + '/%s/Results' % self.user_session)
-                    if not os.path.exists(root + './%s/Results/real' % self.user_session):
-                        os.makedirs(root + '/%s/Results/real' % self.user_session)
-                    if not os.path.exists(root + '/%s/Results/Fake' % self.user_session):
-                        os.makedirs(root + '/%s/Results/Fake' % self.user_session)
-                    save_image(trainData,
-                               '%s/real_samples_epoch_%03d.bmp' % (root + "/%s/Results/Real" % self.user_session, epoch),
-                               normalize=True)
-                    save_image(testData.data,
-                               '%s/fake_samples_epoch_%03d.bmp' % (root + "/%s/Results/Fake" % self.user_session, epoch),
-                               normalize=True)
-                # Save the GAN state
-                if not os.path.exists(root + '/%s/Save' % self.user_session):
-                    os.makedirs(root + '/%s/Save' % self.user_session)
-                torch.save({
-                    'Generator': self.generator.state_dict(),
-                    'Discriminator': self.discriminator.state_dict(),
-                    'optimizerD_state_dict': optimize_discriminate.state_dict(),
-                    'optimizerG_state_dict': optimize_generate.state_dict()},root + '/%s/Save/ATHENA_GAN.tar' % self.user_session)
+            #Save an image file at the completion of each Epoch
+            if self.image_save:
+                if not os.path.exists(root + '/%s/Results' % self.user_session):
+                    os.makedirs(root + '/%s/Results' % self.user_session)
+                if not os.path.exists(root + './%s/Results/Real' % self.user_session):
+                    os.makedirs(root + '/%s/Results/Real' % self.user_session)
+                if not os.path.exists(root + '/%s/Results/Fake' % self.user_session):
+                    os.makedirs(root + '/%s/Results/Fake' % self.user_session)
+                save_image(trainData,
+                           '%s/real_samples_epoch_%03d.bmp' % (root + "/%s/Results/Real" % self.user_session, epoch),
+                           normalize=True)
+                save_image(testData.data,
+                           '%s/fake_samples_epoch_%03d.bmp' % (root + "/%s/Results/Fake" % self.user_session, epoch),
+                           normalize=True)
+            # Save the GAN state
+            if not os.path.exists(root + '/%s/Save' % self.user_session):
+                os.makedirs(root + '/%s/Save' % self.user_session)
+            torch.save({
+                'Generator': self.generator.state_dict(),
+                'Discriminator': self.discriminator.state_dict(),
+                'optimizerD_state_dict': optimize_discriminate.state_dict(),
+                'optimizerG_state_dict': optimize_generate.state_dict()}, root + '/%s/Save/%s.tar' %(self.user_session, self.user_session))
 
         self.completeSignal.emit()
 
