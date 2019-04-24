@@ -59,9 +59,9 @@ class Trainer(QThread):
         optimize_generate = Adam(self.generator.parameters(), lr=0.0002, betas=(0.5, 0.999))
 
         # Check for a saved GAN
-        if not self.user_session or path.exists(root + '/%s/Save/ATHENA_GAN.tar' % self.user_session):
+        if not self.user_session or path.exists(root + '/%s/Save/%s.tar' % (self.user_session, self.user_session)):
             # If not selected session load program default otherwise set named session
-            checkpoint = torch.load("Data/ATHENA_GAN.tar") if not self.user_session else torch.load(root + '/%s/Save/ATHENA_GAN.tar' % self.user_session)
+            checkpoint = torch.load("Data/ATHENA_GAN.tar") if not self.user_session else torch.load(root + '/%s/Save/%s.tar' % (self.user_session, self.user_session))
             self.generator.load_state_dict(checkpoint['Generator'])
             self.discriminator.load_state_dict(checkpoint['Discriminator'])
             optimize_generate.load_state_dict(checkpoint['optimizerG_state_dict'])
