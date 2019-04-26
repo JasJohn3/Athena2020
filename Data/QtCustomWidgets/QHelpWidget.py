@@ -1,5 +1,8 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QPainter
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtCore import QUrl
+from PyQt5.QtWebEngineWidgets import QWebEngineView
 
 
 class QHelpWidget(QWidget):
@@ -9,6 +12,10 @@ class QHelpWidget(QWidget):
         self.initUI()
 
     def initUI(self):
+        # self.Athena_Help_Browser = QWebEngineView()
+        # url = 'https://overclockedthompson.wixsite.com/athena/basic-interaction'
+        # self.Athena_Help_Browser.load(QUrl(url))
+        # self.Athena_Help_Browser.show()
         self.welcomeHelp_Label = QLabel(self)
         self.welcomeHelp_Label.setText("ATHENA Help")
 
