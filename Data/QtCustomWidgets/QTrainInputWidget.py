@@ -83,7 +83,7 @@ class QTrainInputWidget(QWidget):
     def train(self):
         self.train_Button.setDisabled(True)
         # Grab parent tab widget to disable tab button
-        self.parent().parent().panel_tabs.tabBar().tabButton(self.parent().parent().panel_tabs.currentIndex(), 1).setDisabled(True)
+        self.parent().parent().panel_tabs.tabBar().tabButton(self.parent().parent().panel_tabs.indexOf(self.parent().parent().panel_tabs.findChild(QTrainOutputWidget)), 1).setDisabled(True)
         # Use Parent function to create tab and hide all but results
         for tab in [(QResultsWidget, "Results"), (QHistogramWidget, "Histogram"), (QScatterplotWidget, "Scatterplot"), (QLinearWidget, "Loss over time"), (QElapsedTimeWidget, "Elapsed Time"), (QEEGWidget, "EEG")]:
             self.parent().parent().createTab(self.parent().parent().panel_tabs.findChild(QTrainOutputWidget).graph_tabs, tab[0], tab[1])
