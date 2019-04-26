@@ -10,3 +10,4 @@ from .QEEGWidget import QEEGWidget
 from .QSessionWindow import QSessionWindow
 from .QTrainOutputWidget import QTrainOutputWidget
 from .QTrainInputWidget import QTrainInputWidget
+from .QAboutWidget import QAboutWidget

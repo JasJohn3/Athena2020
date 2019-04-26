@@ -13,6 +13,8 @@ from PyQt5.QtGui import QIcon, QColor, QPalette
 import PyQt5.QtCore as QtCore
 import PyQt5
 import time
+from PyQt5.QtCore import QUrl
+from PyQt5.QtWebEngineWidgets import QWebEngineView
 
 
 class GUI(QMainWindow):
@@ -120,12 +122,16 @@ class GUI(QMainWindow):
         self.helpCenter_dropButton.setShortcut('Ctrl+H')
         self.helpCenter_dropButton.setStatusTip('Generate loss graph')
         self.helpCenter_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs,QHelpWidget, "Help Center"))
+        #self.helpCenter_dropButton.triggered.connect(Athena_Help_Center)
         self.helpMenu.addAction(self.helpCenter_dropButton)
+
+
         # About Athena Menu Item Button
         self.aboutAthena_dropButton = QAction('About Athena', self)
         self.aboutAthena_dropButton.setShortcut('Ctrl+A')
         self.aboutAthena_dropButton.setStatusTip('Learn about Athena')
         self.helpMenu.addAction(self.aboutAthena_dropButton)
+        self.aboutAthena_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs,QAboutWidget,"About Athena"))
         # About Developers Menu Item Button
         self.aboutDevs_dropButton = QAction('Meet the Developers', self)
         self.aboutDevs_dropButton.setShortcut('Ctrl+M')
@@ -163,6 +169,11 @@ class GUI(QMainWindow):
         self.panel_canvas.setGeometry(self.panel_input.width() + 8, 21, self.width() - (self.panel_input.width() + 12), self.panel_input.height())
         self.panel_tabs.setGeometry(0, 0, self.panel_canvas.width(), self.panel_canvas.height())
 
+# def Athena_Help_Center():
+#     url = 'https://overclockedthompson.wixsite.com/athena/basic-interaction'
+#     browser = QWebEngineView()
+#     browser.load(QUrl(url))
+#     browser.show()
 
 if __name__ == '__main__':
     # Multi-Resolution Support
