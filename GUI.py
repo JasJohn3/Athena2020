@@ -131,6 +131,7 @@ class GUI(QMainWindow):
         self.aboutAthena_dropButton.setShortcut('Ctrl+A')
         self.aboutAthena_dropButton.setStatusTip('Learn about Athena')
         self.helpMenu.addAction(self.aboutAthena_dropButton)
+        self.aboutAthena_dropButton.triggered.connect(lambda: self.createTab(self.panel_tabs,QAboutWidget,"About Athena"))
         # About Developers Menu Item Button
         self.aboutDevs_dropButton = QAction('Meet the Developers', self)
         self.aboutDevs_dropButton.setShortcut('Ctrl+M')
