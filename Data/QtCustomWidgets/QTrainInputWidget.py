@@ -27,6 +27,12 @@ class QTrainInputWidget(QWidget):
         for name in ["Datasets", "cifar10", "cifar100", "mnist", "stl10", "lsun", "imagenet"]: self.datasets_ComboBox.addItem(name)
         self.datasets_ComboBox.currentTextChanged.connect(lambda: self.train_Button.setEnabled(True) if self.datasets_ComboBox.currentText() != "Datasets" else self.train_Button.setEnabled(False))
 
+        # # Optimizer Selection Selection
+        # self.Optimizersets_ComboBox = QComboBox(self)
+        # self.Optimizer_ComboBox.setToolTip("Your current uploaded datasets.")
+        # for name in ["Adam", "cifar10", "cifar100", "mnist", "stl10", "lsun", "imagenet"]: self.datasets_ComboBox.addItem(name)
+        # self.datasets_ComboBox.currentTextChanged.connect(lambda: self.train_Button.setEnabled(True) if self.datasets_ComboBox.currentText() != "Datasets" else self.train_Button.setEnabled(False))
+
         # Epochs Selection
         self.epochsSB_Label = QLabel(self)
         self.epochsSB_Label.setText("Epochs:")

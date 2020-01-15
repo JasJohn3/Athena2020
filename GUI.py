@@ -21,7 +21,7 @@ class GUI(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowIcon(QIcon('Data/Athena_v1.ico'))
-        self.setWindowTitle('Athena')
+        self.setWindowTitle('A.N.N.I. Advanced Neural Network Interface')
         self.setMinimumSize(.5 * app.desktop().screenGeometry().width(), (5 / 9) * app.desktop().screenGeometry().height())
 
         # Center window
